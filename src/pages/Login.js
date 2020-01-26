@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Container, Row, Col, Alert, Form, FormGroup, Label, Input, FormText, Spinner, ButtonToggle  } from 'reactstrap';
 import axios from 'axios';
 import qs from 'qs';
-import styles from './styles';
+import style from '../styles';
+// import '../index.css';
 
 
 class Login extends React.Component {
@@ -16,7 +17,13 @@ class Login extends React.Component {
             error : "",
             isLoading : false
         }
-        this.handleLogin = this.handleLogin.bind(this)
+    }
+
+    componentDidMount(){
+        const data = JSON.parse(localStorage.getItem('dataAccount'))
+        if(data){
+            this.props.history.push('/')
+        }
     }
 
     handleUsername = (e) =>{
@@ -29,6 +36,10 @@ class Login extends React.Component {
         this.setState({
             password : e.target.value
         })
+    }
+
+    handleRegister = (e) =>{
+        this.props.history.push('/register')
     }
 
     handleLogin = (e) =>{
@@ -53,10 +64,8 @@ class Login extends React.Component {
                     if(res.status === 200){
                         try {
                             localStorage.setItem('dataAccount', JSON.stringify(res.data.data))
-                            console.log(res);
-                            console.log(JSON.stringify(res))
+                            this.props.history.push('/')
                         } catch (error) {
-                            console.log(error)
                             this.setState({
                                 visibleAlert : true,
                                 error : "Username Atau Password Salah",
@@ -67,7 +76,7 @@ class Login extends React.Component {
                 .catch((error)=>{
                     this.setState({
                         visibleAlert : true,
-                        error : "Tidak Ada Koneksi Internet",
+                        error : "Username Atau Password Salah",
                     })
                 })
                 .finally(()=>{
@@ -86,41 +95,41 @@ class Login extends React.Component {
     }
     render() {
         return (
-            <div className='formMaker'>
+            <div>
             <Alert color="danger" isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
                 {this.state.error}
             </Alert>
-            <Form style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-                }}>
+            <Form style={style.formMaker}>
                 <FormGroup>
-                    <Input style ={{textAlign:"center",minWidth : '320'}} plaintext value="Login" />
+                    <Input style = {style.inputLogin} plaintext defaultValue="Login" />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="username">Username</Label>
                     <Input
-                        style={{minWidth:"320px"}}
+                        style={style.inputLogin}
                         type="text"
                         name="username"
                         id="username"
-                        placeholder="Type Username Here"
+                        placeholder="Username"
                         onChange={(e)=>{this.handleUsername(e)}}
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="Password">Password</Label>
                     <Input
                         type="password"
                         name="password"
                         id="Password"
-                        placeholder="Type Password Here"
+                        placeholder="Password"
                         onChange={(e)=>{this.handlePassword(e)}}
                     />
                 </FormGroup>
-                {this.state.isLoading ? (<Spinner style={{ width: '3rem', height: '3rem' }} />):(<ButtonToggle onClick={(e)=>{this.handleLogin(e)}} color="secondary">Login</ButtonToggle>)}
+                <div>{this.state.isLoading ? 
+                    (<Spinner style={style.spinnerLogin} />)
+                    :
+                    (<ButtonToggle style={style.buttonLogin} onClick={(e)=>{this.handleLogin(e)}} color="secondary">Login</ButtonToggle>)
+                }</div>
+                <div>
+                    <ButtonToggle style={style.buttonRegister} onClick={(e)=>{this.handleRegister(e)}} color="success">Register</ButtonToggle>
+                </div>
             </Form>
             </div>
         )
@@ -129,6 +138,28 @@ class Login extends React.Component {
 
 export default Login;
 
-// Login.propTypes = {
-//     name: PropTypes.string,
-// }
+Input.propTypes = {
+    children: PropTypes.node,
+    // type can be things like text, password, (typical input types) as well as select and textarea, providing children as you normally would to those.
+    type: PropTypes.string,
+    size: PropTypes.string,
+    bsSize: PropTypes.string,
+    valid: PropTypes.bool, // applied the is-valid class when true, does nothing when false
+    invalid: PropTypes.bool, // applied the is-invalid class when true, does nothing when false
+    tag: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+    // ref will only get you a reference to the Input component, use innerRef to get a reference to the DOM input (for things like focus management).
+    innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+    plaintext: PropTypes.bool,
+    addon: PropTypes.bool,
+    className: PropTypes.string,
+    cssModule: PropTypes.object,
+  };
+
+//   const style = {
+//       formMaker : {
+//         position: 'absolute',
+//         left: '50%',
+//         top: '50%',
+//         transform: 'translate(-50%, -50%)',
+//         }
+//   }

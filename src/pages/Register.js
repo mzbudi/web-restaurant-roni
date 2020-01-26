@@ -1,21 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Form, FormGroup, Label, Input, FormText, Spinner, ButtonToggle  } from 'reactstrap';
+import { Container, Row, Col, Alert, Form, FormGroup, Label, Input, FormText, Spinner, ButtonToggle  } from 'reactstrap';
 import axios from 'axios';
 import qs from 'qs';
+import style from '../styles';
+// import '../index.css';
 
-class Register extends React.Component {
+
+class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
             username : "",
             password : "",
+            name : "",
             visibleAlert : false,
             error : "",
             isLoading : false
         }
-        this.handleRegister = this.handleRegister.bind(this)
+    }
+
+    componentDidMount(){
+        const data = JSON.parse(localStorage.getItem('dataAccount'))
+        if(data){
+            this.props.history.push('/home')
+        }
+    }
+
+    handleBackButton = (e) =>{
+        this.props.history.push('/login')
     }
 
     handleUsername = (e) =>{
@@ -24,15 +37,15 @@ class Register extends React.Component {
         })
     }
 
-    handlePassword = (e) =>{
+    handleName = (e) =>{
         this.setState({
-            password : e.target.value
+            name : e.target.value
         })
     }
 
-    handleName = (e) =>{
+    handlePassword = (e) =>{
         this.setState({
-            name: e.target.value
+            password : e.target.value
         })
     }
 
@@ -58,14 +71,12 @@ class Register extends React.Component {
                 .then((res)=>{
                     if(res.status === 200){
                         try {
-                            localStorage.setItem('dataAccount', JSON.stringify(res.data.data))
-                            console.log(res);
-                            console.log(JSON.stringify(res))
+                            localStorage.setItem('dataAccount', JSON.stringify(res.data.data));
+                            this.props.history.push('/');
                         } catch (error) {
-                            console.log(error)
                             this.setState({
                                 visibleAlert : true,
-                                error : "Username Sudah Ada",
+                                error : "Username Atau Password Salah",
                             })
                         }
                     }
@@ -96,56 +107,78 @@ class Register extends React.Component {
             <Alert color="danger" isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
                 {this.state.error}
             </Alert>
-            <Form style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-                }}>
+            <Form style={style.formMaker}>
                 <FormGroup>
-                    <Label for="Register">Restaurant Roni</Label>
-                    <Input plaintext value="Register" />
+                    <Input style = {style.inputLogin} plaintext defaultValue="Login" />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="username">Name</Label>
                     <Input
+                        style={style.inputRegister}
                         type="text"
-                        name="name"
-                        id="name"
-                        placeholder="Type Your Name"
+                        name="Name"
+                        id="Name"
+                        placeholder="Name"
                         onChange={(e)=>{this.handleName(e)}}
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="username">Username</Label>
                     <Input
+                        style={style.inputRegister}
                         type="text"
                         name="username"
                         id="username"
-                        placeholder="Type Username"
+                        placeholder="Username"
                         onChange={(e)=>{this.handleUsername(e)}}
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label for="Password">Password</Label>
                     <Input
+                        style={style.inputRegister}
                         type="password"
                         name="password"
                         id="Password"
-                        placeholder="password placeholder"
+                        placeholder="Password"
                         onChange={(e)=>{this.handlePassword(e)}}
                     />
                 </FormGroup>
-                
-                {this.state.isLoading ? (<Spinner style={{ width: '3rem', height: '3rem' }} />):(<ButtonToggle onClick={(e)=>{this.handleRegister(e)}} color="secondary">Submit</ButtonToggle>)}
+                <div>{this.state.isLoading ? 
+                    (<Spinner style={style.spinnerLogin} />)
+                    :
+                    (<ButtonToggle style={style.buttonRegister} onClick={(e)=>{this.handleRegister(e)}} color="success">Register</ButtonToggle>)
+                }</div>
+                 <div>
+                    <ButtonToggle style={style.buttonRegister} onClick={(e)=>{this.handleBackButton(e)}} color="secondary">Kembali</ButtonToggle>
+                </div>
             </Form>
             </div>
         )
     }
 }
 
-export default Register;
+export default Login;
 
-// Login.propTypes = {
-//     name: PropTypes.string,
-// }
+Input.propTypes = {
+    children: PropTypes.node,
+    // type can be things like text, password, (typical input types) as well as select and textarea, providing children as you normally would to those.
+    type: PropTypes.string,
+    size: PropTypes.string,
+    bsSize: PropTypes.string,
+    valid: PropTypes.bool, // applied the is-valid class when true, does nothing when false
+    invalid: PropTypes.bool, // applied the is-invalid class when true, does nothing when false
+    tag: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+    // ref will only get you a reference to the Input component, use innerRef to get a reference to the DOM input (for things like focus management).
+    innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+    plaintext: PropTypes.bool,
+    addon: PropTypes.bool,
+    className: PropTypes.string,
+    cssModule: PropTypes.object,
+  };
+
+//   const style = {
+//       formMaker : {
+//         position: 'absolute',
+//         left: '50%',
+//         top: '50%',
+//         transform: 'translate(-50%, -50%)',
+//         }
+//   }
