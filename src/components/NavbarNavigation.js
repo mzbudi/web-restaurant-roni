@@ -39,7 +39,8 @@ class NavbarNavigation extends React.Component {
             dataProduct: [],
             dataTotal: [],
             searchData : "",
-            product_name : ''
+            product_name : '',
+            date : ''
         }
         this.handleSearchProduct = this.handleSearchProduct.bind(this)
     }
@@ -76,12 +77,15 @@ class NavbarNavigation extends React.Component {
         const data = {
             limit: "5",
             page: 0,
+            date: this.state.date,
             product_name : this.state.product_name
         }
         axios.get('http://127.0.0.1:3001/products/',{params:{
             limit:data.limit, 
             page:data.page,
-            product_name : data.product_name
+            date : data.date,
+            product_name : data.product_name,
+
         }})
             .then(res => {
                     if (res.status === 200) {
@@ -100,18 +104,34 @@ class NavbarNavigation extends React.Component {
         })
     }
 
+    
+
     sortByName = (e) =>{
         this.setState({
             product_name : 'product_name',
-        }, this.getSortFunction());
+            date : ''
+        }, ()=>{
+            this.getSortFunction()
+        });
+    }
+
+    sortByDate = (e) =>{
+        this.setState({
+            date : 'updated_at',
+            product_name : '',
+        }, ()=>{
+            this.getSortFunction()
+        });
     }
 
     handleSearchProduct = (e) =>{
         e.preventDefault();
         this.setState({
             searchData : e.target.value
-        })
+        },()=>{this.getSearchFunction()})
+    }
 
+    getSearchFunction = (e) =>{
         const data = {
             nameSearch : this.state.searchData,
             limit: "5",
@@ -209,7 +229,7 @@ class NavbarNavigation extends React.Component {
                                         Sort by Name
                                     </DropdownItem>
                                     <DropdownItem divider />
-                                    <DropdownItem>
+                                    <DropdownItem onClick={(e)=>{this.sortByDate(e)}}>
                                         Sort by Newest
                                     </DropdownItem>
                                 </DropdownMenu>
