@@ -11,7 +11,9 @@ import {
     Form,
     FormGroup,
     Label,
-    Input, Col, FormText
+    Input,
+    Col,
+    FormText
 } from 'reactstrap';
 import style from '../styles';
 
@@ -39,7 +41,7 @@ class ModalProduct extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button color="danger" onClick={this.handleClick}>Add</Button>
+                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>Tambah Product</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Add Product</ModalHeader>
                     <ModalBody>

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import '../index.css'
-import plus from '../images/plus.png'
+// import plus from '../images/plus.png'
 import ModalProduct from '../components/ModalProduct'
 import ModalCategory from '../components/ModalCategory'
 
@@ -9,9 +9,8 @@ class Sidebar extends React.Component {
     render() {
         return (
             <div className="sidebar">
-                <ModalProduct />
+                <ModalProduct />{' '}
                 <ModalCategory />
-                <ModalProduct />
             </div>
         )
     }

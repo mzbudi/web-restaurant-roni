@@ -15,7 +15,7 @@ import {
 } from 'reactstrap';
 import style from '../styles';
 
-class ModalCategory extends React.Component {
+class ModalDetailProduct extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -39,19 +39,12 @@ class ModalCategory extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>Tambah Category</Button>
+                <Button color="dark" onClick={this.handleClick}>Detail</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
-                    <ModalHeader toggle={this.handleButton}>Add Category</ModalHeader>
+                    <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
                     <ModalBody>
                         <Form>
                             <FormGroup>
-                                <Input
-                                    type="text"
-                                    name="name"
-                                    id="product_name"
-                                    placeholder="Product Name"
-                                    onChange={(e) => { this.handleUsername(e) }}
-                                />
                             </FormGroup>
                         </Form>
                     </ModalBody>
@@ -65,4 +58,4 @@ class ModalCategory extends React.Component {
     }
 }
 
-export default ModalCategory;
+export default ModalDetailProduct;

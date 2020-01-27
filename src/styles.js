@@ -29,6 +29,29 @@ const style = {
     },
     columnCardPict :{
         marginBottom: "20px",
+    },
+    buttonSidebar : {
+        marginBottom: "10px",
+        paddingLeft : "0px",
+        paddingRight: "0px",
+        width : "100%"
+    },
+    cartDiv : {
+        paddingTop :"10px", 
+        paddingLeft: "10px",
+        minHeight:"100%", 
+        display:"inline-block", 
+        width:"100%", 
+        border: "1px solid rgba(0,0,0,.125)", 
+        borderRadius: ".25rem"
+    },
+    cartItem :{
+        marginBottom: "10px",
+        marginRight: "10px",
+        border: "1px solid rgba(0,0,0,.125)", 
+        borderRadius: ".25rem",
+        height:"100px", 
+        width:"100px"
     }
 }
 

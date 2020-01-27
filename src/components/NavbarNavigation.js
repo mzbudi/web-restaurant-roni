@@ -29,6 +29,7 @@ import style from '../styles.js';
 import ModalCategory from './ModalCategory';
 import axios from 'axios';
 import qs from 'qs';
+import ModalDetailProduct from './ModalDetailProduct';
 
 class NavbarNavigation extends React.Component {
     constructor(props) {
@@ -363,8 +364,10 @@ class NavbarNavigation extends React.Component {
                                                     <CardImg top width="100%" src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
-                                                        <Button>Add</Button>{' '}
-                                                        <Button>Detail</Button>
+                                                        <div style={{display:"inline-flex"}}>
+                                                            <Button style={{marginRight:"5px"}}>Add</Button>
+                                                            <ModalDetailProduct />
+                                                        </div>
                                                     </CardBody>
                                                 </Card>
                                             </Col>);
@@ -381,8 +384,10 @@ class NavbarNavigation extends React.Component {
                                                     <CardImg top width="100%" src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
-                                                        <Button>Add</Button>{' '}
-                                                        <Button>Detail</Button>
+                                                        <div style={{display:"inline-flex"}}>
+                                                            <Button style={{marginRight:"5px"}}>Add</Button>
+                                                            <ModalDetailProduct />
+                                                        </div>
                                                     </CardBody>
                                                 </Card>
                                             </Col>);
@@ -399,8 +404,10 @@ class NavbarNavigation extends React.Component {
                                                     <CardImg top width="100%" src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
-                                                        <Button>Add</Button>{' '}
-                                                        <Button>Detail</Button>
+                                                        <div style={{display:"inline-flex"}}>
+                                                            <Button style={{marginRight:"5px"}}>Add</Button>
+                                                            <ModalDetailProduct />
+                                                        </div>
                                                     </CardBody>
                                                 </Card>
                                             </Col>);
@@ -409,11 +416,13 @@ class NavbarNavigation extends React.Component {
                             </Row>
                         </Col>
                         <Col xs="4" style={{ padding: "0" }}>
-                            <Card style={{ minHeight: "100%" }}>
-                            </Card>
-                            {/* <div style={{padding:"0", display:"inline-block", minHeight:"10%", width:"100%",backgroundColor:"blue", float:"right"}}>
-                                <center><p>Cart</p></center>
-                            </div> */}
+                            <div style={style.cartDiv}>
+                                <div style={{display:"flex"}}>
+                                    <div style={style.cartItem}></div>
+                                    <div style={style.cartItem}></div>
+                                    <div style={style.cartItem}></div>
+                                </div>
+                            </div>
                         </Col>
                     </Row>
                     <Pagination size="sm">
