@@ -25,27 +25,52 @@ import {
     Link
 } from 'react-router-dom';
 import style from '../styles.js';
+import ModalCategory from './ModalCategory';
+import axios from 'axios';
 
 class NavbarNavigation extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             isOpen: false,
-            data:[]
+            data: [],
+            dataProduct: [],
+            dataTotal: [],
+            gambar: ''
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         const data = JSON.parse(localStorage.getItem('dataAccount'))
-        if(!data){
+        if (!data) {
             this.props.history.push('/login')
+        } else {
+            axios.get('http://127.0.0.1:3001/products/')
+                .then(res => {
+                    if (res.status === 200) {
+                        try {
+                            this.setState({
+                                dataProduct: res.data.data,
+                                dataTotal: res.data.data.searchResult,
+                            })
+                            // console.log(res)
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
         }
         this.setState({
             data: data
         })
+
     }
 
-    handleLogout =(e)=>{
+
+
+    handleLogout = (e) => {
         e.preventDefault();
         try {
             localStorage.removeItem('dataAccount');
@@ -61,10 +86,14 @@ class NavbarNavigation extends React.Component {
         })
     }
     render() {
-        const {data, isOpen} = this.state
+        const { data, isOpen, dataProduct, dataTotal } = this.state
+        // console.log(dataProduct.searchResult[0])
+        // console.log(dataTotal[0])
+
+
         return (
             <div>
-                <Navbar color="light" light expand="md" style={{marginBottom:"10px"}}>
+                <Navbar color="light" light expand="md" style={{ marginBottom: "10px" }}>
                     <NavbarBrand href="/">Restaurant Roni</NavbarBrand>
                     <NavbarToggler onClick={this.handleToggle} />
                     <Collapse isOpen={this.state.isOpen} navbar>
@@ -89,7 +118,8 @@ class NavbarNavigation extends React.Component {
                                 </DropdownToggle>
                                 <DropdownMenu right>
                                     <DropdownItem>
-                                        Search by Name
+                                        {/* Search by Name */}
+                                        <ModalCategory></ModalCategory>
                                     </DropdownItem>
                                     <DropdownItem divider />
                                     <DropdownItem>
@@ -106,7 +136,7 @@ class NavbarNavigation extends React.Component {
                         </Nav>
                         <NavbarText>{data.name}</NavbarText>
                         <Nav>
-                        <UncontrolledDropdown nav inNavbar>
+                            <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
                                     Others
                                 </DropdownToggle>
@@ -116,106 +146,87 @@ class NavbarNavigation extends React.Component {
                                     </DropdownItem>
                                     <DropdownItem divider />
                                     <DropdownItem>
-                                        <NavLink onClick={(e)=>{this.handleLogout(e)}}>Logout</NavLink>
+                                        <NavLink onClick={(e) => { this.handleLogout(e) }}>Logout</NavLink>
                                     </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
-                            </Nav>
+                        </Nav>
                     </Collapse>
                 </Navbar>
                 <Container>
+                    {/* <div style={{display:"inline-block", minHeight:"100%", width:"400px",backgroundColor:"blue", float:"right"}}>
+
+                    </div> */}
                     <Row>
                         <Col>
                             <Row>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText></CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
+                                {dataTotal.map((data, i) => {
+                                    const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '')
+                                    if (i < 3) {
+                                        return (
+                                            <Col style={style.columnCardPict}>
+                                                <Card key={i + 1}>
+                                                    <CardImg top width="100%" src={product_image} alt="Card image cap" />
+                                                    <CardBody>
+                                                        <CardTitle>{data.product_name}</CardTitle>
+                                                        <Button>Add</Button>{' '}
+                                                        <Button>Detail</Button>
+                                                    </CardBody>
+                                                </Card>
+                                            </Col>);
+                                    }
+                                })}
                             </Row>
                             <Row>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
+                                {dataTotal.map((data, i) => {
+                                    const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '')
+                                    if (i >= 3) {
+                                        return (
+                                            <Col style={style.columnCardPict}>
+                                                <Card key={i + 1}>
+                                                    <CardImg top width="100%" src={product_image} alt="Card image cap" />
+                                                    <CardBody>
+                                                        <CardTitle>{data.product_name}</CardTitle>
+                                                        <Button>Add</Button>{' '}
+                                                        <Button>Detail</Button>
+                                                    </CardBody>
+                                                </Card>
+                                            </Col>);
+                                    }
+                                })}
                             </Row>
                             <Row>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
-                                <Col><Card>
-                                    <CardImg top width="100%" src="/assets/318x180.svg" alt="Card image cap" />
-                                    <CardBody>
-                                        <CardTitle>Card title</CardTitle>
-                                        <CardSubtitle>Card subtitle</CardSubtitle>
-                                        <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
-                                        <Button>Button</Button>
-                                    </CardBody>
-                                </Card></Col>
+                                {dataTotal.map((data, i) => {
+                                    const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '')
+                                    if (i >= 5) {
+                                        return (
+                                            <Col style={style.columnCardPict}>
+                                                <Card key={i + 1}>
+                                                    <CardImg top width="100%" src={product_image} alt="Card image cap" />
+                                                    <CardBody>
+                                                        <CardTitle>{data.product_name}</CardTitle>
+                                                        <Button>Add</Button>{' '}
+                                                        <Button>Detail</Button>
+                                                    </CardBody>
+                                                </Card>
+                                            </Col>);
+                                    }
+                                })}
                             </Row>
                         </Col>
-                        <Col xs="4" style={{border: "1px solid black" }}>
-                            1 of 2
+                        <Col xs="4" style={{ padding: "0" }}>
+                            <Card style={{ minHeight: "100%" }}>
+                                <CardImg top width="100%" src="http://localhost:3001/images//product_image-1579493748132.jpg" alt="Card image cap" />
+                                
+                                <CardBody>
+                                    <CardTitle>Keranjang</CardTitle>
+                                    <Button>Add</Button>{' '}
+                                    <Button>Detail</Button>
+                                </CardBody>
+                            </Card>
+                            {/* <div style={{padding:"0", display:"inline-block", minHeight:"10%", width:"100%",backgroundColor:"blue", float:"right"}}>
+                                <center><p>Cart</p></center>
+                            </div> */}
                         </Col>
                     </Row>
                 </Container>

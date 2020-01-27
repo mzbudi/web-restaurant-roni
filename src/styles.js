@@ -26,6 +26,9 @@ const style = {
     columnNav: {
         paddingLeft : "0px",
         paddingRight : "0px"
+    },
+    columnCardPict :{
+        marginBottom: "20px",
     }
 }
 
