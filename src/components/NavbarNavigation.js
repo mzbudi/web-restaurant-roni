@@ -38,9 +38,10 @@ class NavbarNavigation extends React.Component {
             data: [],
             dataProduct: [],
             dataTotal: [],
-            searchData : "",
-            product_name : '',
-            date : ''
+            searchData: "",
+            product_name: '',
+            date: '',
+            category_data: []
         }
         this.handleSearchProduct = this.handleSearchProduct.bind(this)
     }
@@ -66,6 +67,37 @@ class NavbarNavigation extends React.Component {
                 }).catch(err => {
                     console.log(err)
                 })
+            axios.get('http://127.0.0.1:3001/products/')
+                .then(res => {
+                    if (res.status === 200) {
+                        try {
+                            this.setState({
+                                dataProduct: res.data.data.searchResult,
+                                dataTotal: res.data.data.totalData,
+                            })
+                            // console.log(res)
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+            axios.get('http://127.0.0.1:3001/category')
+                .then(res => {
+                    if (res.status === 200) {
+                        try {
+                            this.setState({
+                                category_data: res.data.data,
+                            })
+                            // console.log(res)
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
         }
         this.setState({
             data: data
@@ -73,122 +105,158 @@ class NavbarNavigation extends React.Component {
 
     }
 
-    getSortFunction = (e) =>{
+    searchByCategory = (e) =>{
+        const data = {
+            category_id: e.target.value,
+            limit: "5",
+            page: 0,
+        }
+
+        axios.get('http://127.0.0.1:3001/products/', {
+            params: {
+                category_id: data.category_id,
+                limit: data.limit,
+                page: data.page
+            }
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    try {
+                        this.setState({
+                            dataProduct: res.data.data.searchResult,
+                            dataTotal: res.data.data.totalData,
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+    }
+
+    getSortFunction = (e) => {
         const data = {
             limit: "5",
             page: 0,
             date: this.state.date,
-            product_name : this.state.product_name
+            product_name: this.state.product_name
         }
-        axios.get('http://127.0.0.1:3001/products/',{params:{
-            limit:data.limit, 
-            page:data.page,
-            date : data.date,
-            product_name : data.product_name,
+        axios.get('http://127.0.0.1:3001/products/', {
+            params: {
+                limit: data.limit,
+                page: data.page,
+                date: data.date,
+                product_name: data.product_name,
 
-        }})
-            .then(res => {
-                    if (res.status === 200) {
-                        console.log(res);
-                        try {
-                            this.setState({
-                                dataProduct: res.data.data.searchResult,
-                                dataTotal: res.data.data.totalData,
-                            })
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }
-            }).catch(err => {
-                    console.log(err)
+            }
         })
+            .then(res => {
+                if (res.status === 200) {
+                    console.log(res);
+                    try {
+                        this.setState({
+                            dataProduct: res.data.data.searchResult,
+                            dataTotal: res.data.data.totalData,
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }).catch(err => {
+                console.log(err)
+            })
     }
 
-    
 
-    sortByName = (e) =>{
+
+    sortByName = (e) => {
         this.setState({
-            product_name : 'product_name',
-            date : ''
-        }, ()=>{
+            product_name: 'product_name',
+            date: ''
+        }, () => {
             this.getSortFunction()
         });
     }
 
-    sortByDate = (e) =>{
+    sortByDate = (e) => {
         this.setState({
-            date : 'updated_at',
-            product_name : '',
-        }, ()=>{
+            date: 'updated_at',
+            product_name: '',
+        }, () => {
             this.getSortFunction()
         });
     }
 
-    handleSearchProduct = (e) =>{
+    handleSearchProduct = (e) => {
         e.preventDefault();
         this.setState({
-            searchData : e.target.value
-        },()=>{this.getSearchFunction()})
+            searchData: e.target.value
+        }, () => { this.getSearchFunction() })
     }
 
-    getSearchFunction = (e) =>{
+    getSearchFunction = (e) => {
         const data = {
-            nameSearch : this.state.searchData,
+            nameSearch: this.state.searchData,
             limit: "5",
             page: 0,
         }
 
-        axios.get('http://127.0.0.1:3001/products/',{params:{
-            nameSearch: data.nameSearch, 
-            limit:data.limit, 
-            page:data.page
-        }})
-                .then(res => {
-                    if (res.status === 200) {
-                        try {
-                            this.setState({
-                                dataProduct: res.data.data.searchResult,
-                                dataTotal: res.data.data.totalData,
-                            })
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }
-            }).catch(err => {
-                    console.log(err)
+        axios.get('http://127.0.0.1:3001/products/', {
+            params: {
+                nameSearch: data.nameSearch,
+                limit: data.limit,
+                page: data.page
+            }
         })
+            .then(res => {
+                if (res.status === 200) {
+                    try {
+                        this.setState({
+                            dataProduct: res.data.data.searchResult,
+                            dataTotal: res.data.data.totalData,
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }).catch(err => {
+                console.log(err)
+            })
     }
 
-    paginationClick = (e) =>{
+    paginationClick = (e) => {
         // e.preventDefault();
         // console.log(e.target.value)
         const data = {
-            nameSearch : this.state.nameSearch,
+            nameSearch: this.state.nameSearch,
             limit: "5",
-            page: e.target.value-1,
-            product_name : this.state.product_name,
+            page: e.target.value - 1,
+            product_name: this.state.product_name,
         }
-        axios.get('http://127.0.0.1:3001/products/',{
-            params:{
-                nameSearch : data.nameSearch,
-                limit:data.limit, 
-                page:data.page,
-                product_name : data.product_name}})
-                .then(res => {
-                    if (res.status === 200) {
-                        try {
-                            this.setState({
-                                dataProduct: res.data.data.searchResult,
-                                dataTotal: res.data.data.totalData,
-                            })
-                            console.log(res)
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }
-            }).catch(err => {
-                    console.log(err)
+        axios.get('http://127.0.0.1:3001/products/', {
+            params: {
+                nameSearch: data.nameSearch,
+                limit: data.limit,
+                page: data.page,
+                product_name: data.product_name
+            }
         })
+            .then(res => {
+                if (res.status === 200) {
+                    try {
+                        this.setState({
+                            dataProduct: res.data.data.searchResult,
+                            dataTotal: res.data.data.totalData,
+                        })
+                        console.log(res)
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }).catch(err => {
+                console.log(err)
+            })
     }
 
     handleLogout = (e) => {
@@ -207,11 +275,11 @@ class NavbarNavigation extends React.Component {
         })
     }
     render() {
-        const { data, isOpen, dataProduct, dataTotal, searchData } = this.state
-        const page = Math.ceil(dataTotal/5)
+        const { data, isOpen, dataProduct, dataTotal, searchData, category_data } = this.state
+        const page = Math.ceil(dataTotal / 5)
         const pages = [];
-        for(let i = 0 ; i<=page; i++){
-            if(i!==page){pages.push(i)}
+        for (let i = 0; i <= page; i++) {
+            if (i !== page) { pages.push(i) }
         }
         return (
             <div>
@@ -225,27 +293,29 @@ class NavbarNavigation extends React.Component {
                                     Sort
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    <DropdownItem onClick={(e)=>{this.sortByName(e)}}>
+                                    <DropdownItem onClick={(e) => { this.sortByName(e) }}>
                                         Sort by Name
                                     </DropdownItem>
                                     <DropdownItem divider />
-                                    <DropdownItem onClick={(e)=>{this.sortByDate(e)}}>
+                                    <DropdownItem onClick={(e) => { this.sortByDate(e) }}>
                                         Sort by Newest
                                     </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
-                                    Search Option
+                                    Search by Category
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    <DropdownItem>
-                                        Search by Name
-                                    </DropdownItem>
-                                    <DropdownItem divider />
-                                    <DropdownItem>
-                                        Search by Category Id
-                                    </DropdownItem>
+                                    {category_data.map((data,i)=>{
+                                        return(
+                                            <DropdownItem value={data.category_id} onClick={(e) => { this.searchByCategory(e) }}>
+                                                {data.category_name}
+                                            </DropdownItem>
+                                        )
+                                    })}
+                                    
+                                    {/* <DropdownItem divider /> */}
                                 </DropdownMenu>
                             </UncontrolledDropdown>
                             <Input
@@ -253,7 +323,7 @@ class NavbarNavigation extends React.Component {
                                 name="search"
                                 id="search"
                                 placeholder="Search..."
-                                onChange ={(e)=>{
+                                onChange={(e) => {
                                     this.handleSearchProduct(e);
                                 }}
                             />
@@ -290,7 +360,7 @@ class NavbarNavigation extends React.Component {
                                         return (
                                             <Col style={style.columnCardPict}>
                                                 <Card key={i + 1}>
-                                                    <CardImg top maxHeight="300px" width="100%" src={product_image} alt="Card image cap" />
+                                                    <CardImg top width="100%" src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
                                                         <Button>Add</Button>{' '}
@@ -351,15 +421,15 @@ class NavbarNavigation extends React.Component {
                             <PaginationLink first href="#" />
                         </PaginationItem>
                         {
-                            pages.map((page, i)=>{
-                                    return(
-                                        <PaginationItem >
-                                            <PaginationLink value={page+1} onClick={(e)=>{this.paginationClick(e)}}>
-                                                {page+1}
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                    )
-                                }
+                            pages.map((page, i) => {
+                                return (
+                                    <PaginationItem >
+                                        <PaginationLink value={page + 1} onClick={(e) => { this.paginationClick(e) }}>
+                                            {page + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                )
+                            }
                             )
                         }
                         <PaginationItem>
