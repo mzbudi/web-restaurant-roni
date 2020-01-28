@@ -19,6 +19,11 @@ const style = {
     buttonLogin :{
         minWidth:"320px"
     },
+    buttonCheckout :{
+        marginTop:"10px",
+        width:"95%",
+        marginBottom: "10px"
+    },
     buttonRegister :{
         marginTop: "10px",
         minWidth:"320px"
@@ -50,8 +55,16 @@ const style = {
         marginRight: "10px",
         border: "1px solid rgba(0,0,0,.125)", 
         borderRadius: ".25rem",
-        height:"100px", 
-        width:"100px"
+        height:"80px", 
+        width:"80px"
+    },
+    incrementCart :{
+        marginBottom: "10px",
+        marginRight: "10px", 
+        borderRadius: ".25rem",
+        height:"80px", 
+        width:"120px",
+        
     }
 }
 

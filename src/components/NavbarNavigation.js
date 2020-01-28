@@ -19,7 +19,7 @@ import {
     Input,
     Card, CardImg, CardText, CardBody,
     CardTitle, CardSubtitle, Button,
-    Pagination, PaginationItem, PaginationLink
+    Pagination, PaginationItem, PaginationLink, ButtonToggle
 } from 'reactstrap';
 import {
     withRouter,
@@ -42,7 +42,10 @@ class NavbarNavigation extends React.Component {
             searchData: "",
             product_name: '',
             date: '',
-            category_data: []
+            category_data: [],
+            cart:[],
+            orders:[],
+            grandTotal : 0,
         }
         this.handleSearchProduct = this.handleSearchProduct.bind(this)
     }
@@ -104,6 +107,87 @@ class NavbarNavigation extends React.Component {
             data: data
         })
 
+    }
+
+    // handleTotal = (totalPerProduct,product_id) => {
+    //     this.setState({
+    //         totalPrice : {...this.state.totalPrice, [{product_id:product_id, totalPerProduct:totalPerProduct}]}
+    //     },()=>{
+    //         console.log(this.state.totalPrice);
+    //     })
+    // }
+
+    incrementOrder = (e, product_price) =>{
+        this.setState({
+            orders: this.state.orders.map((order)=>(order.product_id == e.target.id ? {...order, quantity:order.quantity + 1, totalPrice:product_price*(order.quantity + 1) } : order)),
+
+        })
+    }
+
+    handleCheckout = (e) =>{
+        console.log(this.state.orders);
+    }
+
+    decrementOrder = (e, product_price) =>{
+        this.setState({
+            orders: this.state.orders.map((order)=>(order.product_id == e.target.id ? {...order, quantity:order.quantity - 1, totalPrice:product_price*(order.quantity - 1) } : order))
+        })
+    }
+
+    deleteFromCart = (e) =>{
+        let cartForDelete = this.state.cart.filter((data)=>{ return data.product_id != e.target.id})
+        let ordersForDelete = this.state.orders.filter((data)=>{ return data.product_id != e.target.id})
+        this.setState({
+            cart : cartForDelete,
+            orders : ordersForDelete
+        })
+        // cartForDelete.map((data,i)=>{
+        //     if(data.product_id == e.target.id){
+        //        delete cartForDelete[i]
+        //     }
+        // })
+        // this.setState({
+        //     cart: cartForDelete
+        // },()=>{console.log(this.state.cart)})
+    }
+
+
+    addOrderButton = (e,item) =>{
+        let arrExist = [];
+        if (this.state.cart.length === 0){
+            this.setState({
+                cart : [...this.state.cart, item],
+                orders: [...this.state.orders, {
+                    product_id : item.product_id,
+                    product_price: item.product_price,
+                    quantity : 0,
+                    totalPrice : 0
+                }]
+            },()=>{
+                console.log(this.state.cart, this.state.orders)
+            })
+        }else{
+            this.state.cart.map((data,i)=>{
+                if(data.product_id === item.product_id){
+                    arrExist.push('1')
+                }
+            })
+            if(arrExist.length === 0){
+                this.setState({
+                    cart: [...this.state.cart,item],
+                    orders: [...this.state.orders, {
+                        product_id : item.product_id,
+                        product_price: item.product_price,
+                        quantity : 0,
+                        totalPrice : 0
+                    }]
+                },()=>{
+                    console.log(this.state.cart, this.state.orders)
+                })
+            }else{
+                console.log('data Sudah ada')
+            }
+        }
     }
 
     searchByCategory = (e) =>{
@@ -276,7 +360,7 @@ class NavbarNavigation extends React.Component {
         })
     }
     render() {
-        const { data, isOpen, dataProduct, dataTotal, searchData, category_data } = this.state
+        const { data, isOpen, dataProduct, dataTotal, searchData, category_data, cart, orders } = this.state
         const page = Math.ceil(dataTotal / 5)
         const pages = [];
         for (let i = 0; i <= page; i++) {
@@ -315,7 +399,6 @@ class NavbarNavigation extends React.Component {
                                             </DropdownItem>
                                         )
                                     })}
-                                    
                                     {/* <DropdownItem divider /> */}
                                 </DropdownMenu>
                             </UncontrolledDropdown>
@@ -356,7 +439,8 @@ class NavbarNavigation extends React.Component {
                         <Col>
                             <Row>
                                 {dataProduct.map((data, i) => {
-                                    const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '')
+                                    const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
+                                    const item = data;
                                     if (i < 3) {
                                         return (
                                             <Col style={style.columnCardPict}>
@@ -365,7 +449,9 @@ class NavbarNavigation extends React.Component {
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
                                                         <div style={{display:"inline-flex"}}>
-                                                            <Button style={{marginRight:"5px"}}>Add</Button>
+                                                            <Button style={{marginRight:"5px"}} onClick={(e)=>{
+                                                                this.addOrderButton(e,item)
+                                                                }}>Add</Button>
                                                             <ModalDetailProduct />
                                                         </div>
                                                     </CardBody>
@@ -377,6 +463,7 @@ class NavbarNavigation extends React.Component {
                             <Row>
                                 {dataProduct.map((data, i) => {
                                     const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '')
+                                    const item = data;
                                     if (i >= 3) {
                                         return (
                                             <Col style={style.columnCardPict}>
@@ -385,7 +472,9 @@ class NavbarNavigation extends React.Component {
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
                                                         <div style={{display:"inline-flex"}}>
-                                                            <Button style={{marginRight:"5px"}}>Add</Button>
+                                                        <Button style={{marginRight:"5px"}} onClick={(e)=>{
+                                                                this.addOrderButton(e,item)
+                                                                }}>Add</Button>
                                                             <ModalDetailProduct />
                                                         </div>
                                                     </CardBody>
@@ -397,6 +486,7 @@ class NavbarNavigation extends React.Component {
                             <Row>
                                 {dataProduct.map((data, i) => {
                                     const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '')
+                                    const item = data;
                                     if (i >= 5) {
                                         return (
                                             <Col style={style.columnCardPict}>
@@ -405,7 +495,9 @@ class NavbarNavigation extends React.Component {
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
                                                         <div style={{display:"inline-flex"}}>
-                                                            <Button style={{marginRight:"5px"}}>Add</Button>
+                                                        <Button style={{marginRight:"5px"}} onClick={(e)=>{
+                                                                this.addOrderButton(e,item)
+                                                                }}>Add</Button>
                                                             <ModalDetailProduct />
                                                         </div>
                                                     </CardBody>
@@ -417,11 +509,33 @@ class NavbarNavigation extends React.Component {
                         </Col>
                         <Col xs="4" style={{ padding: "0" }}>
                             <div style={style.cartDiv}>
-                                <div style={{display:"flex"}}>
-                                    <div style={style.cartItem}></div>
-                                    <div style={style.cartItem}></div>
-                                    <div style={style.cartItem}></div>
+                                <div>
+                                    {cart.map((data,i)=>{
+                                        const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
+                                        // this.handleTotal(totalPerProduct,data.product_id);
+                                        return(
+                                            <div style={{display:"flex"}}>
+                                                <div style={style.cartItem}>
+                                                    <img alt="" src={product_image} height={80} width={80} />
+                                                </div>
+                                                <div style={style.incrementCart}>
+                                                    <div style={{display:"flex"}}>
+                                                        <Button id={data.product_id} color="info" onClick={(e)=>{this.decrementOrder(e,data.product_price)}}>-</Button>{' '}
+                                                            <Input type="number" defaultValue={0} value={orders[i].quantity} />
+                                                        <Button id={data.product_id} color="info" onClick={(e)=>{this.incrementOrder(e,data.product_price)}}>+</Button>{' '}
+                                                    </div>
+                                                </div>
+                                                    <div>{orders[i].product_price * orders[i].quantity}</div>
+                                                <div>
+                                                    <Button id={data.product_id} color="danger" onClick={(e)=>{this.deleteFromCart(e)}}>x</Button>{' '}
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
+                                    <p>Total : {}</p>
+                                {this.state.orders.length > 0 ? (<div><ButtonToggle style={style.buttonCheckout} onClick={(e)=>{this.handleCheckout(e)}} color="info">Checkout</ButtonToggle>
+                                <ButtonToggle style={style.buttonCheckout} onClick={(e)=>{this.handleCheckout(e)}} color="danger">Cancel</ButtonToggle></div>):''}
                             </div>
                         </Col>
                     </Row>
