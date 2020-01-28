@@ -19,7 +19,11 @@ import {
     Input,
     Card, CardImg, CardText, CardBody,
     CardTitle, CardSubtitle, Button,
-    Pagination, PaginationItem, PaginationLink, ButtonToggle
+    Pagination, PaginationItem, PaginationLink, ButtonToggle,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter, Form, FormGroup
 } from 'reactstrap';
 import {
     withRouter,
@@ -30,6 +34,7 @@ import ModalCategory from './ModalCategory';
 import axios from 'axios';
 import qs from 'qs';
 import ModalDetailProduct from './ModalDetailProduct';
+
 
 class NavbarNavigation extends React.Component {
     constructor(props) {
@@ -46,6 +51,7 @@ class NavbarNavigation extends React.Component {
             cart:[],
             orders:[],
             grandTotal : 0,
+            modalCheckoutOpen: false,
         }
         this.handleSearchProduct = this.handleSearchProduct.bind(this)
     }
@@ -116,39 +122,71 @@ class NavbarNavigation extends React.Component {
     //         console.log(this.state.totalPrice);
     //     })
     // }
+    handleButton = (e) =>{
+        this.setState({
+            modalCheckoutOpen : !this.state.modalCheckoutOpen
+        })
+    }
 
     incrementOrder = (e, product_price) =>{
         this.setState({
             orders: this.state.orders.map((order)=>(order.product_id == e.target.id ? {...order, quantity:order.quantity + 1, totalPrice:product_price*(order.quantity + 1) } : order)),
-
+            grandTotal : this.state.grandTotal + parseInt(product_price)
         })
     }
-
+    //Post Order
     handleCheckout = (e) =>{
-        console.log(this.state.orders);
+        const data = JSON.parse(localStorage.getItem('dataAccount'))
+        // console.log(data.user_id)
+
+        const body ={
+            user_id : data.user_id,
+            orders : this.state.orders
+        }
+
+        axios.post('http://127.0.0.1:3001/order/', body)
+            .then(res => {
+                if (res.status === 200) {
+                    try {
+                        console.log(res)
+                        this.setState({
+                            cart:[],
+                            orders:[],
+                            grandTotal : 0,
+                            modalCheckoutOpen : true
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+
+        console.log(body)
     }
 
     decrementOrder = (e, product_price) =>{
         this.setState({
-            orders: this.state.orders.map((order)=>(order.product_id == e.target.id ? {...order, quantity:order.quantity - 1, totalPrice:product_price*(order.quantity - 1) } : order))
+            orders: this.state.orders.map((order)=>(order.product_id == e.target.id ? {...order, quantity:order.quantity - 1, totalPrice:product_price*(order.quantity - 1) } : order)),
+            grandTotal : this.state.grandTotal - parseInt(product_price)
         })
     }
 
     deleteFromCart = (e) =>{
+        var totalPrice = 0
+        this.state.orders.map((order,i)=>{
+            if(order.product_id == e.target.id){
+                totalPrice = order.totalPrice
+            }
+        })
         let cartForDelete = this.state.cart.filter((data)=>{ return data.product_id != e.target.id})
         let ordersForDelete = this.state.orders.filter((data)=>{ return data.product_id != e.target.id})
         this.setState({
             cart : cartForDelete,
-            orders : ordersForDelete
+            orders : ordersForDelete,
+            grandTotal : this.state.grandTotal - parseInt(totalPrice)
         })
-        // cartForDelete.map((data,i)=>{
-        //     if(data.product_id == e.target.id){
-        //        delete cartForDelete[i]
-        //     }
-        // })
-        // this.setState({
-        //     cart: cartForDelete
-        // },()=>{console.log(this.state.cart)})
     }
 
 
@@ -160,9 +198,10 @@ class NavbarNavigation extends React.Component {
                 orders: [...this.state.orders, {
                     product_id : item.product_id,
                     product_price: item.product_price,
-                    quantity : 0,
-                    totalPrice : 0
-                }]
+                    quantity : 1,
+                    totalPrice : 1*item.product_price
+                }],
+                grandTotal: this.state.grandTotal + parseInt(item.product_price)
             },()=>{
                 console.log(this.state.cart, this.state.orders)
             })
@@ -178,9 +217,10 @@ class NavbarNavigation extends React.Component {
                     orders: [...this.state.orders, {
                         product_id : item.product_id,
                         product_price: item.product_price,
-                        quantity : 0,
-                        totalPrice : 0
-                    }]
+                        quantity : 1,
+                        totalPrice : 1*item.product_price
+                    }],
+                    grandTotal: this.state.grandTotal + parseInt(item.product_price)
                 },()=>{
                     console.log(this.state.cart, this.state.orders)
                 })
@@ -368,6 +408,20 @@ class NavbarNavigation extends React.Component {
         }
         return (
             <div>
+                <Modal isOpen={this.state.modalCheckoutOpen} toggle={(e)=>{this.handleButton(e)}}>
+                    <ModalHeader toggle={(e)=>{this.handleButton(e)}}>Detail Product</ModalHeader>
+                    <ModalBody>
+                        <Form>
+                            <FormGroup>
+                                <p>Pesanan Sudah Di Input</p>
+                            </FormGroup>
+                        </Form>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={(e)=>{this.handleButton(e)}}>Submit</Button>{' '}
+                        <Button color="secondary" onClick={(e)=>{this.handleButton(e)}}>Cancel</Button>
+                    </ModalFooter>
+                </Modal>
                 <Navbar color="light" light expand="md" style={{ marginBottom: "10px" }}>
                     <NavbarBrand href="/">Restaurant Roni</NavbarBrand>
                     <NavbarToggler onClick={this.handleToggle} />
@@ -520,8 +574,8 @@ class NavbarNavigation extends React.Component {
                                                 </div>
                                                 <div style={style.incrementCart}>
                                                     <div style={{display:"flex"}}>
-                                                        <Button id={data.product_id} color="info" onClick={(e)=>{this.decrementOrder(e,data.product_price)}}>-</Button>{' '}
-                                                            <Input type="number" defaultValue={0} value={orders[i].quantity} />
+                                                        <Button id={data.product_id} disabled={orders[i].quantity == 1 ? true : false} color="info" onClick={(e)=>{this.decrementOrder(e,data.product_price)}}>-</Button>{' '}
+                                                            <Input type="number" defaultValue={1} value={orders[i].quantity} />
                                                         <Button id={data.product_id} color="info" onClick={(e)=>{this.incrementOrder(e,data.product_price)}}>+</Button>{' '}
                                                     </div>
                                                 </div>
@@ -533,9 +587,11 @@ class NavbarNavigation extends React.Component {
                                         )
                                     })}
                                 </div>
-                                    <p>Total : {}</p>
+                                    <p>Sub Total : {this.state.grandTotal}</p>
+                                    <p>PPN : {this.state.grandTotal * 0.10}</p>
+                                    <p>Total : {this.state.grandTotal + (this.state.grandTotal * 0.10)}</p>
                                 {this.state.orders.length > 0 ? (<div><ButtonToggle style={style.buttonCheckout} onClick={(e)=>{this.handleCheckout(e)}} color="info">Checkout</ButtonToggle>
-                                <ButtonToggle style={style.buttonCheckout} onClick={(e)=>{this.handleCheckout(e)}} color="danger">Cancel</ButtonToggle></div>):''}
+                                <ButtonToggle style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>):''}
                             </div>
                         </Col>
                     </Row>
