@@ -15,6 +15,7 @@ import {
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
+import ModalDeleteProduct from './ModalDeleteProduct';
 
 class ModalDetailProduct extends React.Component {
     constructor(props) {
@@ -24,7 +25,9 @@ class ModalDetailProduct extends React.Component {
             updateOpen : false,
             deleteOpen: false,
             category_data:[],
-            newProduct : {}
+            newProduct : {
+                category_id: "5"
+            }
         }
     }
 
@@ -137,7 +140,8 @@ class ModalDetailProduct extends React.Component {
                         <p>Product Price: {this.props.data.product_price}</p>
                     </ModalBody>
                     <ModalFooter>
-                    <Button style={style.buttonSidebar} color="dark" onClick={this.handleUpdateClick}>Update</Button>{' '}
+                        <Button style={style.buttonSidebar} color="dark" onClick={this.handleUpdateClick}>Update</Button>{' '}
+                        <ModalDeleteProduct product_id={this.props.data.product_id} />
                         </ModalFooter>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.handleButton}>Cancel</Button>
@@ -197,16 +201,6 @@ class ModalDetailProduct extends React.Component {
                         <Button color="secondary" onClick={(e)=>{this.handleUpdateButton(e)}}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
-
-                {/* delete */}
-                {/* <Modal isOpen={isOpen} toggle={this.handleDeleteClick} className="apakek">
-                    <ModalHeader >Delete Product</ModalHeader>
-                    <ModalBody>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="secondary" onClick={this.handleDeleteButton}>Cancel</Button>
-                    </ModalFooter>
-                </Modal> */}
             </div>
         )
     }
