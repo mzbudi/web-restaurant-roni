@@ -41,7 +41,7 @@ class ModalProduct extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>Tambah Product</Button>
+                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>+ Product</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Add Product</ModalHeader>
                     <ModalBody>

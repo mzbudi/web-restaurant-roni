@@ -60,11 +60,13 @@ class Login extends React.Component {
         this.setState({
             isLoading : true,
         })
-        if(data.username === '' && data.password === '' && data.name === ''){
+        if(data.username === '' || data.password === '' || data.name === ''){
             this.setState({
                 visibleAlert : true,
                 error: "Data Tidak Boleh Kosong!",
                 isLoading : false
+            },()=>{
+                console.log(data)
             })
         }else{
             const body = qs.stringify(data)
@@ -72,7 +74,9 @@ class Login extends React.Component {
                 .then((res)=>{
                     if(res.status === 200){
                         try {
-                            this.setState({message : res.data.data.message, visibleAlert : true});
+                            this.setState({error : res.data.data.message, visibleAlert : true},()=>{
+                                console.log(res)
+                            });
                             
                         } catch (error) {
                             this.setState({
@@ -106,12 +110,9 @@ class Login extends React.Component {
         return (
             <div>
             <Alert color="danger" isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
-                {this.state.message}
+                {this.state.error}
             </Alert>
             <Form style={style.formMaker}>
-                <FormGroup>
-                    <Input style = {style.inputLogin} plaintext defaultValue="Login" />
-                </FormGroup>
                 <FormGroup>
                     <Input
                         style={style.inputRegister}

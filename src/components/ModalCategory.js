@@ -39,7 +39,7 @@ class ModalCategory extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>Tambah Category</Button>
+                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>+ Category</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Add Category</ModalHeader>
                     <ModalBody>

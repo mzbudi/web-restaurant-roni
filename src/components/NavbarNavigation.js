@@ -34,6 +34,7 @@ import ModalCategory from './ModalCategory';
 import axios from 'axios';
 import qs from 'qs';
 import ModalDetailProduct from './ModalDetailProduct';
+import cartImage from '../images/icon-keranjang-png-3.png'
 
 
 class NavbarNavigation extends React.Component {
@@ -97,6 +98,14 @@ class NavbarNavigation extends React.Component {
             data: data
         })
 
+    }
+
+    handleCancel = (e) =>{
+        this.setState({
+            cart: [],
+            orders: [],
+            grandTotal: 0,
+        })
     }
 
     handleButton = (e) => {
@@ -565,11 +574,12 @@ class NavbarNavigation extends React.Component {
                                         )
                                     })}
                                 </div>
+                                {this.state.orders.length > 0 ? (<div>
                                 <p>Sub Total : {this.state.grandTotal}</p>
                                 <p>PPN : {this.state.grandTotal * 0.10}</p>
                                 <p>Total : {this.state.grandTotal + (this.state.grandTotal * 0.10)}</p>
-                                {this.state.orders.length > 0 ? (<div><ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
-                                    <ButtonToggle style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : ''}
+                                <ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
+                                <ButtonToggle onClick={(e) => { this.handleCancel(e) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{textAlign: "center"}}><img height={300} width={300} src={cartImage} alt="Logo"></img><p>Keranjang Kosong</p></div>)}
                             </div>
                         </Col>
                     </Row>

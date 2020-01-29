@@ -100,9 +100,7 @@ class Login extends React.Component {
                 {this.state.error}
             </Alert>
             <Form style={style.formMaker}>
-                <FormGroup>
-                    <Input style = {style.inputLogin} plaintext defaultValue="Login" />
-                </FormGroup>
+                
                 <FormGroup>
                     <Input
                         style={style.inputLogin}
