@@ -27,7 +27,8 @@ class ModalProduct extends React.Component {
             category_data:[],
             newProduct : {
                 category_id: "5"
-            }
+            },
+            error: ''
         }
     }
 
@@ -43,7 +44,7 @@ class ModalProduct extends React.Component {
         })
     }
 
-    handleButtonAdd = async (e) => {
+    handleButtonAdd = (e) => {
         this.setState({
             isOpen: false
         })
@@ -55,7 +56,7 @@ class ModalProduct extends React.Component {
         formData.append('product_price',this.state.newProduct.product_price)
 
         const data = JSON.parse(localStorage.getItem('dataAccount'))
-        await axios.post('http://127.0.0.1:3001/products',formData,{
+        axios.post('http://127.0.0.1:3001/products',formData,{
             headers: {authorization: data.token}
         })
                 .then(res => {
@@ -65,6 +66,10 @@ class ModalProduct extends React.Component {
                         } catch (error) {
                             console.log(error)
                         }
+                    }else if(res.status === 400){
+                        this.setState({
+                            error : res.data.data.message
+                        })
                     }
                 }).catch(err => {
                     // localStorage.removeItem('dataAccount');
@@ -148,7 +153,8 @@ class ModalProduct extends React.Component {
                                 <Col sm={10}>
                                     <Input type="file" name="file" onChange={(e)=>{this.handleImage(e)}} />
                                     <FormText color="muted">
-                                        File Harus Ber-Ekstensi Gambar dan Tidak Lebih dari 2 MB
+                                        <p>File Harus Ber-Ekstensi Gambar dan Tidak Lebih dari 2 MB</p>
+                                        <p>{this.state.error}</p>
                                     </FormText>
                                 </Col>
                             </FormGroup>

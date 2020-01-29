@@ -198,7 +198,7 @@ class ModalDetailProduct extends React.Component {
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={(e)=>{this.handleUpdateButton(e)}}>Submit</Button>{' '}
-                        <Button color="secondary" onClick={(e)=>{this.handleUpdateButton(e)}}>Cancel</Button>
+                        <Button color="secondary" onClick={(e)=>{this.handleUpdateButtonClick(e)}}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
             </div>

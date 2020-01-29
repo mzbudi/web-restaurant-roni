@@ -30,7 +30,7 @@ import {
     Link
 } from 'react-router-dom';
 import style from '../styles.js';
-import ModalCategory from '../components/ModalCategory'
+import ModalAddCategory from '../components/ModalAddCategory'
 import axios from 'axios';
 import qs from 'qs';
 import ModalDetailProduct from '../components/ModalDetailProduct';

@@ -14,12 +14,14 @@ import {
     Input, Col, FormText
 } from 'reactstrap';
 import style from '../styles';
+import axios from 'axios';
 
-class ModalCategory extends React.Component {
+class ModalAddCategory extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isOpen: false
+            isOpen: false,
+            category_name : ''
         }
     }
 
@@ -33,6 +35,42 @@ class ModalCategory extends React.Component {
         this.setState({
             isOpen: false
         })
+    }
+
+    handleCategoryName=(e)=>{
+        this.setState({
+            category_name : e.target.value
+        })
+    }
+    
+    handleSubmitCategory=(e)=>{
+        this.setState({
+            isOpen: false
+        })
+        const dataCategory ={
+            category_name : this.state.category_name
+        }
+        const data = JSON.parse(localStorage.getItem('dataAccount'))
+        axios.post('http://127.0.0.1:3001/category',dataCategory,{
+            headers: {authorization: data.token}
+        })
+                .then(res => {
+                    if (res.status === 200) {
+                        try {
+                            this.forceUpdate()
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }else if(res.status === 400){
+                        this.setState({
+                            error : res.data.data.message
+                        })
+                    }
+                }).catch(err => {
+                    localStorage.removeItem('dataAccount');
+                    this.props.history.push('/login')
+                    // console.log(err)
+                })
     }
 
     render() {
@@ -49,14 +87,14 @@ class ModalCategory extends React.Component {
                                     type="text"
                                     name="name"
                                     id="product_name"
-                                    placeholder="Product Name"
-                                    onChange={(e) => { this.handleUsername(e) }}
+                                    placeholder="Category Name"
+                                    onChange={(e) => { this.handleCategoryName(e) }}
                                 />
                             </FormGroup>
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.handleButton}>Submit</Button>{' '}
+                        <Button color="primary" onClick={(e) => { this.handleSubmitCategory(e) }}>Submit</Button>{' '}
                         <Button color="secondary" onClick={this.handleButton}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
@@ -65,4 +103,4 @@ class ModalCategory extends React.Component {
     }
 }
 
-export default ModalCategory;
+export default ModalAddCategory;
