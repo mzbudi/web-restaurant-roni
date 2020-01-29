@@ -115,7 +115,6 @@ class ModalDetailProduct extends React.Component {
 
     render() {
         const { isOpen,updateOpen } = this.state
-        console.log(this.state.newProduct)
         return (
             <div>
                 <Button color="dark" onClick={this.handleClick}>Detail</Button>
@@ -129,7 +128,6 @@ class ModalDetailProduct extends React.Component {
                     </ModalBody>
                     <ModalFooter>
                     <Button style={style.buttonSidebar} color="dark" onClick={this.handleUpdateClick}>Update</Button>{' '}
-                    {/* <Button style={style.buttonSidebar} color="dark" onClick={(e)=>{this.handleDeleteClick(e)}}>Delete</Button>{' '} */}
                         </ModalFooter>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.handleButton}>Cancel</Button>
