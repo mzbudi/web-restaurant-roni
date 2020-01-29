@@ -62,7 +62,9 @@ class NavbarNavigation extends React.Component {
         if (!data) {
             this.props.history.push('/login')
         } else {
-            axios.get('http://127.0.0.1:3001/products/')
+            axios.get('http://127.0.0.1:3001/products/',{
+                headers: {authorization: data.token}
+            })
                 .then(res => {
                     if (res.status === 200) {
                         try {
@@ -76,9 +78,12 @@ class NavbarNavigation extends React.Component {
                         }
                     }
                 }).catch(err => {
-                    console.log(err)
+                    localStorage.removeItem('dataAccount');
+                    this.props.history.push('/login')
                 })
-            axios.get('http://127.0.0.1:3001/category')
+            axios.get('http://127.0.0.1:3001/category',{
+                headers: {authorization: data.token}
+            })
                 .then(res => {
                     if (res.status === 200) {
                         try {
@@ -91,7 +96,8 @@ class NavbarNavigation extends React.Component {
                         }
                     }
                 }).catch(err => {
-                    console.log(err)
+                    localStorage.removeItem('dataAccount');
+                    this.props.history.push('/login')
                 })
         }
         this.setState({
@@ -134,11 +140,12 @@ class NavbarNavigation extends React.Component {
             orders: this.state.orders
         }
 
-        axios.post('http://127.0.0.1:3001/order/', body)
+        axios.post('http://127.0.0.1:3001/order/', body,{
+            headers: {authorization: data.token}
+        })
             .then(res => {
                 if (res.status === 200) {
                     try {
-                        console.log(res)
                         this.setState({
                             cart: [],
                             orders: [],
@@ -150,7 +157,8 @@ class NavbarNavigation extends React.Component {
                     }
                 }
             }).catch(err => {
-                console.log(err)
+                localStorage.removeItem('dataAccount');
+                this.props.history.push('/login')
             })
 
         console.log(body)
@@ -222,14 +230,16 @@ class NavbarNavigation extends React.Component {
             limit: "5",
             page: 0,
         }
-
-        axios.get('http://127.0.0.1:3001/products/', {
+        const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
+        const config = {
+            headers : {authorization: dataAccount.token},
             params: {
                 category_id: data.category_id,
                 limit: data.limit,
                 page: data.page
             }
-        })
+        }
+        axios.get('http://127.0.0.1:3001/products/',config)
             .then(res => {
                 if (res.status === 200) {
                     try {
@@ -242,7 +252,8 @@ class NavbarNavigation extends React.Component {
                     }
                 }
             }).catch(err => {
-                console.log(err)
+                localStorage.removeItem('dataAccount');
+                this.props.history.push('/login')
             })
     }
 
@@ -253,15 +264,17 @@ class NavbarNavigation extends React.Component {
             date: this.state.date,
             product_name: this.state.product_name
         }
-        axios.get('http://127.0.0.1:3001/products/', {
+        const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
+        const config = {
+            headers : {authorization: dataAccount.token},
             params: {
                 limit: data.limit,
                 page: data.page,
                 date: data.date,
-                product_name: data.product_name,
-
+                product_name: data.product_name
             }
-        })
+        }
+        axios.get('http://127.0.0.1:3001/products/',config)
             .then(res => {
                 if (res.status === 200) {
                     console.log(res);
@@ -275,7 +288,8 @@ class NavbarNavigation extends React.Component {
                     }
                 }
             }).catch(err => {
-                console.log(err)
+                localStorage.removeItem('dataAccount');
+                this.props.history.push('/login')
             })
     }
 
@@ -312,14 +326,17 @@ class NavbarNavigation extends React.Component {
             limit: "5",
             page: 0,
         }
-
-        axios.get('http://127.0.0.1:3001/products/', {
+        const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
+        const config = {
+            headers : {authorization: dataAccount.token},
             params: {
                 nameSearch: data.nameSearch,
                 limit: data.limit,
                 page: data.page
             }
-        })
+        }
+
+        axios.get('http://127.0.0.1:3001/products/', config)
             .then(res => {
                 if (res.status === 200) {
                     try {
@@ -332,7 +349,8 @@ class NavbarNavigation extends React.Component {
                     }
                 }
             }).catch(err => {
-                console.log(err)
+                localStorage.removeItem('dataAccount');
+                this.props.history.push('/login')
             })
     }
 
@@ -343,14 +361,18 @@ class NavbarNavigation extends React.Component {
             page: e.target.value - 1,
             product_name: this.state.product_name,
         }
-        axios.get('http://127.0.0.1:3001/products/', {
+
+        const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
+        const config = {
+            headers : {authorization: dataAccount.token},
             params: {
                 nameSearch: data.nameSearch,
                 limit: data.limit,
                 page: data.page,
                 product_name: data.product_name
             }
-        })
+        }
+        axios.get('http://127.0.0.1:3001/products/', config)
             .then(res => {
                 if (res.status === 200) {
                     try {
@@ -358,13 +380,13 @@ class NavbarNavigation extends React.Component {
                             dataProduct: res.data.data.searchResult,
                             dataTotal: res.data.data.totalData,
                         })
-                        console.log(res)
                     } catch (error) {
                         console.log(error)
                     }
                 }
             }).catch(err => {
-                console.log(err)
+                localStorage.removeItem('dataAccount');
+                this.props.history.push('/login')
             })
     }
 

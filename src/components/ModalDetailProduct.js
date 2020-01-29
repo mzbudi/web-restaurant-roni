@@ -86,8 +86,11 @@ class ModalDetailProduct extends React.Component {
         formData.append('product_description',this.state.newProduct.product_description)
         formData.append('product_image',this.state.newProduct.product_image)
         formData.append('product_price',this.state.newProduct.product_price)
-        
-        await axios.put(`http://127.0.0.1:3001/products/${this.props.product_id}`,formData)
+        const data = JSON.parse(localStorage.getItem('dataAccount'))
+
+        await axios.put(`http://127.0.0.1:3001/products/${this.props.product_id}`,formData, {
+            headers: {authorization: data.token}
+        })
                 .then(res => {
                     if (res.status === 200) {
                         try {
@@ -97,7 +100,8 @@ class ModalDetailProduct extends React.Component {
                         }
                     }
                 }).catch(err => {
-                    console.log(err)
+                    localStorage.removeItem('dataAccount');
+                    this.props.history.push('/login')
                 })
     }
 
