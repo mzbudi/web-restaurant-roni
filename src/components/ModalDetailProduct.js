@@ -27,8 +27,16 @@ class ModalDetailProduct extends React.Component {
             category_data:[],
             newProduct : {
                 category_id: "5"
-            }
+            },
+            warningModal:false,
+            messageWarning : "Proses Berhasil"
         }
+    }
+
+    handleButtonWarning=(e)=>{
+        this.setState({
+            warningModal : !this.state.warningModal
+        })
     }
 
     handleImage = (e) => {
@@ -103,6 +111,10 @@ class ModalDetailProduct extends React.Component {
                 .then(res => {
                     if (res.status === 200) {
                         try {
+                            this.setState({
+                                warningModal:true,
+                                messageWarning : "Proses Berhasil"
+                            })
                             this.forceUpdate()
                         } catch (error) {
                             console.log(error)

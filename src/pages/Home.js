@@ -54,6 +54,7 @@ class Home extends React.Component {
             orders: [],
             grandTotal: 0,
             modalCheckoutOpen: false,
+            invoice:''
         }
         this.handleSearchProduct = this.handleSearchProduct.bind(this)
     }
@@ -151,7 +152,8 @@ class Home extends React.Component {
                             cart: [],
                             orders: [],
                             grandTotal: 0,
-                            modalCheckoutOpen: true
+                            modalCheckoutOpen: true,
+                            invoice : res.data.data.invoice
                         })
                     } catch (error) {
                         console.log(error)
@@ -162,7 +164,6 @@ class Home extends React.Component {
                 this.props.history.push('/login')
             })
 
-        console.log(body)
     }
 
     decrementOrder = (e, product_price) => {
@@ -422,12 +423,12 @@ class Home extends React.Component {
                         <Form>
                             <FormGroup>
                                 <p>Pesanan Sudah Di Input</p>
+                                <p>Nomer Invoice : {this.state.invoice}</p>
                             </FormGroup>
                         </Form>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={(e) => { this.handleButton(e) }}>Submit</Button>{' '}
-                        <Button color="secondary" onClick={(e) => { this.handleButton(e) }}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
                 <Navbar color="light" light expand="md" style={{ marginBottom: "10px" }}>
@@ -506,7 +507,7 @@ class Home extends React.Component {
                                     if (i < 3) {
                                         return (
                                             <Col style={style.columnCardPict}>
-                                                <Card maxWidth={208} key={i + 1}>
+                                                <Card key={i + 1}>
                                                     <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
@@ -530,31 +531,7 @@ class Home extends React.Component {
                                     if (i >= 3) {
                                         return (
                                             <Col style={style.columnCardPict}>
-                                                <Card maxWidth={208} width={208} key={i + 1}>
-                                                    <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
-                                                    <CardBody>
-                                                        <CardTitle>{data.product_name}</CardTitle>
-                                                        <CardSubtitle>{data.product_price}</CardSubtitle>
-                                                        <div style={{ display: "inline-flex" }}>
-                                                            <Button style={{ marginRight: "5px" }} onClick={(e) => {
-                                                                this.addOrderButton(e, item)
-                                                            }}>Add</Button>
-                                                            <ModalDetailProduct product_id={data.product_id} category_data={category_data} data={data} />
-                                                        </div>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>);
-                                    }
-                                })}
-                            </Row>
-                            <Row>
-                                {dataProduct.map((data, i) => {
-                                    const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '')
-                                    const item = data;
-                                    if (i >= 5) {
-                                        return (
-                                            <Col style={style.columnCardPict}>
-                                                <Card width={208} key={i + 1}>
+                                                <Card key={i + 1}>
                                                     <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
