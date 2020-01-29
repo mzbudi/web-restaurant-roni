@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import NavbarNavigation from '../components/NavbarNavigation'
+import NavbarNavigation from '../components/NavbarNavigation';
+import Sidebar from '../components/Sidebar'
 class Home extends React.Component{
     constructor(props){
         super(props);
@@ -19,6 +20,7 @@ class Home extends React.Component{
     render(){
         return(
             <div>
+                <Sidebar />
                <NavbarNavigation />
             </div>
         )

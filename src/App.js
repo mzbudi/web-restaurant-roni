@@ -28,7 +28,7 @@ class App extends React.Component{
     return(
       <BrowserRouter>
       {/* <NavbarNavigation /> */}
-      {this.state.isLogin ? <Sidebar {...this.props} /> : ''}
+      {/* {this.state.isLogin ? <Sidebar {...this.props} /> : ''} */}
         <Switch>
           <Route path='/' exact render={(props)=>(<Home {...props}/>)}/>
           <Route path='/login' render={(props)=>(<Login {...props}/>)}/>

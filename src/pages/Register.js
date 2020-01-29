@@ -16,7 +16,8 @@ class Login extends React.Component {
             name : "",
             visibleAlert : false,
             error : "",
-            isLoading : false
+            isLoading : false,
+            message : '',
         }
     }
 
@@ -71,8 +72,8 @@ class Login extends React.Component {
                 .then((res)=>{
                     if(res.status === 200){
                         try {
-                            localStorage.setItem('dataAccount', JSON.stringify(res.data.data));
-                            this.props.history.push('/');
+                            this.setState({message : res.data.data.message, visibleAlert : true});
+                            
                         } catch (error) {
                             this.setState({
                                 visibleAlert : true,
@@ -105,7 +106,7 @@ class Login extends React.Component {
         return (
             <div>
             <Alert color="danger" isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
-                {this.state.error}
+                {this.state.message}
             </Alert>
             <Form style={style.formMaker}>
                 <FormGroup>

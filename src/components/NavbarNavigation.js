@@ -502,11 +502,12 @@ class NavbarNavigation extends React.Component {
                                                     <CardImg top width="100%" src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
+                                                        <CardSubtitle>{data.product_price}</CardSubtitle>
                                                         <div style={{display:"inline-flex"}}>
                                                             <Button style={{marginRight:"5px"}} onClick={(e)=>{
                                                                 this.addOrderButton(e,item)
                                                                 }}>Add</Button>
-                                                            <ModalDetailProduct />
+                                                            <ModalDetailProduct product_id={data.product_id} category_data={category_data} data={data}/>
                                                         </div>
                                                     </CardBody>
                                                 </Card>
@@ -525,11 +526,12 @@ class NavbarNavigation extends React.Component {
                                                     <CardImg top width="100%" src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
+                                                        <CardSubtitle>{data.product_price}</CardSubtitle>
                                                         <div style={{display:"inline-flex"}}>
                                                         <Button style={{marginRight:"5px"}} onClick={(e)=>{
                                                                 this.addOrderButton(e,item)
                                                                 }}>Add</Button>
-                                                            <ModalDetailProduct />
+                                                            <ModalDetailProduct product_id={data.product_id} category_data={category_data} data={data}/>
                                                         </div>
                                                     </CardBody>
                                                 </Card>
@@ -548,11 +550,12 @@ class NavbarNavigation extends React.Component {
                                                     <CardImg top width="100%" src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
+                                                        <CardSubtitle>{data.product_price}</CardSubtitle>
                                                         <div style={{display:"inline-flex"}}>
                                                         <Button style={{marginRight:"5px"}} onClick={(e)=>{
                                                                 this.addOrderButton(e,item)
                                                                 }}>Add</Button>
-                                                            <ModalDetailProduct />
+                                                            <ModalDetailProduct product_id={data.product_id} category_data={category_data} data={data}/>
                                                         </div>
                                                     </CardBody>
                                                 </Card>
