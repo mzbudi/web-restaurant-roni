@@ -6,10 +6,14 @@ import ModalProduct from '../components/ModalProduct'
 import ModalCategory from '../components/ModalCategory'
 
 class Sidebar extends React.Component {
+    constructor(props){
+        super(props)
+    }
     render() {
+        console.log(this.props.category)
         return (
             <div className="sidebar">
-                <ModalProduct />{' '}
+                <ModalProduct category={this.props.category}/>{' '}
                 <ModalCategory />
             </div>
         )

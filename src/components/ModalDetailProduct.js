@@ -27,7 +27,7 @@ class ModalDetailProduct extends React.Component {
             newProduct : {}
         }
     }
-    
+
     handleImage = (e) => {
         this.setState({
             newProduct : {...this.state.newProduct, product_image:e.target.files[0]}
@@ -76,7 +76,13 @@ class ModalDetailProduct extends React.Component {
         })
     }
 
-    handleUpdateButton = async () => {
+    handleUpdateButtonClick = () => {
+        this.setState({
+            updateOpen: false
+        })
+    }
+
+    handleUpdateButton = () => {
         this.setState({
             updateOpen: false
         })
@@ -88,7 +94,7 @@ class ModalDetailProduct extends React.Component {
         formData.append('product_price',this.state.newProduct.product_price)
         const data = JSON.parse(localStorage.getItem('dataAccount'))
 
-        await axios.put(`http://127.0.0.1:3001/products/${this.props.product_id}`,formData, {
+         axios.put(`http://127.0.0.1:3001/products/${this.props.product_id}`,formData, {
             headers: {authorization: data.token}
         })
                 .then(res => {
@@ -138,15 +144,15 @@ class ModalDetailProduct extends React.Component {
                     </ModalFooter>
                 </Modal>
                 {/* update */}
-                
-                <Modal isOpen={updateOpen} toggle={this.handleUpdateClick} className="apakek">
-                    <ModalHeader toggle={this.handleUpdateButton}>Update Product</ModalHeader>
+
+                <Modal isOpen={updateOpen} toggle={(e)=>{this.handleUpdateClick(e)}} className="apakek">
+                    <ModalHeader toggle={(e)=>{this.handleUpdateButtonClick(e)}}>Update Product</ModalHeader>
                     <ModalBody>
                         <Form>
                             <FormGroup row>
                                 <Label for="exampleSelect" sm={2}>Category</Label>
                                 <Col sm={10}>
-                                <Input type="select" name="select" id="exampleSelect" onChange={(e) => { this.handleCategory(e) }}>
+                                <Input type="select" name="select" onChange={(e) => { this.handleCategory(e) }}>
                                     {this.props.category_data.map((data)=>{
                                         return(
                                         <option value={data.category_id}>{data.category_name}</option>
@@ -187,8 +193,8 @@ class ModalDetailProduct extends React.Component {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.handleUpdateButton}>Submit</Button>{' '}
-                        <Button color="secondary" onClick={this.handleUpdateButton}>Cancel</Button>
+                        <Button color="primary" onClick={(e)=>{this.handleUpdateButton(e)}}>Submit</Button>{' '}
+                        <Button color="secondary" onClick={(e)=>{this.handleUpdateButton(e)}}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
 
