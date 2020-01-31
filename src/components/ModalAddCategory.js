@@ -68,8 +68,7 @@ class ModalAddCategory extends React.Component {
                     }
                 }).catch(err => {
                     localStorage.removeItem('dataAccount');
-                    this.props.history.push('/login')
-                    // console.log(err)
+                    this.props.history.push('/login');
                 })
     }
 

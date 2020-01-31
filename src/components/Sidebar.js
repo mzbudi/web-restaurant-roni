@@ -12,7 +12,6 @@ class Sidebar extends React.Component {
         super(props)
     }
     render() {
-        console.log(this.props.category)
         return (
             <div className="sidebar">
                 <ModalProduct category={this.props.category}/>

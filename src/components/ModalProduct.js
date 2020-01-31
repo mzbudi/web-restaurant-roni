@@ -72,9 +72,8 @@ class ModalProduct extends React.Component {
                         })
                     }
                 }).catch(err => {
-                    // localStorage.removeItem('dataAccount');
-                    // this.props.history.push('/login')
-                    console.log(err)
+                    localStorage.removeItem('dataAccount');
+                    this.props.history.push('/login')
                 })
     }
 
@@ -110,7 +109,6 @@ class ModalProduct extends React.Component {
 
     render() {
         const { isOpen } = this.state
-        console.log(this.state.newProduct)
         return (
             <div>
                 <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>+ Product</Button>

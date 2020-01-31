@@ -65,8 +65,6 @@ class Login extends React.Component {
                 visibleAlert : true,
                 error: "Data Tidak Boleh Kosong!",
                 isLoading : false
-            },()=>{
-                console.log(data)
             })
         }else{
             const body = qs.stringify(data)
@@ -74,9 +72,7 @@ class Login extends React.Component {
                 .then((res)=>{
                     if(res.status === 200){
                         try {
-                            this.setState({error : res.data.data.message, visibleAlert : true},()=>{
-                                console.log(res)
-                            });
+                            this.setState({error : res.data.data.message, visibleAlert : true});
                             
                         } catch (error) {
                             this.setState({

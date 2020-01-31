@@ -39,7 +39,6 @@ class ModalDetailProduct extends React.Component {
             .then(res => {
                 if (res.status === 200) {
                     try {
-                        console.log(res)
                         this.setState({
                             cart:[],
                             orders:[],

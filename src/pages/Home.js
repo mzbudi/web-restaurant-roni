@@ -54,7 +54,8 @@ class Home extends React.Component {
             orders: [],
             grandTotal: 0,
             modalCheckoutOpen: false,
-            invoice:''
+            invoice:'',
+            sorter:''
         }
         this.handleSearchProduct = this.handleSearchProduct.bind(this)
     }
@@ -220,8 +221,6 @@ class Home extends React.Component {
                     }],
                     grandTotal: this.state.grandTotal + parseInt(item.product_price)
                 })
-            } else {
-                console.log('data Sudah ada')
             }
         }
     }
@@ -232,6 +231,12 @@ class Home extends React.Component {
             limit: "5",
             page: 0,
         }
+        this.setState({
+            category_id: e.target.value,
+            product_name : "",
+            date : "",
+            searchData : "",
+        })
         const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
         const config = {
             headers : {authorization: dataAccount.token},
@@ -248,7 +253,7 @@ class Home extends React.Component {
                         this.setState({
                             dataProduct: res.data.data.searchResult,
                             dataTotal: res.data.data.totalData,
-                        }, console.log(this.state.dataProduct, this.state.dataTotal))
+                        })
                     } catch (error) {
                         console.log(error)
                     }
@@ -264,7 +269,7 @@ class Home extends React.Component {
             limit: "5",
             page: 0,
             date: this.state.date,
-            product_name: this.state.product_name
+            product_name: this.state.product_name,
         }
         const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
         const config = {
@@ -300,7 +305,9 @@ class Home extends React.Component {
     sortByName = (e) => {
         this.setState({
             product_name: 'product_name',
-            date: ''
+            date: '',
+            category_id: e.target.value,
+            searchData : "",
         }, () => {
             this.getSortFunction()
         });
@@ -310,6 +317,8 @@ class Home extends React.Component {
         this.setState({
             date: 'updated_at',
             product_name: '',
+            category_id: e.target.value,
+            searchData : "",
         }, () => {
             this.getSortFunction()
         });
@@ -358,11 +367,15 @@ class Home extends React.Component {
 
     paginationClick = (e) => {
         const data = {
-            nameSearch: this.state.nameSearch,
+            nameSearch: this.state.searchData,
             limit: "5",
             page: e.target.value - 1,
             product_name: this.state.product_name,
+            category_id: this.state.category_id
+            //date
+            //sorter
         }
+        console.log(data);
 
         const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
         const config = {
@@ -371,7 +384,8 @@ class Home extends React.Component {
                 nameSearch: data.nameSearch,
                 limit: data.limit,
                 page: data.page,
-                product_name: data.product_name
+                product_name: data.product_name,
+                category_id: data.category_id
             }
         }
         axios.get('http://127.0.0.1:3001/products/', config)
@@ -400,6 +414,22 @@ class Home extends React.Component {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    formatRupiah = (angka,prefix)=>{
+        let number_string = angka.toString().replace(/[^,\d]/g, '');
+        let split = number_string.split(',');
+        let remains  = split[0].length % 3;
+        let rupiah   = split[0].substr(0, remains);
+        let thausand = split[0].substr(remains).match(/\d{3}/gi);
+
+        if(thausand){
+            let separator = remains ? '.' : '';
+            rupiah += separator + thausand.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
     }
 
     handleToggle = () => {
@@ -511,7 +541,7 @@ class Home extends React.Component {
                                                     <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
-                                                        <CardSubtitle>{data.product_price}</CardSubtitle>
+                                                        <CardSubtitle>Rp.{this.formatRupiah(data.product_price)}</CardSubtitle>
                                                         <div style={{ display: "inline-flex" }}>
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
                                                                 this.addOrderButton(e, item)
@@ -535,7 +565,7 @@ class Home extends React.Component {
                                                     <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
-                                                        <CardSubtitle>{data.product_price}</CardSubtitle>
+                                                        <CardSubtitle>Rp.{this.formatRupiah(data.product_price)}</CardSubtitle>
                                                         <div style={{ display: "inline-flex" }}>
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
                                                                 this.addOrderButton(e, item)
@@ -567,8 +597,8 @@ class Home extends React.Component {
                                                         <Button id={data.product_id} color="info" onClick={(e) => { this.incrementOrder(e, data.product_price) }}>+</Button>{' '}
                                                     </div>
                                                 </div>
-                                                <div>{orders[i].product_price * orders[i].quantity}</div>
-                                                <div>
+                                                <div>Rp. {this.formatRupiah(orders[i].product_price * orders[i].quantity)}</div>
+                                                <div style={{marginLeft : "20px"}}>
                                                     <Button id={data.product_id} color="danger" onClick={(e) => { this.deleteFromCart(e) }}>x</Button>{' '}
                                                 </div>
                                             </div>
@@ -576,9 +606,9 @@ class Home extends React.Component {
                                     })}
                                 </div>
                                 {this.state.orders.length > 0 ? (<div>
-                                <p>Sub Total : {this.state.grandTotal}</p>
-                                <p>PPN : {this.state.grandTotal * 0.10}</p>
-                                <p>Total : {this.state.grandTotal + (this.state.grandTotal * 0.10)}</p>
+                                <p>Sub Total : Rp. {this.formatRupiah(this.state.grandTotal)}</p>
+                                <p>PPN : Rp. {this.formatRupiah(this.state.grandTotal * 0.10)}</p>
+                                <p>Total : Rp. {this.formatRupiah((this.state.grandTotal + (this.state.grandTotal * 0.10)))}</p>
                                 <ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
                                 <ButtonToggle onClick={(e) => { this.handleCancel(e) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{textAlign: "center"}}><img height={300} width={300} src={cartImage} alt="Logo"></img><p>Keranjang Kosong</p></div>)}
                             </div>
