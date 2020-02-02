@@ -15,6 +15,8 @@ import {
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
+import {connect} from 'react-redux';
+import {deleteProducts, requestProducts} from '../public/redux/action/products'
 
 class ModalDeleteProduct extends React.Component {
     constructor(props) {
@@ -48,30 +50,50 @@ class ModalDeleteProduct extends React.Component {
         this.setState({
             isOpen: false
         })
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
 
-         axios.delete(`http://127.0.0.1:3001/products/${this.props.product_id}`, {
-            headers: {authorization: data.token}
-        })
-                .then(res => {
-                    if (res.status === 200) {
-                        try {
-                            this.forceUpdate()
-                        } catch (error) {
-                            console.log(error)
-                        }
+        const headers = {
+            headers : {authorization: this.props.auth.data.data.data.token}
+        }
+        // console.log(this.props.product_id, formData, this.props.auth.data.data.data.token)
+        
+        this.props.dispatch(deleteProducts(this.props.product_id, headers))
+            .then( (res) => {
+                const dataProducts = {
+                    params:{
+                        nameSearch : '',
+                        category_id : '',
+                        limit : '1000',
+                        page : 0,
+                        product_name : '',
+                        date : '',
                     }
-                }).catch(err => {
-                    localStorage.removeItem('dataAccount');
-                    this.props.history.push('/login')
-                })
+                }
+                this.props.dispatch(requestProducts(dataProducts,headers))
+            })
+        // const data = JSON.parse(localStorage.getItem('dataAccount'))
+
+        //  axios.delete(`http://127.0.0.1:3001/products/${this.props.product_id}`, {
+        //     headers: {authorization: data.token}
+        // })
+        //         .then(res => {
+        //             if (res.status === 200) {
+        //                 try {
+        //                     this.forceUpdate()
+        //                 } catch (error) {
+        //                     console.log(error)
+        //                 }
+        //             }
+        //         }).catch(err => {
+        //             localStorage.removeItem('dataAccount');
+        //             this.props.history.push('/login')
+        //         })
     }
 
     render() {
         const { isOpen } = this.state
         return (
             <React.Fragment>
-                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>Delete</Button>
+                <Button color="dark" onClick={this.handleClick}>Delete</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
                     <ModalBody>
@@ -87,4 +109,13 @@ class ModalDeleteProduct extends React.Component {
     }
 }
 
-export default ModalDeleteProduct;
+const mapStateToProps = state => {
+    return {
+        auth : state.auth,
+        products : state.products,
+        category : state.category
+
+    }
+}
+
+export default connect(mapStateToProps)(ModalDeleteProduct);

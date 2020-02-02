@@ -36,6 +36,7 @@ import qs from 'qs';
 import ModalDetailProduct from '../components/ModalDetailProduct';
 import cartImage from '../images/icon-keranjang-png-3.png';
 import Sidebar from '../components/Sidebar';
+import {connect} from 'react-redux';
 
 
 class Home extends React.Component {
@@ -61,51 +62,53 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
-        if (!data) {
-            this.props.history.push('/login')
-        } else {
-            axios.get('http://127.0.0.1:3001/products/',{
-                headers: {authorization: data.token}
-            })
-                .then(res => {
-                    if (res.status === 200) {
-                        try {
-                            this.setState({
-                                dataProduct: res.data.data.searchResult,
-                                dataTotal: res.data.data.totalData,
-                            })
-                            // console.log(res)
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }
-                }).catch(err => {
-                    localStorage.removeItem('dataAccount');
-                    this.props.history.push('/login')
-                })
-            axios.get('http://127.0.0.1:3001/category',{
-                headers: {authorization: data.token}
-            })
-                .then(res => {
-                    if (res.status === 200) {
-                        try {
-                            this.setState({
-                                category_data: res.data.data,
-                            })
-                            // console.log(res)
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }
-                }).catch(err => {
-                    localStorage.removeItem('dataAccount');
-                    this.props.history.push('/login')
-                })
-        }
-        this.setState({
-            data: data
-        })
+        // const data = JSON.parse(localStorage.getItem('persist:root'))
+        const data = this.props.auth
+        console.log(data);
+        // if (!data) {
+        //     this.props.history.push('/login')
+        // } else {
+        //     axios.get('http://127.0.0.1:3001/products/',{
+        //         headers: {authorization: data.token}
+        //     })
+        //         .then(res => {
+        //             if (res.status === 200) {
+        //                 try {
+        //                     this.setState({
+        //                         dataProduct: res.data.data.searchResult,
+        //                         dataTotal: res.data.data.totalData,
+        //                     })
+        //                     // console.log(res)
+        //                 } catch (error) {
+        //                     console.log(error)
+        //                 }
+        //             }
+        //         }).catch(err => {
+        //             localStorage.removeItem('dataAccount');
+        //             this.props.history.push('/login')
+        //         })
+        //     axios.get('http://127.0.0.1:3001/category',{
+        //         headers: {authorization: data.token}
+        //     })
+        //         .then(res => {
+        //             if (res.status === 200) {
+        //                 try {
+        //                     this.setState({
+        //                         category_data: res.data.data,
+        //                     })
+        //                     // console.log(res)
+        //                 } catch (error) {
+        //                     console.log(error)
+        //                 }
+        //             }
+        //         }).catch(err => {
+        //             localStorage.removeItem('dataAccount');
+        //             this.props.history.push('/login')
+        //         })
+        // }
+        // this.setState({
+        //     data: data
+        // })
 
     }
 
@@ -278,9 +281,11 @@ class Home extends React.Component {
                 limit: data.limit,
                 page: data.page,
                 date: data.date,
-                product_name: data.product_name
+                product_name: data.product_name,
+                // sorter: "desc"
             }
         }
+        
         axios.get('http://127.0.0.1:3001/products/',config)
             .then(res => {
                 if (res.status === 200) {
@@ -371,9 +376,9 @@ class Home extends React.Component {
             limit: "5",
             page: e.target.value - 1,
             product_name: this.state.product_name,
-            category_id: this.state.category_id
-            //date
-            //sorter
+            category_id: this.state.category_id,
+            date: this.state.date,
+            // sorter: "desc"
         }
         console.log(data);
 
@@ -385,7 +390,8 @@ class Home extends React.Component {
                 limit: data.limit,
                 page: data.page,
                 product_name: data.product_name,
-                category_id: data.category_id
+                category_id: data.category_id,
+                // sorter : data.sorter
             }
         }
         axios.get('http://127.0.0.1:3001/products/', config)
@@ -634,7 +640,13 @@ class Home extends React.Component {
     }
 }
 
-export default withRouter(Home);
+const mapStateToProps = state => {
+    return {
+        auth : state.auth
+    }
+}
+
+export default connect(mapStateToProps)(Home);
 
 Home.propTypes = {
     light: PropTypes.bool,

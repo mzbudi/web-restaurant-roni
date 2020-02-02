@@ -8,6 +8,7 @@ import {BrowserRouter,
       } from 'react-router-dom';
 import Home from './pages/Home';
 import Order from './pages/Order';
+import ProductList from './pages/ProductList';
 
 class App extends React.Component{
   state ={
@@ -33,6 +34,7 @@ class App extends React.Component{
           <Route path='/login' render={(props)=>(<Login {...props}/>)}/>
           <Route path='/order' render={(props)=>(<Order {...props}/>)}/>
           <Route path='/register' render={(props)=>(<Register {...props}/>)}/>
+          <Route path='/products' render={(props)=>(<ProductList {...props}/>)}/>
         </Switch>
       </BrowserRouter>
     )

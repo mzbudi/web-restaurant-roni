@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, Row, Col, Alert, Form, FormGroup, Label, Input, FormText, Spinner, ButtonToggle  } from 'reactstrap';
-import axios from 'axios';
-import qs from 'qs';
 import style from '../styles';
-// import '../index.css';
-
+import {requestLogin} from '../public/redux/action/auth';
+import {requestProducts} from '../public/redux/action/products';
+import {requestCategory} from '../public/redux/action/category';
+import {connect} from 'react-redux'
+import qs from 'qs';
+import axios from 'axios'
 
 class Login extends React.Component {
     constructor(props) {
@@ -20,8 +22,10 @@ class Login extends React.Component {
     }
 
     componentDidMount(){
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
-        if(data){
+        // const data = JSON.parse(localStorage.getItem('dataAccount'))
+        const data = JSON.parse(localStorage.getItem('persist:root'))
+        // console.log(data.auth);
+        if(data.auth.data){
             this.props.history.push('/')
         }
     }
@@ -48,41 +52,41 @@ class Login extends React.Component {
             username : this.state.username,
             password : this.state.password
         }
-        this.setState({
-            isLoading : true,
-        })
+        
         if(data.username === '' && data.password === ''){
             this.setState({
                 visibleAlert : true,
                 error: "Username dan Password Tidak Boleh Kosong!",
-                isLoading : false
+                isLoading : false,
             })
         }else{
-            const body = qs.stringify(data)
-            axios.post('http://127.0.0.1:3001/auth/login',body)
-                .then((res)=>{
-                    if(res.status === 200){
-                        try {
-                            localStorage.setItem('dataAccount', JSON.stringify(res.data.data))
-                            this.props.history.push('/')
-                        } catch (error) {
-                            this.setState({
-                                visibleAlert : true,
-                                error : "Username Atau Password Salah",
-                            })
+            this.props.dispatch(requestLogin(data))
+                .then( (res) => {
+                    const headers = {authorization: res.value.data.data.token}
+                    const configCategory = {
+                        headers
+                    }
+                    const config = {
+                        headers,
+                        params:{
+                            nameSearch : '',
+                            category_id : '',
+                            limit : '1000',
+                            page : 0,
+                            product_name : '',
+                            date : '',
                         }
                     }
-                })
-                .catch((error)=>{
+                    this.props.dispatch(requestProducts(config));
+                    this.props.dispatch(requestCategory(configCategory)).catch(err=>{console.log(err)});
+                    this.props.history.push('/')
+                }).catch((err)=>{
                     this.setState({
                         visibleAlert : true,
-                        error : "Username Atau Password Salah",
-                    })
-                })
-                .finally(()=>{
-                    this.setState({
+                        error: this.props.auth.message,
                         isLoading : false,
                     })
+                    console.log(err)
                 })
         }
 
@@ -100,7 +104,6 @@ class Login extends React.Component {
                 {this.state.error}
             </Alert>
             <Form style={style.formMaker}>
-                
                 <FormGroup>
                     <Input
                         style={style.inputLogin}
@@ -120,7 +123,7 @@ class Login extends React.Component {
                         onChange={(e)=>{this.handlePassword(e)}}
                     />
                 </FormGroup>
-                <div>{this.state.isLoading ? 
+                <div>{this.props.auth.isLoading ? 
                     (<Spinner style={style.spinnerLogin} />)
                     :
                     (<ButtonToggle style={style.buttonLogin} onClick={(e)=>{this.handleLogin(e)}} color="secondary">Login</ButtonToggle>)
@@ -133,8 +136,16 @@ class Login extends React.Component {
         )
     }
 }
+const mapStateToProps = state =>{
+    return {
+        auth: state.auth,
+        products : state.products,
+        category : state.category,
+    }
+}
 
-export default Login;
+// const mapToData 
+export default connect(mapStateToProps)(Login);
 
 Input.propTypes = {
     children: PropTypes.node,

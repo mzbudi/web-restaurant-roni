@@ -73,7 +73,6 @@ class Login extends React.Component {
                     if(res.status === 200){
                         try {
                             this.setState({error : res.data.data.message, visibleAlert : true});
-                            
                         } catch (error) {
                             this.setState({
                                 visibleAlert : true,

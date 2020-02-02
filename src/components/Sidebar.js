@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import '../index.css'
 // import plus from '../images/plus.png'
 import ModalProduct from '../components/ModalProduct'
-import ModalAddCategory from './ModalAddCategory'
+import ModalAddCategory from './ModalAddCategory';
 import ModalUpdateCategory from './ModalUpdateCategory'
 import ModalDeleteCategory from './ModalDeleteCategory'
 
