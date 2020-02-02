@@ -17,6 +17,45 @@ const category = (state = initialState, action) => {
                 ...state,
                 dataCategory: action.payload
             }
+        case 'PUT_CATEGORY_PENDING':
+            return{
+                ...state
+            }
+        case 'PUT_CATEGORY_REJECTED':
+            return{
+                ...state,
+            }
+        case 'PUT_CATEGORY_FULFILLED':
+            return{
+                ...state,
+                dataCategory: action.payload
+            }
+        case 'CREATE_CATEGORY_PENDING':
+            return{
+                ...state
+            }
+        case 'CREATE_CATEGORY_REJECTED':
+            return{
+                ...state,
+            }
+        case 'CREATE_CATEGORY_FULFILLED':
+            return{
+                ...state,
+                dataCategory: action.payload
+            }
+        case 'DELETE_CATEGORY_PENDING':
+            return{
+                ...state
+            }
+        case 'DELETE_CATEGORY_REJECTED':
+            return{
+                ...state,
+            }
+        case 'DELETE_CATEGORY_FULFILLED':
+            return{
+                ...state,
+                dataCategory: action.payload
+            }
         default: return state
     }
 }

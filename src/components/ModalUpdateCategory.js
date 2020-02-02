@@ -15,14 +15,15 @@ import {
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
+import {connect} from 'react-redux';
+import {requestCategory} from '../public/redux/action/category'
 
 class ModalUpdateCategory extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             isOpen: false,
-            category_name : '',
-            category_id : 5
+            category_name: ''
         }
     }
 
@@ -43,12 +44,6 @@ class ModalUpdateCategory extends React.Component {
             category_name : e.target.value
         })
     }
-    
-    handleCategory = (e) => {
-        this.setState({
-            category_id : e.target.value
-        })
-    }
 
     handleUpdateCategory=(e)=>{
         this.setState({
@@ -57,14 +52,16 @@ class ModalUpdateCategory extends React.Component {
         const dataCategory ={
             category_name : this.state.category_name
         }
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
-        axios.put(`http://127.0.0.1:3001/category/${this.state.category_id}`,dataCategory,{
-            headers: {authorization: data.token}
-        })
+
+        const headers = {
+            headers : {authorization: this.props.auth.data.data.data.token}
+        }
+        // const data = JSON.parse(localStorage.getItem('dataAccount'))
+        axios.put(`http://127.0.0.1:3001/category/${this.props.category_id}`,dataCategory,headers)
                 .then(res => {
                     if (res.status === 200) {
                         try {
-                            this.forceUpdate()
+                            this.props.dispatch(requestCategory(headers))
                         } catch (error) {
                             console.log(error)
                         }
@@ -74,9 +71,9 @@ class ModalUpdateCategory extends React.Component {
                         })
                     }
                 }).catch(err => {
-                    localStorage.removeItem('dataAccount');
-                    this.props.history.push('/login')
-                    // console.log(err)
+                    // localStorage.removeItem('dataAccount');
+                    // this.props.history.push('/login')
+                    console.log(err)
                 })
     }
 
@@ -84,19 +81,20 @@ class ModalUpdateCategory extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>Update Category</Button>
+                <Button color="dark" onClick={this.handleClick}>Update</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Update Category</ModalHeader>
                     <ModalBody>
                         <Form>
                             <FormGroup row>
-                                <Label sm={2}>Category</Label>
                                 <Col sm={10}>
-                                <Input type="select" name="select" onChange={(e) => { this.handleCategory(e)}}>
+                                {/* <Input type="select" name="select" onChange={(e) => { this.handleCategory(e)}}>
                                     {this.props.category.map((data)=>{
                                         return(<option value={data.category_id}>{data.category_name}</option>)
                                     })}
-                                </Input>
+                                </Input> */}
+                                <p>Category ID : {this.props.category_id}</p>
+                                <p>Category Name : {this.props.category_name}</p>
                                 </Col>
                             </FormGroup>
                             <FormGroup>
@@ -120,4 +118,12 @@ class ModalUpdateCategory extends React.Component {
     }
 }
 
-export default ModalUpdateCategory;
+const mapStateToProps = state => {
+    return{
+        auth : state.auth,
+        category : state.category,
+        products : state.products
+    }
+}
+
+export default connect(mapStateToProps)(ModalUpdateCategory);

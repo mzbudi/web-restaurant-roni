@@ -4,12 +4,12 @@ import {connect} from 'react-redux';
 import {requestProducts} from '../public/redux/action/products';
 import axios from 'axios';
 import qs from 'qs';
-import ModalUpdateProduct from '../components/ModalUpdateProduct';
-import ModalDeleteProduct from '../components/ModalDeleteProduct';
-import ModalAddProduct from '../components/ModalAddProduct';
+import ModalUpdateCategory from '../components/ModalUpdateCategory';
+import ModalDeleteCategory from '../components/ModalDeleteCategory';
+import ModalAddCategory from '../components/ModalAddCategory';
 import NavbarNavigation from '../components/NavbarNavigation';
 
-class ProductList extends React.Component {
+class CategoryList extends React.Component {
 
     componentDidMount(){
         const config = {
@@ -43,35 +43,30 @@ class ProductList extends React.Component {
             <React.Fragment>
             <NavbarNavigation />
             <Container>
-            <ModalAddProduct />
+            <ModalAddCategory />
             <Table>
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Product Image</th>
-                        <th>Product Name</th>
-                        <th>Product Description</th>
-                        <th>Product Price</th>
+                        <th>Category Name</th>
+                        <th>Created At</th>
                         <th style={{textAlign: "center"}}>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                {this.props.products.dataProducts.data.data.searchResult.map((data,i)=>{
-                        const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
+                {this.props.category.dataCategory.data.data.map((data,i)=>{
                         return(
                             <tr key={i}>
                                 <td>{i+1}</td>
-                                <td><img width={80} height={80} src={product_image} alt='product_image'/></td>
-                                <td>{data.product_name}</td>
-                                <td>{data.product_description}</td>
-                                <td>{data.product_price}</td>
-                                <td style={{textAlign: "center"}}>
-                                <ModalUpdateProduct product_id={data.product_id}>
+                                <td>{data.category_name}</td>
+                                <td>{data.created_at}</td>
+                                <td style={{textAlign: "center", display:"flex"}}>
+                                <ModalUpdateCategory category_id={data.category_id} category_name={data.category_name}>
                                     Update
-                                </ModalUpdateProduct> ||{' '}
-                                <ModalDeleteProduct product_id={data.product_id}>
+                                </ModalUpdateCategory> ||{' '}
+                                <ModalDeleteCategory category_id={data.category_id} category_name={data.category_name}>
                                     Delete
-                                </ModalDeleteProduct>
+                                </ModalDeleteCategory>
                                 </td>
                             </tr>
 
@@ -93,4 +88,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(ProductList)
+export default connect(mapStateToProps)(CategoryList)

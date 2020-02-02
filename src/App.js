@@ -9,6 +9,7 @@ import {BrowserRouter,
 import Home from './pages/Home';
 import Order from './pages/Order';
 import ProductList from './pages/ProductList';
+import CategoryList from './pages/CategoryList';
 
 class App extends React.Component{
   state ={
@@ -35,6 +36,7 @@ class App extends React.Component{
           <Route path='/order' render={(props)=>(<Order {...props}/>)}/>
           <Route path='/register' render={(props)=>(<Register {...props}/>)}/>
           <Route path='/products' render={(props)=>(<ProductList {...props}/>)}/>
+          <Route path='/category' render={(props)=>(<CategoryList {...props}/>)}/>
         </Switch>
       </BrowserRouter>
     )

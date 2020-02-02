@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import '../index.css'
-import plus from '../images/plus.png'
 import {
     Button,
     Modal,
@@ -15,6 +14,8 @@ import {
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
+import {connect} from 'react-redux'
+import {requestCategory} from '../public/redux/action/category'
 
 class ModalAddCategory extends React.Component {
     constructor(props) {
@@ -50,14 +51,15 @@ class ModalAddCategory extends React.Component {
         const dataCategory ={
             category_name : this.state.category_name
         }
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
-        axios.post('http://127.0.0.1:3001/category',dataCategory,{
-            headers: {authorization: data.token}
-        })
+        const headers = {
+            headers : {authorization: this.props.auth.data.data.data.token}
+        }
+        // const data = JSON.parse(localStorage.getItem('dataAccount'))
+        axios.post('http://127.0.0.1:3001/category',dataCategory,headers)
                 .then(res => {
                     if (res.status === 200) {
                         try {
-                            this.forceUpdate()
+                            this.props.dispatch(requestCategory(headers))
                         } catch (error) {
                             console.log(error)
                         }
@@ -67,8 +69,8 @@ class ModalAddCategory extends React.Component {
                         })
                     }
                 }).catch(err => {
-                    localStorage.removeItem('dataAccount');
-                    this.props.history.push('/login');
+                    // this.props.history.push('/login');
+                    console.log(err)
                 })
     }
 
@@ -76,7 +78,7 @@ class ModalAddCategory extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>+ Category</Button>
+                <Button style={style.buttonAddProduct} color="dark" onClick={this.handleClick}>+ Category</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Add Category</ModalHeader>
                     <ModalBody>
@@ -101,5 +103,11 @@ class ModalAddCategory extends React.Component {
         )
     }
 }
+const mapStateToProps = state => {
+    return{
+        auth: state.auth,
+        category: state.category
+    }
+}
 
-export default ModalAddCategory;
+export default connect(mapStateToProps)(ModalAddCategory);

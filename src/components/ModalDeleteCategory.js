@@ -15,14 +15,14 @@ import {
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
+import {connect} from 'react-redux';
+import {requestCategory} from '../public/redux/action/category'
 
 class ModalDeleteCategory extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             isOpen: false,
-            category_name : '',
-            category_id : 5
         }
     }
 
@@ -44,18 +44,22 @@ class ModalDeleteCategory extends React.Component {
         })
     }
 
+    
+
     handleDeleteCategory=(e)=>{
         this.setState({
             isOpen: false
         })
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
-        axios.delete(`http://127.0.0.1:3001/category/${this.state.category_id}`,{
-            headers: {authorization: data.token}
-        })
+        const headers = {
+            headers : {authorization: this.props.auth.data.data.data.token}
+        }
+        console.log(headers);
+        // const data = JSON.parse(localStorage.getItem('dataAccount'))
+        axios.delete(`http://127.0.0.1:3001/category/${this.props.category_id}`,headers)
                 .then(res => {
                     if (res.status === 200) {
                         try {
-                            this.forceUpdate()
+                            this.props.dispatch(requestCategory(headers))
                         } catch (error) {
                             console.log(error)
                         }
@@ -65,9 +69,9 @@ class ModalDeleteCategory extends React.Component {
                         })
                     }
                 }).catch(err => {
-                    localStorage.removeItem('dataAccount');
-                    this.props.history.push('/login')
-                    // console.log(err)
+                    // localStorage.removeItem('dataAccount');
+                    // this.props.history.push('/login')
+                    console.log(err)
                 })
     }
 
@@ -75,19 +79,20 @@ class ModalDeleteCategory extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button style={style.buttonSidebar} color="dark" onClick={this.handleClick}>Delete Category</Button>
-                <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
+                <Button color="dark" onClick={this.handleClick}>Delete</Button>
+                <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Delete Category</ModalHeader>
                     <ModalBody>
                         <Form>
                             <FormGroup row>
-                                <Label sm={2}>Category</Label>
                                 <Col sm={10}>
-                                <Input type="select" name="select" onChange={(e) => { this.handleCategory(e)}}>
+                                <p>Category ID : {this.props.category_id}</p>
+                                <p>Category Name : {this.props.category_name}</p>
+                                {/* <Input type="select" name="select" onChange={(e) => { this.handleCategory(e)}}>
                                     {this.props.category.map((data)=>{
                                         return(<option value={data.category_id}>{data.category_name}</option>)
                                     })}
-                                </Input>
+                                </Input> */}
                                 </Col>
                             </FormGroup>
                         </Form>
@@ -102,4 +107,11 @@ class ModalDeleteCategory extends React.Component {
     }
 }
 
-export default ModalDeleteCategory;
+const mapStateToProps = state => {
+    return{
+        auth: state.auth,
+        category : state.category
+    }
+}
+
+export default connect(mapStateToProps)(ModalDeleteCategory);
