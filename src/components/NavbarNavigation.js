@@ -35,14 +35,14 @@ class NavbarNavigation extends React.Component {
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav className="mr-auto" navbar>
                     </Nav>
-                    <NavbarText></NavbarText>
+        <NavbarText>{this.props.auth.data.data.data.username}</NavbarText>
                     <Nav>
                         <UncontrolledDropdown nav inNavbar>
                             <DropdownToggle nav caret>
                                 Others
                                 </DropdownToggle>
                             <DropdownMenu right>
-                            <DropdownItem>
+                                <DropdownItem>
                                     <Link to="/">Home</Link>
                                 </DropdownItem>
                                 <DropdownItem divider />

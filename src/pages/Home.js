@@ -452,7 +452,7 @@ class Home extends React.Component {
         }
         return (
             <div>
-                <Sidebar category={this.state.category_data}/>
+                {/* <Sidebar category={this.state.category_data}/> */}
                 <Modal isOpen={this.state.modalCheckoutOpen} toggle={(e) => { this.handleButton(e) }}>
                     <ModalHeader toggle={(e) => { this.handleButton(e) }}>Detail Product</ModalHeader>
                     <ModalBody>
@@ -491,7 +491,7 @@ class Home extends React.Component {
                                     Search by Category
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    {category_data.map((data, i) => {
+                                    {this.props.category.dataCategory.data.data.map((data, i) => {
                                         return (
                                             <DropdownItem value={data.category_id} onClick={(e) => { this.searchByCategory(e) }}>
                                                 {data.category_name}
@@ -518,10 +518,32 @@ class Home extends React.Component {
                                     Others
                                 </DropdownToggle>
                                 <DropdownMenu right>
+                                <DropdownItem>
+                                    <Link to="/">Home</Link>
+                                </DropdownItem>
+                                <DropdownItem divider />
+                                <DropdownItem>
+                                    <Link to="/order">Order</Link>
+                                </DropdownItem>
+                                <DropdownItem divider />
+                                {console.log(this.props.auth.data.data.data.user_role)}
+                                {this.props.auth.data.data.data.user_role === '1' ? (
+                                    <React.Fragment>
                                     <DropdownItem>
-                                        <Link to="/order">Order</Link>
-                                    </DropdownItem>
+                                    <Link to="/products">Products</Link>
+                                </DropdownItem>
                                     <DropdownItem divider />
+                                    <DropdownItem>
+                                    <Link to="/category">Category</Link>
+                                </DropdownItem>
+                                    <DropdownItem divider />
+                                    <DropdownItem>
+                                    <Link to="/users">Cashier</Link>
+                                </DropdownItem>
+                                    <DropdownItem divider />
+                                    </React.Fragment>
+                                ):''}
+                                
                                     <DropdownItem>
                                         <NavLink onClick={(e) => { this.handleLogout(e) }}>Logout</NavLink>
                                     </DropdownItem>
@@ -642,7 +664,9 @@ class Home extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        auth : state.auth
+        auth : state.auth,
+        products : state.products,
+        category : state.category,
     }
 }
 

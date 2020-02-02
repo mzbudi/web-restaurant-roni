@@ -5,6 +5,7 @@ import style from '../styles';
 import {requestLogin} from '../public/redux/action/auth';
 import {requestProducts} from '../public/redux/action/products';
 import {requestCategory} from '../public/redux/action/category';
+import {requestUsers} from '../public/redux/action/users';
 import {connect} from 'react-redux'
 import qs from 'qs';
 import axios from 'axios'
@@ -77,8 +78,11 @@ class Login extends React.Component {
                             date : '',
                         }
                     }
+                    if(this.props.auth.data.data.data.user_role === '1'){
+                        this.props.dispatch(requestUsers());
+                    }
                     this.props.dispatch(requestProducts(config));
-                    this.props.dispatch(requestCategory(configCategory)).catch(err=>{console.log(err)});
+                    this.props.dispatch(requestCategory(configCategory));
                     this.props.history.push('/')
                 }).catch((err)=>{
                     this.setState({
