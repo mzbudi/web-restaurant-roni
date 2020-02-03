@@ -9,6 +9,7 @@ import ModalUpdateUser from '../components/ModalUpdateUser';
 import ModalDeleteUser from '../components/ModalDeleteUser';
 import ModalAddProduct from '../components/ModalAddProduct';
 import NavbarNavigation from '../components/NavbarNavigation';
+import Moment from 'moment';
 
 class CashierList extends React.Component {
 
@@ -39,8 +40,8 @@ class CashierList extends React.Component {
                         <th>Name</th>
                         <th>Username</th>
                         <th>User Role</th>
-                        <th>Created At</th>
-                        <th>Action</th>
+                        <th>Date</th>
+                        <th style={{textAlign: "center"}}>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,11 +54,11 @@ class CashierList extends React.Component {
                                 <td>{data.name}</td>
                                 <td>{data.username}</td>
                                 <td>{data.user_role}</td>
-                                <td>{data.created_at}</td>
+                                <td>{Moment(data.created_at).format('DD/MM/YYYY')}</td>
                                 <td style={{textAlign: "center"}}>
-                                <ModalUpdateUser user_id={data.user_id} name={data.name}>
+                                <ModalUpdateUser user_id={data.user_id} name={data.name} data={data}>
                                     Update
-                                </ModalUpdateUser>{' '} || {' '}
+                                </ModalUpdateUser>{' '}
                                 <ModalDeleteUser user_id={data.user_id} name={data.name}>
                                     Delete
                                 </ModalDeleteUser>

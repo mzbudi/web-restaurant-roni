@@ -67,23 +67,10 @@ class Login extends React.Component {
                     const configCategory = {
                         headers
                     }
-                    const config = {
-                        headers,
-                        params:{
-                            nameSearch : '',
-                            category_id : '',
-                            limit : '1000',
-                            page : 0,
-                            product_name : '',
-                            date : '',
-                        }
-                    }
                     if(this.props.auth.data.data.data.user_role === '1'){
                         this.props.dispatch(requestUsers(configCategory));
                     }
-                    // this.props.dispatch(requestProducts(config)).then((res)=>{
                         this.props.dispatch(requestCategory(configCategory));
-                    // })
                     this.props.history.push('/')
                 }).catch((err)=>{
                     this.setState({
@@ -109,6 +96,7 @@ class Login extends React.Component {
                 {this.state.error}
             </Alert>
             <Form style={style.formMaker}>
+            <p style={{textAlign: "center"}}>Restuarant - Roni</p>
                 <FormGroup>
                     <Input
                         style={style.inputLogin}

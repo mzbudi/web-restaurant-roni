@@ -93,7 +93,7 @@ class ModalDeleteProduct extends React.Component {
         const { isOpen } = this.state
         return (
             <React.Fragment>
-                <Button color="dark" onClick={this.handleClick}>Delete</Button>
+                <Button onClick={this.handleClick}>Delete</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
                     <ModalBody>
@@ -101,7 +101,7 @@ class ModalDeleteProduct extends React.Component {
                     </ModalBody>
                     <ModalFooter>
                     <Button style={style.buttonSidebar} color="dark" onClick={(e)=>{this.handleDeleteClick(e)}}>Delete</Button>{' '}
-                    <Button style={style.buttonSidebar} color="dark" onClick={(e)=>{this.handleButton(e)}}>Cancel</Button>{' '}
+                    <Button style={style.buttonSidebar} onClick={(e)=>{this.handleButton(e)}}>Cancel</Button>{' '}
                         </ModalFooter>
                 </Modal>
             </React.Fragment>

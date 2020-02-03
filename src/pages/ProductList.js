@@ -55,9 +55,9 @@ class ProductList extends React.Component {
                                 <td>{data.product_description}</td>
                                 <td>{data.product_price}</td>
                                 <td style={{textAlign: "center"}}>
-                                <ModalUpdateProduct product_id={data.product_id}>
+                                <ModalUpdateProduct product_id={data.product_id} data={data}>
                                     Update
-                                </ModalUpdateProduct> ||{' '}
+                                </ModalUpdateProduct> {' '}
                                 <ModalDeleteProduct product_id={data.product_id}>
                                     Delete
                                 </ModalDeleteProduct>

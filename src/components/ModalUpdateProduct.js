@@ -27,7 +27,10 @@ class ModalUpdateProduct extends React.Component {
             updateOpen : false,
             category_data:[],
             newProduct : {
-                category_id: "5"
+                category_id: this.props.data.category_id,
+                product_name: this.props.data.product_name,
+                product_price : this.props.data.product_price,
+                product_description : this.props.data.product_description
             },
             warningModal:false,
             messageWarning : "Proses Berhasil"
@@ -131,6 +134,7 @@ class ModalUpdateProduct extends React.Component {
 
     render() {
         const {updateOpen} = this.state
+        console.log(this.state)
         return(
             <React.Fragment>
             <Button color="dark" onClick={(e)=>{this.handleUpdateClick(e)}}>Update</Button>
@@ -143,9 +147,15 @@ class ModalUpdateProduct extends React.Component {
                                 <Col sm={10}>
                                 <Input type="select" name="select" onChange={(e) => { this.handleCategory(e) }}>
                                     {this.props.category.dataCategory.data.data.map((data)=>{
-                                        return(
-                                        <option value={data.category_id}>{data.category_name}</option>
-                                        )
+                                        if(this.props.data.category_id == data.category_id){
+                                            return(
+                                                <option selected value={data.category_id}>{data.category_name}</option>
+                                                )
+                                        }else{
+                                            return(
+                                                <option value={data.category_id}>{data.category_name}</option>
+                                                )
+                                        }
                                     })}
                                 </Input>
                                 </Col>
@@ -157,6 +167,7 @@ class ModalUpdateProduct extends React.Component {
                                     id="product_name"
                                     placeholder="Product Name"
                                     onChange={(e) => { this.handleName(e) }}
+                                    defaultValue={this.props.data.product_name}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -166,10 +177,11 @@ class ModalUpdateProduct extends React.Component {
                                     id="price"
                                     placeholder="Price"
                                     onChange={(e) => { this.handlePrice(e) }}
+                                    defaultValue={this.props.data.product_price}
                                 />
                             </FormGroup>
                             <FormGroup>
-                                <Input type="textarea" name="description" id="description" placeholder="Product Description" onChange={(e) => { this.handleDescription(e) }}/>
+                                <Input type="textarea" name="description" id="description" placeholder="Product Description" defaultValue={this.props.data.product_description} onChange={(e) => { this.handleDescription(e) }}/>
                             </FormGroup>
                             <FormGroup row>
                                 <Col sm={10}>

@@ -23,7 +23,7 @@ class ModalUpdateCategory extends React.Component {
         super(props)
         this.state = {
             isOpen: false,
-            category_name: ''
+            category_name: this.props.data.category_name
         }
     }
 
@@ -81,7 +81,7 @@ class ModalUpdateCategory extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button color="dark" onClick={this.handleClick}>Update</Button>
+                <Button style={{marginBottom:"10px"}} color="dark" onClick={this.handleClick}>Update</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Update Category</ModalHeader>
                     <ModalBody>
@@ -102,7 +102,7 @@ class ModalUpdateCategory extends React.Component {
                                     type="text"
                                     name="name"
                                     id="category name"
-                                    placeholder="Category Name"
+                                    defaultValue={this.props.data.category_name}
                                     onChange={(e) => { this.handleCategoryName(e) }}
                                 />
                             </FormGroup>

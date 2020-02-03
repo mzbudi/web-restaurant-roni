@@ -9,6 +9,7 @@ import ModalUpdateCategory from '../components/ModalUpdateCategory';
 import ModalDeleteCategory from '../components/ModalDeleteCategory';
 import ModalAddCategory from '../components/ModalAddCategory';
 import NavbarNavigation from '../components/NavbarNavigation';
+import Moment from 'moment';
 
 class CategoryList extends React.Component {
 
@@ -32,7 +33,7 @@ class CategoryList extends React.Component {
                     <tr>
                         <th>No</th>
                         <th>Category Name</th>
-                        <th>Created At</th>
+                        <th>Date</th>
                         <th style={{textAlign: "center"}}>Action</th>
                     </tr>
                 </thead>
@@ -43,11 +44,11 @@ class CategoryList extends React.Component {
                             <tr key={i}>
                                 <td>{i+1}</td>
                                 <td>{data.category_name}</td>
-                                <td>{data.created_at}</td>
+                                <td>{Moment(data.created_at).format('DD/MM/YYYY')}</td>
                                 <td style={{textAlign: "center"}}>
-                                <ModalUpdateCategory category_id={data.category_id} category_name={data.category_name}>
+                                <ModalUpdateCategory category_id={data.category_id} category_name={data.category_name} data={data}>
                                     Update
-                                </ModalUpdateCategory> ||
+                                </ModalUpdateCategory>
                                 <ModalDeleteCategory category_id={data.category_id} category_name={data.category_name}>
                                     Delete
                                 </ModalDeleteCategory>

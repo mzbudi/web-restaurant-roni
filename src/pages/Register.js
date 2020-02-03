@@ -4,10 +4,11 @@ import { Container, Row, Col, Alert, Form, FormGroup, Label, Input, FormText, Sp
 import axios from 'axios';
 import qs from 'qs';
 import style from '../styles';
-// import '../index.css';
+import {requestRegister} from '../public/redux/action/auth';
+import {connect} from 'react-redux'
 
 
-class Login extends React.Component {
+class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,14 +19,15 @@ class Login extends React.Component {
             error : "",
             isLoading : false,
             message : '',
+            alertColor : 'danger'
         }
     }
 
     componentDidMount(){
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
-        if(data){
-            this.props.history.push('/home')
-        }
+        // const data = JSON.parse(localStorage.getItem('dataAccount'))
+        // if(data){
+        //     this.props.history.push('/home')
+        // }
     }
 
     handleBackButton = (e) =>{
@@ -64,34 +66,47 @@ class Login extends React.Component {
             this.setState({
                 visibleAlert : true,
                 error: "Data Tidak Boleh Kosong!",
-                isLoading : false
+                isLoading : false,
+                alertColor:"danger"
             })
         }else{
-            const body = qs.stringify(data)
-            axios.post('http://127.0.0.1:3001/auth/register',body)
-                .then((res)=>{
-                    if(res.status === 200){
-                        try {
-                            this.setState({error : res.data.data.message, visibleAlert : true});
-                        } catch (error) {
-                            this.setState({
-                                visibleAlert : true,
-                                error : "Username Atau Password Salah",
-                            })
-                        }
-                    }
+            this.props.dispatch(requestRegister(data))
+            .then((res)=>{
+                this.setState({error : res.value.data.data.message, alertColor:"success" ,visibleAlert : true});
+            })
+            .catch((error)=>{
+                this.setState({
+                    visibleAlert : true,
+                    error : "Tidak Ada Koneksi Internet",
+                    alertColor:"danger"
                 })
-                .catch((error)=>{
-                    this.setState({
-                        visibleAlert : true,
-                        error : "Tidak Ada Koneksi Internet",
-                    })
+            })
+            .finally(()=>{
+                this.setState({
+                    isLoading : false,
                 })
-                .finally(()=>{
-                    this.setState({
-                        isLoading : false,
-                    })
-                })
+            })
+        //     const body = qs.stringify(data)
+        //     axios.post('http://127.0.0.1:3001/auth/register',body)
+                // .then((res)=>{
+                //     if(res.status === 200){
+                //         try {
+                //             this.setState({error : res.data.data.message, visibleAlert : true});
+                //         } catch (error) {
+                //             this.setState({
+                //                 visibleAlert : true,
+                //                 error : "Username Atau Password Salah",
+                //             })
+                //         }
+                //     }
+                // })
+                // .catch((error)=>{
+                //     this.setState({
+                //         visibleAlert : true,
+                //         error : "Tidak Ada Koneksi Internet",
+                //     })
+                // })
+                
         }
 
     }
@@ -104,10 +119,11 @@ class Login extends React.Component {
     render() {
         return (
             <div>
-            <Alert color="danger" isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
+            <Alert color={this.state.alertColor} isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
                 {this.state.error}
             </Alert>
             <Form style={style.formMaker}>
+            <p style={{textAlign: "center"}}>Restuarant - Roni</p>
                 <FormGroup>
                     <Input
                         style={style.inputRegister}
@@ -152,7 +168,13 @@ class Login extends React.Component {
     }
 }
 
-export default Login;
+const mapStateToProps = state => {
+    return{
+        auth: state.auth,
+    }
+}
+
+export default connect(mapStateToProps)(Register);
 
 Input.propTypes = {
     children: PropTypes.node,

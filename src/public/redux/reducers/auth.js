@@ -23,6 +23,18 @@ const auth = (state = initialState, action) => {
                 isLoading:true,
                 data: action.payload
             }
+        case 'POST_REGISTER_PENDING':
+            return{
+                ...state,
+            }
+        case 'POST_REGISTER_REJECTED':
+            return{
+                ...state,
+            }
+        case 'POST_REGISTER_FULFILLED':
+            return{
+                ...state,
+            }
         default: return state
     }
 }

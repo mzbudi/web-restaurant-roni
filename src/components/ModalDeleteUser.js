@@ -76,7 +76,7 @@ class ModalDeleteCategory extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
-                <Button color="dark" onClick={this.handleClick}>Delete</Button>
+                <Button onClick={this.handleClick}>Delete</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Delete User</ModalHeader>
                     <ModalBody>

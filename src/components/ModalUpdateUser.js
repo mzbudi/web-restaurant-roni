@@ -25,8 +25,8 @@ class ModalUpdateUser extends React.Component {
         this.state={
             isOpen: false,
             updateOpen : false,
-            name : '',
-            role : '',
+            name : this.props.name,
+            role : this.props.user_role,
             warningModal:false,
             messageWarning : "Proses Berhasil"
         }
@@ -42,7 +42,7 @@ class ModalUpdateUser extends React.Component {
         }
         const body = {
             name : this.state.name,
-            user_role : this.state.role,
+            user_role : '2',
         }
         // console.log(this.props.product_id, formData, this.props.auth.data.data.data.token)
         
@@ -76,7 +76,6 @@ class ModalUpdateUser extends React.Component {
                         }
                     }
                 }).catch(err => {
-                    
                     console.log(err)
                 })
     }
@@ -93,17 +92,6 @@ class ModalUpdateUser extends React.Component {
         })
     }
 
-    handleImage = (e) => {
-        this.setState({
-            newProduct : {...this.state.newProduct, product_image:e.target.files[0]}
-        })
-    }
-
-    handlePrice = (e) => {
-        this.setState({
-            newProduct : {...this.state.newProduct, product_price:e.target.value}
-        })
-    }
 
     handleName = (e) => {
         this.setState({
@@ -113,17 +101,10 @@ class ModalUpdateUser extends React.Component {
         })
     }
 
-    handleDescription = (e) => {
-        this.setState({
-            newProduct : {...this.state.newProduct, product_description:e.target.value}
-        })
-    }
 
     handleUserRole = (e) => {
         this.setState({
             role: e.target.value
-        },()=>{
-            console.log(this.state.role)
         })
     }
 
@@ -131,7 +112,7 @@ class ModalUpdateUser extends React.Component {
         const {updateOpen} = this.state
         return(
             <React.Fragment>
-            <Button color="dark" onClick={(e)=>{this.handleUpdateClick(e)}}>Update</Button>
+            <Button style={{marginBottom:"10px"}} color="dark" onClick={(e)=>{this.handleUpdateClick(e)}}>Update</Button>
             <Modal isOpen={updateOpen} toggle={(e)=>{this.handleUpdateClick(e)}} >
                     <ModalHeader toggle={(e)=>{this.handleUpdateButtonClick(e)}}>Update User</ModalHeader>
                     <ModalBody>
@@ -144,7 +125,7 @@ class ModalUpdateUser extends React.Component {
                                     type="text"
                                     name="name"
                                     id="name"
-                                    placeholder="Name"
+                                    defaultValue={this.props.data.name}
                                     onChange={(e) => { this.handleName(e) }}
                                 />
                             </FormGroup>
@@ -153,7 +134,7 @@ class ModalUpdateUser extends React.Component {
                                 <Col sm={10}>
                                 <Input type="select" name="select" onChange={(e) => { this.handleUserRole(e) }}>
                                         <option value={"1"}>{1}</option>
-                                        <option value={"2"}>{2}</option>
+                                        <option selected value={"2"}>{2}</option>
                                 </Input>
                                 </Col>
                             </FormGroup>
