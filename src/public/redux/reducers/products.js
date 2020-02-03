@@ -4,6 +4,7 @@ const initialState = {
     deletedProducts :[],
     createdProducts : [],
     message: '' ,
+    isLoading: false
 }
 
 const products = (state = initialState, action) => {
@@ -20,6 +21,7 @@ const products = (state = initialState, action) => {
         case 'GET_PRODUCTS_FULFILLED':
             return{
                 ...state,
+                isLoading : true,
                 dataProducts: action.payload
             }
         case 'PUT_PRODUCTS_PENDING':

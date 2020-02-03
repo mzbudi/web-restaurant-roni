@@ -1,5 +1,6 @@
 const initialState = {
     dataCategory : [],
+    isLoading : false
 }
 
 const category = (state = initialState, action) => {
@@ -15,7 +16,8 @@ const category = (state = initialState, action) => {
         case 'GET_CATEGORY_FULFILLED':
             return{
                 ...state,
-                dataCategory: action.payload
+                dataCategory: action.payload,
+                isLoading : true,
             }
         case 'PUT_CATEGORY_PENDING':
             return{

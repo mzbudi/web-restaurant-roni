@@ -148,71 +148,15 @@ class ModalDetailProduct extends React.Component {
                     <ModalBody>
                         <img width={465} src={"http://localhost:3001/" + this.props.data.product_image.replace('assets', '')}></img>
                         <p>Product Id : {this.props.data.product_id}</p>
+                        <p>Category Id : {this.props.data.category_id}</p>
                         <p>Product Description: {this.props.data.product_description}</p>
                         <p>Product Price: {this.props.data.product_price}</p>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button style={style.buttonSidebar} color="dark" onClick={this.handleUpdateClick}>Update</Button>{' '}
-                        <ModalDeleteProduct product_id={this.props.data.product_id} />
-                        </ModalFooter>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.handleButton}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
                 {/* update */}
-
-                <Modal isOpen={updateOpen} toggle={(e)=>{this.handleUpdateClick(e)}} className="apakek">
-                    <ModalHeader toggle={(e)=>{this.handleUpdateButtonClick(e)}}>Update Product</ModalHeader>
-                    <ModalBody>
-                        <Form>
-                            <FormGroup row>
-                                <Label for="exampleSelect" sm={2}>Category</Label>
-                                <Col sm={10}>
-                                <Input type="select" name="select" onChange={(e) => { this.handleCategory(e) }}>
-                                    {this.props.category_data.map((data)=>{
-                                        return(
-                                        <option value={data.category_id}>{data.category_name}</option>
-                                        )
-                                    })}
-                                </Input>
-                                </Col>
-                            </FormGroup>
-                            <FormGroup>
-                                <Input
-                                    type="text"
-                                    name="name"
-                                    id="product_name"
-                                    placeholder="Product Name"
-                                    onChange={(e) => { this.handleName(e) }}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Input
-                                    type="number"
-                                    name="price"
-                                    id="price"
-                                    placeholder="Price"
-                                    onChange={(e) => { this.handlePrice(e) }}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Input type="textarea" name="description" id="description" placeholder="Product Description" onChange={(e) => { this.handleDescription(e) }}/>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Col sm={10}>
-                                    <Input type="file" name="file" onChange={(e)=>{this.handleImage(e)}} />
-                                    <FormText color="muted">
-                                        File Harus Ber-Ekstensi Gambar dan Tidak Lebih dari 2 MB
-                                    </FormText>
-                                </Col>
-                            </FormGroup>
-                        </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="primary" onClick={(e)=>{this.handleUpdateButton(e)}}>Submit</Button>{' '}
-                        <Button color="secondary" onClick={(e)=>{this.handleUpdateButtonClick(e)}}>Cancel</Button>
-                    </ModalFooter>
-                </Modal>
             </div>
         )
     }

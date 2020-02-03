@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Container , Button} from 'reactstrap';
 import {connect} from 'react-redux';
 import {requestProducts} from '../public/redux/action/products';
+import {requestCategory} from '../public/redux/action/category';
 import axios from 'axios';
 import qs from 'qs';
 import ModalUpdateCategory from '../components/ModalUpdateCategory';
@@ -12,31 +13,13 @@ import NavbarNavigation from '../components/NavbarNavigation';
 class CategoryList extends React.Component {
 
     componentDidMount(){
-        const config = {
-            headers : {authorization: this.props.auth.data.data.data.token},
-            params:{
-                nameSearch : '',
-                category_id : '',
-                limit : '1000',
-                page : 0,
-                product_name : '',
-                date : '',
-            }
+        const headers = { authorization: this.props.auth.data.data.data.token }
+        const configCategory = {
+            headers
         }
-
-        this.props.dispatch(requestProducts(config))
-            // .then((res)=>{console.log(res)})
+        this.props.dispatch(requestCategory(configCategory));
     }
-    // componentWillMount(){
-    //     this.props.dispatch(requestProducts())
-    // }
 
-    dispatchProducts = (e) =>{
-        this.props.dispatch(requestProducts())
-            .then((res)=>{
-                console.log(res)
-            })
-    }
     render() {
         // console.log(this.props.products)
         return (
@@ -54,16 +37,17 @@ class CategoryList extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                {this.props.category.dataCategory.data.data.map((data,i)=>{
+                {this.props.category.isLoading ? (
+                    this.props.category.dataCategory.data.data.map((data,i)=>{
                         return(
                             <tr key={i}>
                                 <td>{i+1}</td>
                                 <td>{data.category_name}</td>
                                 <td>{data.created_at}</td>
-                                <td style={{textAlign: "center", display:"flex"}}>
+                                <td style={{textAlign: "center"}}>
                                 <ModalUpdateCategory category_id={data.category_id} category_name={data.category_name}>
                                     Update
-                                </ModalUpdateCategory> ||{' '}
+                                </ModalUpdateCategory> ||
                                 <ModalDeleteCategory category_id={data.category_id} category_name={data.category_name}>
                                     Delete
                                 </ModalDeleteCategory>
@@ -71,7 +55,8 @@ class CategoryList extends React.Component {
                             </tr>
 
                         )
-                    })}
+                    })
+                ) : ''}
                 </tbody>
             </Table>
             </Container>

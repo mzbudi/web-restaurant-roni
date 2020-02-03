@@ -20,6 +20,7 @@ import style from '../styles';
 import { withRouter, Link } from 'react-router-dom';
 import {connect} from 'react-redux'
 import {requestProducts, createProducts} from '../public/redux/action/products'
+import {requestCategory} from '../public/redux/action/category'
 
 class ModalAddProduct extends React.Component {
     constructor(props) {
@@ -32,6 +33,14 @@ class ModalAddProduct extends React.Component {
             },
             error: ''
         }
+    }
+
+    componentDidMount(){
+        const headers = { authorization: this.props.auth.data.data.data.token }
+        const configCategory = {
+            headers
+        }
+        this.props.dispatch(requestCategory(configCategory));
     }
 
     handleClick = () => {
@@ -75,27 +84,6 @@ class ModalAddProduct extends React.Component {
                 }
                 this.props.dispatch(requestProducts(dataProducts,headers))
             })
-
-        // const data = JSON.parse(localStorage.getItem('dataAccount'))
-        // axios.post('http://127.0.0.1:3001/products',formData,{
-        //     headers: {authorization: data.token}
-        // })
-        //         .then(res => {
-        //             if (res.status === 200) {
-        //                 try {
-        //                     this.forceUpdate()
-        //                 } catch (error) {
-        //                     console.log(error)
-        //                 }
-        //             }else if(res.status === 400){
-        //                 this.setState({
-        //                     error : res.data.data.message
-        //                 })
-        //             }
-        //         }).catch(err => {
-        //             localStorage.removeItem('dataAccount');
-        //             this.props.history.push('/login')
-        //         })
     }
 
     handleCategory = (e) => {
@@ -141,9 +129,9 @@ class ModalAddProduct extends React.Component {
                                 <Label sm={2}>Category</Label>
                                 <Col sm={10}>
                                 <Input type="select" name="select" onChange={(e) => { this.handleCategory(e)}}>
-                                    {this.props.category.dataCategory.data.data.map((data)=>{
+                                    {this.props.category.isLoading ? (this.props.category.dataCategory.data.data.map((data)=>{
                                         return(<option value={data.category_id}>{data.category_name}</option>)
-                                    })}
+                                    })) : ''}
                                 </Input>
                                 </Col>
                             </FormGroup>

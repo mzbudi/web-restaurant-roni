@@ -59,6 +59,10 @@ class NavbarNavigation extends React.Component {
                                 </DropdownItem>
                                 <DropdownItem divider />
                                 <DropdownItem>
+                                    <Link to="/users">Cashier</Link>
+                                </DropdownItem>
+                                <DropdownItem divider />
+                                <DropdownItem>
                                     <NavLink onClick={(e) => { this.handleLogout(e) }}>Logout</NavLink>
                                 </DropdownItem>
                             </DropdownMenu>

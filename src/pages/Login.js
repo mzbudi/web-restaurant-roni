@@ -47,7 +47,7 @@ class Login extends React.Component {
         this.props.history.push('/register')
     }
 
-    handleLogin = (e) =>{
+    handleLogin = async (e) =>{
         e.preventDefault()
         const data = {
             username : this.state.username,
@@ -79,10 +79,11 @@ class Login extends React.Component {
                         }
                     }
                     if(this.props.auth.data.data.data.user_role === '1'){
-                        this.props.dispatch(requestUsers());
+                        this.props.dispatch(requestUsers(configCategory));
                     }
-                    this.props.dispatch(requestProducts(config));
-                    this.props.dispatch(requestCategory(configCategory));
+                    // this.props.dispatch(requestProducts(config)).then((res)=>{
+                        this.props.dispatch(requestCategory(configCategory));
+                    // })
                     this.props.history.push('/')
                 }).catch((err)=>{
                     this.setState({

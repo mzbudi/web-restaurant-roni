@@ -25,20 +25,9 @@ class ProductList extends React.Component {
         }
 
         this.props.dispatch(requestProducts(config))
-            // .then((res)=>{console.log(res)})
     }
-    // componentWillMount(){
-    //     this.props.dispatch(requestProducts())
-    // }
 
-    dispatchProducts = (e) =>{
-        this.props.dispatch(requestProducts())
-            .then((res)=>{
-                console.log(res)
-            })
-    }
     render() {
-        // console.log(this.props.products)
         return (
             <React.Fragment>
             <NavbarNavigation />
@@ -56,7 +45,7 @@ class ProductList extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                {this.props.products.dataProducts.data.data.searchResult.map((data,i)=>{
+                {this.props.products.isLoading ? (this.props.products.dataProducts.data.data.searchResult.map((data,i)=>{
                         const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
                         return(
                             <tr key={i}>
@@ -76,7 +65,7 @@ class ProductList extends React.Component {
                             </tr>
 
                         )
-                    })}
+                    })):''}
                 </tbody>
             </Table>
             </Container>

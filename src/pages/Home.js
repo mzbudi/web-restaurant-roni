@@ -36,7 +36,9 @@ import qs from 'qs';
 import ModalDetailProduct from '../components/ModalDetailProduct';
 import cartImage from '../images/icon-keranjang-png-3.png';
 import Sidebar from '../components/Sidebar';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
+import { requestProducts } from '../public/redux/action/products';
+import { requestCategory } from '../public/redux/action/category';
 
 
 class Home extends React.Component {
@@ -48,71 +50,55 @@ class Home extends React.Component {
             dataProduct: [],
             dataTotal: [],
             searchData: "",
-            product_name: '',
-            date: '',
             category_data: [],
             cart: [],
             orders: [],
             grandTotal: 0,
             modalCheckoutOpen: false,
-            invoice:'',
-            sorter:''
+            invoice: '',
+            sorter: '',
+            pages:[],
+            nameSearch: '',
+            category_id: '',
+            limit: '5',
+            page: 0,
+            product_name: '',
+            date: '',
         }
-        this.handleSearchProduct = this.handleSearchProduct.bind(this)
     }
 
     componentDidMount() {
         // const data = JSON.parse(localStorage.getItem('persist:root'))
-        const data = this.props.auth
-        console.log(data);
-        // if (!data) {
-        //     this.props.history.push('/login')
-        // } else {
-        //     axios.get('http://127.0.0.1:3001/products/',{
-        //         headers: {authorization: data.token}
-        //     })
-        //         .then(res => {
-        //             if (res.status === 200) {
-        //                 try {
-        //                     this.setState({
-        //                         dataProduct: res.data.data.searchResult,
-        //                         dataTotal: res.data.data.totalData,
-        //                     })
-        //                     // console.log(res)
-        //                 } catch (error) {
-        //                     console.log(error)
-        //                 }
-        //             }
-        //         }).catch(err => {
-        //             localStorage.removeItem('dataAccount');
-        //             this.props.history.push('/login')
-        //         })
-        //     axios.get('http://127.0.0.1:3001/category',{
-        //         headers: {authorization: data.token}
-        //     })
-        //         .then(res => {
-        //             if (res.status === 200) {
-        //                 try {
-        //                     this.setState({
-        //                         category_data: res.data.data,
-        //                     })
-        //                     // console.log(res)
-        //                 } catch (error) {
-        //                     console.log(error)
-        //                 }
-        //             }
-        //         }).catch(err => {
-        //             localStorage.removeItem('dataAccount');
-        //             this.props.history.push('/login')
-        //         })
-        // }
-        // this.setState({
-        //     data: data
-        // })
-
+        const headers = { authorization: this.props.auth.data.data.data.token }
+        const configCategory = {
+            headers
+        }
+        const config = {
+            headers,
+            params: {
+                nameSearch: '',
+                category_id: '',
+                limit: '5',
+                page: 0,
+                product_name: '',
+                date: '',
+            }
+        }
+        this.props.dispatch(requestProducts(config))
+            .then((res)=>{
+                const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
+                const pages = [];
+                for (let i = 0; i <= page; i++) {
+                    if (i !== page) { pages.push(i) }
+                }
+                this.setState({
+                    pages : pages
+                })
+            })
+        this.props.dispatch(requestCategory(configCategory));
     }
 
-    handleCancel = (e) =>{
+    handleCancel = (e) => {
         this.setState({
             cart: [],
             orders: [],
@@ -130,8 +116,10 @@ class Home extends React.Component {
         this.setState({
             orders: this.state.orders.map((order) =>
                 (order.product_id == e.target.id ?
-                    { ...order, quantity: order.quantity + 1,
-                         totalPrice: product_price * (order.quantity + 1) }
+                    {
+                        ...order, quantity: order.quantity + 1,
+                        totalPrice: product_price * (order.quantity + 1)
+                    }
                     :
                     order)),
             grandTotal: this.state.grandTotal + parseInt(product_price)
@@ -139,15 +127,14 @@ class Home extends React.Component {
     }
 
     handleCheckout = (e) => {
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
 
         const body = {
-            user_id: data.user_id,
+            user_id: this.props.auth.data.data.data.user_id,
             orders: this.state.orders
         }
 
-        axios.post('http://127.0.0.1:3001/order/', body,{
-            headers: {authorization: data.token}
+        axios.post('http://127.0.0.1:3001/order/', body, {
+            headers: { authorization: this.props.auth.data.data.data.token }
         })
             .then(res => {
                 if (res.status === 200) {
@@ -157,7 +144,7 @@ class Home extends React.Component {
                             orders: [],
                             grandTotal: 0,
                             modalCheckoutOpen: true,
-                            invoice : res.data.data.invoice
+                            invoice: res.data.data.invoice
                         })
                     } catch (error) {
                         console.log(error)
@@ -229,187 +216,159 @@ class Home extends React.Component {
     }
 
     searchByCategory = (e) => {
-        const data = {
-            category_id: e.target.value,
-            limit: "5",
-            page: 0,
-        }
         this.setState({
+            nameSearch: '',
             category_id: e.target.value,
-            product_name : "",
-            date : "",
-            searchData : "",
-        })
-        const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
-        const config = {
-            headers : {authorization: dataAccount.token},
-            params: {
-                category_id: data.category_id,
-                limit: data.limit,
-                page: data.page
-            }
-        }
-        axios.get('http://127.0.0.1:3001/products/',config)
-            .then(res => {
-                if (res.status === 200) {
-                    try {
-                        this.setState({
-                            dataProduct: res.data.data.searchResult,
-                            dataTotal: res.data.data.totalData,
-                        })
-                    } catch (error) {
-                        console.log(error)
-                    }
-                }
-            }).catch(err => {
-                localStorage.removeItem('dataAccount');
-                this.props.history.push('/login')
-            })
-    }
-
-    getSortFunction = (e) => {
-        const data = {
-            limit: "5",
+            limit: '5',
             page: 0,
-            date: this.state.date,
-            product_name: this.state.product_name,
-        }
-        const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
-        const config = {
-            headers : {authorization: dataAccount.token},
-            params: {
-                limit: data.limit,
-                page: data.page,
-                date: data.date,
-                product_name: data.product_name,
-                // sorter: "desc"
-            }
-        }
-        
-        axios.get('http://127.0.0.1:3001/products/',config)
-            .then(res => {
-                if (res.status === 200) {
-                    console.log(res);
-                    try {
-                        this.setState({
-                            dataProduct: res.data.data.searchResult,
-                            dataTotal: res.data.data.totalData,
-                        })
-                    } catch (error) {
-                        console.log(error)
-                    }
+            product_name: '',
+            date: '',
+        }, () => {
+            const headers = { authorization: this.props.auth.data.data.data.token }
+            const config = {
+                headers,
+                params: {
+                    nameSearch: this.state.nameSearch,
+                    category_id: this.state.category_id,
+                    limit: '5',
+                    page: 0,
+                    product_name: this.state.product_name,
+                    date: this.state.date,
                 }
-            }).catch(err => {
-                localStorage.removeItem('dataAccount');
-                this.props.history.push('/login')
+            }
+            this.props.dispatch(requestProducts(config)).then((res)=>{
+                const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
+                const pages = [];
+                for (let i = 0; i <= page; i++) {
+                    if (i !== page) { pages.push(i) }
+                }
+                this.setState({
+                    pages : pages
+                })
             })
+        });
+        
     }
-
 
 
     sortByName = (e) => {
         this.setState({
+            nameSearch: '',
+            category_id: '',
+            limit: '5',
+            page: 0,
             product_name: 'product_name',
             date: '',
-            category_id: e.target.value,
-            searchData : "",
         }, () => {
-            this.getSortFunction()
+            const headers = { authorization: this.props.auth.data.data.data.token }
+            const config = {
+                headers,
+                params: {
+                    nameSearch: this.state.nameSearch,
+                    category_id: this.state.category_id,
+                    limit: '5',
+                    page: 0,
+                    product_name: this.state.product_name,
+                    date: this.state.date,
+                }
+            }
+            this.props.dispatch(requestProducts(config)).then((res)=>{
+                const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
+                const pages = [];
+                for (let i = 0; i <= page; i++) {
+                    if (i !== page) { pages.push(i) }
+                }
+                this.setState({
+                    pages : pages
+                })
+            })
         });
     }
 
     sortByDate = (e) => {
         this.setState({
-            date: 'updated_at',
+            nameSearch: '',
+            category_id: '',
+            limit: '5',
+            page: 0,
             product_name: '',
-            category_id: e.target.value,
-            searchData : "",
+            date: 'updated_at',
         }, () => {
-            this.getSortFunction()
+            const headers = { authorization: this.props.auth.data.data.data.token }
+            const config = {
+                headers,
+                params: {
+                    nameSearch: this.state.nameSearch,
+                    category_id: this.state.category_id,
+                    limit: '5',
+                    page: 0,
+                    product_name: this.state.product_name,
+                    date: this.state.date,
+                }
+            }
+            this.props.dispatch(requestProducts(config)).then((res)=>{
+                const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
+                const pages = [];
+                for (let i = 0; i <= page; i++) {
+                    if (i !== page) { pages.push(i) }
+                }
+                this.setState({
+                    pages : pages
+                })
+            })
         });
     }
 
     handleSearchProduct = (e) => {
         e.preventDefault();
         this.setState({
-            searchData: e.target.value
-        }, () => { this.getSearchFunction() })
-    }
+                nameSearch: e.target.value,
+                category_id: '',
+                limit: '5',
+                page: 0,
+                product_name: '',
+                date: '',
+        }, () => {
 
-    getSearchFunction = (e) => {
-        const data = {
-            nameSearch: this.state.searchData,
-            limit: "5",
-            page: 0,
-        }
-        const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
-        const config = {
-            headers : {authorization: dataAccount.token},
-            params: {
-                nameSearch: data.nameSearch,
-                limit: data.limit,
-                page: data.page
-            }
-        }
-
-        axios.get('http://127.0.0.1:3001/products/', config)
-            .then(res => {
-                if (res.status === 200) {
-                    try {
-                        this.setState({
-                            dataProduct: res.data.data.searchResult,
-                            dataTotal: res.data.data.totalData,
-                        })
-                    } catch (error) {
-                        console.log(error)
-                    }
+            const headers = { authorization: this.props.auth.data.data.data.token }
+            const config = {
+                headers,
+                params: {
+                    nameSearch: this.state.nameSearch,
+                    category_id: this.state.category_id,
+                    limit: '5',
+                    page: 0,
+                    product_name: this.state.product_name,
+                    date: this.state.date,
                 }
-            }).catch(err => {
-                localStorage.removeItem('dataAccount');
-                this.props.history.push('/login')
+            }
+            this.props.dispatch(requestProducts(config)).then((res)=>{
+                const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
+                const pages = [];
+                for (let i = 0; i <= page; i++) {
+                    if (i !== page) { pages.push(i) }
+                }
+                this.setState({
+                    pages : pages
+                })
             })
+        })
     }
 
     paginationClick = (e) => {
-        const data = {
-            nameSearch: this.state.searchData,
-            limit: "5",
-            page: e.target.value - 1,
-            product_name: this.state.product_name,
-            category_id: this.state.category_id,
-            date: this.state.date,
-            // sorter: "desc"
-        }
-        console.log(data);
-
-        const dataAccount = JSON.parse(localStorage.getItem('dataAccount'))
+        const headers = { authorization: this.props.auth.data.data.data.token }
         const config = {
-            headers : {authorization: dataAccount.token},
+            headers,
             params: {
-                nameSearch: data.nameSearch,
-                limit: data.limit,
-                page: data.page,
-                product_name: data.product_name,
-                category_id: data.category_id,
-                // sorter : data.sorter
+                nameSearch: this.state.nameSearch,
+                category_id: this.state.category_id,
+                limit: '5',
+                page: e.target.value,
+                product_name: this.state.product_name,
+                date: this.state.date,
             }
         }
-        axios.get('http://127.0.0.1:3001/products/', config)
-            .then(res => {
-                if (res.status === 200) {
-                    try {
-                        this.setState({
-                            dataProduct: res.data.data.searchResult,
-                            dataTotal: res.data.data.totalData,
-                        })
-                    } catch (error) {
-                        console.log(error)
-                    }
-                }
-            }).catch(err => {
-                localStorage.removeItem('dataAccount');
-                this.props.history.push('/login')
-            })
+        this.props.dispatch(requestProducts(config))
     }
 
     handleLogout = (e) => {
@@ -422,14 +381,14 @@ class Home extends React.Component {
         }
     }
 
-    formatRupiah = (angka,prefix)=>{
+    formatRupiah = (angka, prefix) => {
         let number_string = angka.toString().replace(/[^,\d]/g, '');
         let split = number_string.split(',');
-        let remains  = split[0].length % 3;
-        let rupiah   = split[0].substr(0, remains);
+        let remains = split[0].length % 3;
+        let rupiah = split[0].substr(0, remains);
         let thausand = split[0].substr(remains).match(/\d{3}/gi);
 
-        if(thausand){
+        if (thausand) {
             let separator = remains ? '.' : '';
             rupiah += separator + thausand.join('.');
         }
@@ -444,15 +403,10 @@ class Home extends React.Component {
         })
     }
     render() {
-        const { data, isOpen, dataProduct, dataTotal, searchData, category_data, cart, orders } = this.state
-        const page = Math.ceil(dataTotal / 5)
-        const pages = [];
-        for (let i = 0; i <= page; i++) {
-            if (i !== page) { pages.push(i) }
-        }
+        const { data, isOpen, dataProduct, dataTotal, searchData, category_data, cart, orders,pages } = this.state
+        console.log(pages);
         return (
             <div>
-                {/* <Sidebar category={this.state.category_data}/> */}
                 <Modal isOpen={this.state.modalCheckoutOpen} toggle={(e) => { this.handleButton(e) }}>
                     <ModalHeader toggle={(e) => { this.handleButton(e) }}>Detail Product</ModalHeader>
                     <ModalBody>
@@ -491,14 +445,13 @@ class Home extends React.Component {
                                     Search by Category
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    {this.props.category.dataCategory.data.data.map((data, i) => {
+                                    {this.props.category.isLoading ? (this.props.category.dataCategory.data.data.map((data, i) => {
                                         return (
                                             <DropdownItem value={data.category_id} onClick={(e) => { this.searchByCategory(e) }}>
                                                 {data.category_name}
                                             </DropdownItem>
                                         )
-                                    })}
-                                    {/* <DropdownItem divider /> */}
+                                    })) : ''}
                                 </DropdownMenu>
                             </UncontrolledDropdown>
                             <Input
@@ -518,32 +471,32 @@ class Home extends React.Component {
                                     Others
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                <DropdownItem>
-                                    <Link to="/">Home</Link>
-                                </DropdownItem>
-                                <DropdownItem divider />
-                                <DropdownItem>
-                                    <Link to="/order">Order</Link>
-                                </DropdownItem>
-                                <DropdownItem divider />
-                                {console.log(this.props.auth.data.data.data.user_role)}
-                                {this.props.auth.data.data.data.user_role === '1' ? (
-                                    <React.Fragment>
                                     <DropdownItem>
-                                    <Link to="/products">Products</Link>
-                                </DropdownItem>
+                                        <Link to="/">Home</Link>
+                                    </DropdownItem>
                                     <DropdownItem divider />
                                     <DropdownItem>
-                                    <Link to="/category">Category</Link>
-                                </DropdownItem>
+                                        <Link to="/order">Order</Link>
+                                    </DropdownItem>
                                     <DropdownItem divider />
-                                    <DropdownItem>
-                                    <Link to="/users">Cashier</Link>
-                                </DropdownItem>
-                                    <DropdownItem divider />
-                                    </React.Fragment>
-                                ):''}
-                                
+                                    {console.log(this.props.auth.data.data.data.user_role)}
+                                    {this.props.auth.data.data.data.user_role === '1' ? (
+                                        <React.Fragment>
+                                            <DropdownItem>
+                                                <Link to="/products">Products</Link>
+                                            </DropdownItem>
+                                            <DropdownItem divider />
+                                            <DropdownItem>
+                                                <Link to="/category">Category</Link>
+                                            </DropdownItem>
+                                            <DropdownItem divider />
+                                            <DropdownItem>
+                                                <Link to="/users">Cashier</Link>
+                                            </DropdownItem>
+                                            <DropdownItem divider />
+                                        </React.Fragment>
+                                    ) : ''}
+
                                     <DropdownItem>
                                         <NavLink onClick={(e) => { this.handleLogout(e) }}>Logout</NavLink>
                                     </DropdownItem>
@@ -553,13 +506,10 @@ class Home extends React.Component {
                     </Collapse>
                 </Navbar>
                 <Container>
-                    {/* <div style={{display:"inline-block", minHeight:"100%", width:"400px",backgroundColor:"blue", float:"right"}}>
-
-                    </div> */}
                     <Row>
                         <Col>
                             <Row>
-                                {dataProduct.map((data, i) => {
+                                {this.props.products.isLoading ? (this.props.products.dataProducts.data.data.searchResult.map((data, i) => {
                                     const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
                                     const item = data;
                                     if (i < 3) {
@@ -574,17 +524,17 @@ class Home extends React.Component {
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
                                                                 this.addOrderButton(e, item)
                                                             }}>Add</Button>
-                                                            <ModalDetailProduct product_id={data.product_id} category_data={category_data} data={data} />
+                                                            <ModalDetailProduct product_id={data.product_id} data={data} />
                                                         </div>
                                                     </CardBody>
                                                 </Card>
                                             </Col>);
                                     }
-                                })}
+                                })) : ''}
                             </Row>
                             <Row>
-                                {dataProduct.map((data, i) => {
-                                    const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '')
+                                {this.props.products.isLoading ? (this.props.products.dataProducts.data.data.searchResult.map((data, i) => {
+                                    const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
                                     const item = data;
                                     if (i >= 3) {
                                         return (
@@ -598,13 +548,13 @@ class Home extends React.Component {
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
                                                                 this.addOrderButton(e, item)
                                                             }}>Add</Button>
-                                                            <ModalDetailProduct product_id={data.product_id} category_data={category_data} data={data} />
+                                                            <ModalDetailProduct product_id={data.product_id} data={data} />
                                                         </div>
                                                     </CardBody>
                                                 </Card>
                                             </Col>);
                                     }
-                                })}
+                                })) : ''}
                             </Row>
                         </Col>
                         <Col xs="4" style={{ padding: "0" }}>
@@ -626,7 +576,7 @@ class Home extends React.Component {
                                                     </div>
                                                 </div>
                                                 <div>Rp. {this.formatRupiah(orders[i].product_price * orders[i].quantity)}</div>
-                                                <div style={{marginLeft : "20px"}}>
+                                                <div style={{ marginLeft: "20px" }}>
                                                     <Button id={data.product_id} color="danger" onClick={(e) => { this.deleteFromCart(e) }}>x</Button>{' '}
                                                 </div>
                                             </div>
@@ -634,26 +584,24 @@ class Home extends React.Component {
                                     })}
                                 </div>
                                 {this.state.orders.length > 0 ? (<div>
-                                <p>Sub Total : Rp. {this.formatRupiah(this.state.grandTotal)}</p>
-                                <p>PPN : Rp. {this.formatRupiah(this.state.grandTotal * 0.10)}</p>
-                                <p>Total : Rp. {this.formatRupiah((this.state.grandTotal + (this.state.grandTotal * 0.10)))}</p>
-                                <ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
-                                <ButtonToggle onClick={(e) => { this.handleCancel(e) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{textAlign: "center"}}><img height={300} width={300} src={cartImage} alt="Logo"></img><p>Keranjang Kosong</p></div>)}
+                                    <p>Sub Total : Rp. {this.formatRupiah(this.state.grandTotal)}</p>
+                                    <p>PPN : Rp. {this.formatRupiah(this.state.grandTotal * 0.10)}</p>
+                                    <p>Total : Rp. {this.formatRupiah((this.state.grandTotal + (this.state.grandTotal * 0.10)))}</p>
+                                    <ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
+                                    <ButtonToggle onClick={(e) => { this.handleCancel(e) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{ textAlign: "center" }}><img height={300} width={300} src={cartImage} alt="Logo"></img><p>Keranjang Kosong</p></div>)}
                             </div>
                         </Col>
                     </Row>
                     <Pagination size="sm">
-                        {
-                            pages.map((page, i) => {
+                        {this.state.pages.map((page, i) => {
                                 return (
                                     <PaginationItem >
-                                        <PaginationLink value={page + 1} onClick={(e) => { this.paginationClick(e) }}>
+                                        <PaginationLink value={page} onClick={(e) => { this.paginationClick(e) }}>
                                             {page + 1}
                                         </PaginationLink>
                                     </PaginationItem>
                                 )
-                            }
-                            )
+                            })
                         }
                     </Pagination>
                 </Container>
@@ -664,9 +612,9 @@ class Home extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        auth : state.auth,
-        products : state.products,
-        category : state.category,
+        auth: state.auth,
+        products: state.products,
+        category: state.category,
     }
 }
 

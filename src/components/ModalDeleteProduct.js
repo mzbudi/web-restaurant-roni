@@ -94,7 +94,7 @@ class ModalDeleteProduct extends React.Component {
         return (
             <React.Fragment>
                 <Button color="dark" onClick={this.handleClick}>Delete</Button>
-                <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
+                <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
                     <ModalBody>
                         <p>Apakah Anda Yakin Menghapus ini ?</p>

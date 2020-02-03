@@ -2,41 +2,29 @@ import React from 'react';
 import { Table, Container , Button} from 'reactstrap';
 import {connect} from 'react-redux';
 import {requestProducts} from '../public/redux/action/products';
+import {requestUsers} from '../public/redux/action/users';
 import axios from 'axios';
 import qs from 'qs';
-import ModalUpdateProduct from '../components/ModalUpdateProduct';
-import ModalDeleteProduct from '../components/ModalDeleteProduct';
+import ModalUpdateUser from '../components/ModalUpdateUser';
+import ModalDeleteUser from '../components/ModalDeleteUser';
 import ModalAddProduct from '../components/ModalAddProduct';
 import NavbarNavigation from '../components/NavbarNavigation';
 
 class CashierList extends React.Component {
 
     componentDidMount(){
+        const headers = { authorization: this.props.auth.data.data.data.token }
         const config = {
-            headers : {authorization: this.props.auth.data.data.data.token},
-            params:{
-                nameSearch : '',
-                category_id : '',
-                limit : '1000',
-                page : 0,
-                product_name : '',
-                date : '',
-            }
+            headers
         }
 
-        this.props.dispatch(requestProducts(config))
+        this.props.dispatch(requestUsers(config))
             // .then((res)=>{console.log(res)})
     }
     // componentWillMount(){
     //     this.props.dispatch(requestProducts())
     // }
 
-    dispatchProducts = (e) =>{
-        this.props.dispatch(requestProducts())
-            .then((res)=>{
-                console.log(res)
-            })
-    }
     render() {
         // console.log(this.props.products)
         return (
@@ -52,31 +40,33 @@ class CashierList extends React.Component {
                         <th>Username</th>
                         <th>User Role</th>
                         <th>Created At</th>
-                        <th style={{textAlign: "center"}}>Action</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                {this.props.users.userData.data.data.map((data,i)=>{
+                {this.props.users.isLoading ? (
+                    this.props.users.userData.data.data.map((data,i)=>{
                         return(
                             <tr key={i}>
                                 <td>{i+1}</td>
                                 <td>{data.user_id}</td>
-                                <td>{data.user_role}</td>
-                                <td>{data.username}</td>
                                 <td>{data.name}</td>
+                                <td>{data.username}</td>
+                                <td>{data.user_role}</td>
                                 <td>{data.created_at}</td>
                                 <td style={{textAlign: "center"}}>
-                                <ModalUpdateProduct product_id={1}>
+                                <ModalUpdateUser user_id={data.user_id} name={data.name}>
                                     Update
-                                </ModalUpdateProduct> ||{' '}
-                                <ModalDeleteProduct product_id={1}>
+                                </ModalUpdateUser>{' '} || {' '}
+                                <ModalDeleteUser user_id={data.user_id} name={data.name}>
                                     Delete
-                                </ModalDeleteProduct>
+                                </ModalDeleteUser>
                                 </td>
                             </tr>
 
                         )
-                    })}
+                    })
+                ) : ''}
                 </tbody>
             </Table>
             </Container>

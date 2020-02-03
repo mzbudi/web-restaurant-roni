@@ -1,5 +1,6 @@
 const initialState = {
     usersData : [],
+    isLoading : false
 }
 
 const users = (state = initialState, action) => {
@@ -14,7 +15,8 @@ const users = (state = initialState, action) => {
             }
         case 'GET_USERS_FULFILLED':
             return{
-                userData: action.payload
+                userData: action.payload,
+                isLoading : true
             }
         default: return state
     }
