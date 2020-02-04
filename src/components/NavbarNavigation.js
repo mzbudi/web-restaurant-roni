@@ -18,6 +18,7 @@ import {
     withRouter,
     Link
 } from 'react-router-dom';
+import style from '../styles.js';
 
 class NavbarNavigation extends React.Component {
     constructor(props) {
@@ -27,40 +28,46 @@ class NavbarNavigation extends React.Component {
         }
         // this.handleSearchProduct = this.handleSearchProduct.bind(this)
     }
+
+    handleToggle = () => {
+        this.setState({
+            isOpen: !this.state.isOpen
+        })
+    }
     render() {
         return (
-            <Navbar color="light" light expand="md" style={{ marginBottom: "10px" }}>
+            <Navbar color="dark" dark expand="md" style={{ marginBottom: "10px" }}>
                 <NavbarBrand href="/">Restaurant Roni</NavbarBrand>
                 <NavbarToggler onClick={this.handleToggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav className="mr-auto" navbar>
                     </Nav>
-        <NavbarText>{this.props.auth.data.data.data.username}</NavbarText>
+                    <NavbarText style={{color:"white"}}>{this.props.auth.data.data.data.name}</NavbarText>
                     <Nav>
                         <UncontrolledDropdown nav inNavbar>
-                            <DropdownToggle nav caret>
+                            <DropdownToggle nav caret style={{color:"white"}}>
                                 Others
-                                </DropdownToggle>
+                            </DropdownToggle>
                             <DropdownMenu right>
-                                <DropdownItem>
-                                    <Link to="/">Home</Link>
-                                </DropdownItem>
+                                <Link to="/">
+                                    <DropdownItem style={style.buttonNavbar}>Home</DropdownItem>
+                                </Link>
                                 <DropdownItem divider />
-                                <DropdownItem>
-                                    <Link to="/order">Order</Link>
-                                </DropdownItem>
+                                <Link to="/order">
+                                    <DropdownItem style={style.buttonNavbar}>History Order</DropdownItem>
+                                </Link>
                                 <DropdownItem divider />
-                                <DropdownItem>
-                                    <Link to="/products">Products</Link>
-                                </DropdownItem>
+                                <Link to="/products">
+                                    <DropdownItem style={style.buttonNavbar}>Products</DropdownItem>
+                                </Link>
                                 <DropdownItem divider />
-                                <DropdownItem>
-                                    <Link to="/category">Category</Link>
-                                </DropdownItem>
+                                <Link to="/category">
+                                    <DropdownItem style={style.buttonNavbar}> Category</DropdownItem>
+                                </Link>
                                 <DropdownItem divider />
-                                <DropdownItem>
-                                    <Link to="/users">Cashier</Link>
-                                </DropdownItem>
+                                <Link to="/users">
+                                    <DropdownItem style={style.buttonNavbar}>Cashier</DropdownItem>
+                                </Link>
                                 <DropdownItem divider />
                                 <DropdownItem>
                                     <NavLink onClick={(e) => { this.handleLogout(e) }}>Logout</NavLink>
@@ -75,10 +82,10 @@ class NavbarNavigation extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return{
-        auth : state.auth,
-        products : state.products,
-        category : state.category
+    return {
+        auth: state.auth,
+        products: state.products,
+        category: state.category
     }
 }
 

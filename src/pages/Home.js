@@ -34,8 +34,8 @@ import ModalAddCategory from '../components/ModalAddCategory'
 import axios from 'axios';
 import qs from 'qs';
 import ModalDetailProduct from '../components/ModalDetailProduct';
-import cartImage from '../images/icon-keranjang-png-3.png';
-import Sidebar from '../components/Sidebar';
+import cartImage from '../images/cartpict.PNG';
+import bgImage from '../images/batikbg.jpg';
 import { connect } from 'react-redux';
 import { requestProducts } from '../public/redux/action/products';
 import { requestCategory } from '../public/redux/action/category';
@@ -57,7 +57,7 @@ class Home extends React.Component {
             modalCheckoutOpen: false,
             invoice: '',
             sorter: '',
-            pages:[],
+            pages: [],
             nameSearch: '',
             category_id: '',
             limit: '5',
@@ -85,14 +85,14 @@ class Home extends React.Component {
             }
         }
         this.props.dispatch(requestProducts(config))
-            .then((res)=>{
+            .then((res) => {
                 const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
                 const pages = [];
                 for (let i = 0; i <= page; i++) {
                     if (i !== page) { pages.push(i) }
                 }
                 this.setState({
-                    pages : pages
+                    pages: pages
                 })
             })
         this.props.dispatch(requestCategory(configCategory));
@@ -236,18 +236,18 @@ class Home extends React.Component {
                     date: this.state.date,
                 }
             }
-            this.props.dispatch(requestProducts(config)).then((res)=>{
+            this.props.dispatch(requestProducts(config)).then((res) => {
                 const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
                 const pages = [];
                 for (let i = 0; i <= page; i++) {
                     if (i !== page) { pages.push(i) }
                 }
                 this.setState({
-                    pages : pages
+                    pages: pages
                 })
             })
         });
-        
+
     }
 
 
@@ -272,14 +272,14 @@ class Home extends React.Component {
                     date: this.state.date,
                 }
             }
-            this.props.dispatch(requestProducts(config)).then((res)=>{
+            this.props.dispatch(requestProducts(config)).then((res) => {
                 const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
                 const pages = [];
                 for (let i = 0; i <= page; i++) {
                     if (i !== page) { pages.push(i) }
                 }
                 this.setState({
-                    pages : pages
+                    pages: pages
                 })
             })
         });
@@ -306,14 +306,14 @@ class Home extends React.Component {
                     date: this.state.date,
                 }
             }
-            this.props.dispatch(requestProducts(config)).then((res)=>{
+            this.props.dispatch(requestProducts(config)).then((res) => {
                 const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
                 const pages = [];
                 for (let i = 0; i <= page; i++) {
                     if (i !== page) { pages.push(i) }
                 }
                 this.setState({
-                    pages : pages
+                    pages: pages
                 })
             })
         });
@@ -322,12 +322,12 @@ class Home extends React.Component {
     handleSearchProduct = (e) => {
         e.preventDefault();
         this.setState({
-                nameSearch: e.target.value,
-                category_id: '',
-                limit: '5',
-                page: 0,
-                product_name: '',
-                date: '',
+            nameSearch: e.target.value,
+            category_id: '',
+            limit: '5',
+            page: 0,
+            product_name: '',
+            date: '',
         }, () => {
 
             const headers = { authorization: this.props.auth.data.data.data.token }
@@ -342,14 +342,14 @@ class Home extends React.Component {
                     date: this.state.date,
                 }
             }
-            this.props.dispatch(requestProducts(config)).then((res)=>{
+            this.props.dispatch(requestProducts(config)).then((res) => {
                 const page = Math.ceil(parseInt(this.props.products.dataProducts.data.data.totalData) / 5)
                 const pages = [];
                 for (let i = 0; i <= page; i++) {
                     if (i !== page) { pages.push(i) }
                 }
                 this.setState({
-                    pages : pages
+                    pages: pages
                 })
             })
         })
@@ -403,8 +403,7 @@ class Home extends React.Component {
         })
     }
     render() {
-        const { data, isOpen, dataProduct, dataTotal, searchData, category_data, cart, orders,pages } = this.state
-        console.log(pages);
+        const { data, isOpen, dataProduct, dataTotal, searchData, category_data, cart, orders, pages } = this.state
         return (
             <div>
                 <Modal isOpen={this.state.modalCheckoutOpen} toggle={(e) => { this.handleButton(e) }}>
@@ -421,13 +420,13 @@ class Home extends React.Component {
                         <Button color="primary" onClick={(e) => { this.handleButton(e) }}>Submit</Button>{' '}
                     </ModalFooter>
                 </Modal>
-                <Navbar color="light" light expand="md" style={{ marginBottom: "10px" }}>
+                <Navbar color="dark" dark expand="md" style={{ marginBottom: "10px" }}>
                     <NavbarBrand href="/">Restaurant Roni</NavbarBrand>
                     <NavbarToggler onClick={this.handleToggle} />
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className="mr-auto" navbar>
                             <UncontrolledDropdown nav inNavbar>
-                                <DropdownToggle nav caret>
+                                <DropdownToggle nav caret style={{ color: "white" }}>
                                     Sort
                                 </DropdownToggle>
                                 <DropdownMenu right>
@@ -441,7 +440,7 @@ class Home extends React.Component {
                                 </DropdownMenu>
                             </UncontrolledDropdown>
                             <UncontrolledDropdown nav inNavbar>
-                                <DropdownToggle nav caret>
+                                <DropdownToggle nav caret style={{ color: "white" }}>
                                     Search by Category
                                 </DropdownToggle>
                                 <DropdownMenu right>
@@ -464,39 +463,37 @@ class Home extends React.Component {
                                 }}
                             />
                         </Nav>
-                        <NavbarText>{data.name}</NavbarText>
+                        <NavbarText style={{ color: "white" }}>{this.props.auth.data.data.data.name}</NavbarText>
                         <Nav>
                             <UncontrolledDropdown nav inNavbar>
-                                <DropdownToggle nav caret>
+                                <DropdownToggle nav caret style={{ color: "white" }}>
                                     Others
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    <DropdownItem>
-                                        <Link to="/">Home</Link>
-                                    </DropdownItem>
+                                    <Link to="/">
+                                        <DropdownItem style={style.buttonNavbar}>Home</DropdownItem>
+                                    </Link>
                                     <DropdownItem divider />
-                                    <DropdownItem>
-                                        <Link to="/order">Order</Link>
-                                    </DropdownItem>
-                                    <DropdownItem divider />
-                                    {console.log(this.props.auth.data.data.data.user_role)}
                                     {this.props.auth.data.data.data.user_role === '1' ? (
                                         <React.Fragment>
-                                            <DropdownItem>
-                                                <Link to="/products">Products</Link>
-                                            </DropdownItem>
+                                            <Link to="/order">
+                                        <DropdownItem style={style.buttonNavbar}>History Order</DropdownItem>
+                                    </Link>
+                                    <DropdownItem divider />
+                                            <Link to="/products">
+                                                <DropdownItem style={style.buttonNavbar}>Products</DropdownItem>
+                                            </Link>
                                             <DropdownItem divider />
-                                            <DropdownItem>
-                                                <Link to="/category">Category</Link>
-                                            </DropdownItem>
+                                            <Link to="/category">
+                                                <DropdownItem style={style.buttonNavbar}> Category</DropdownItem>
+                                            </Link>
                                             <DropdownItem divider />
-                                            <DropdownItem>
-                                                <Link to="/users">Cashier</Link>
-                                            </DropdownItem>
+                                            <Link to="/users">
+                                                <DropdownItem style={style.buttonNavbar}>Cashier</DropdownItem>
+                                            </Link>
                                             <DropdownItem divider />
                                         </React.Fragment>
                                     ) : ''}
-
                                     <DropdownItem>
                                         <NavLink onClick={(e) => { this.handleLogout(e) }}>Logout</NavLink>
                                     </DropdownItem>
@@ -514,7 +511,7 @@ class Home extends React.Component {
                                     const item = data;
                                     if (i < 3) {
                                         return (
-                                            <Col style={style.columnCardPict}>
+                                            <Col md="4" style={style.columnCardPict}>
                                                 <Card key={i + 1}>
                                                     <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
                                                     <CardBody>
@@ -538,7 +535,7 @@ class Home extends React.Component {
                                     const item = data;
                                     if (i >= 3) {
                                         return (
-                                            <Col style={style.columnCardPict}>
+                                            <Col md="4" style={style.columnCardPict}>
                                                 <Card key={i + 1}>
                                                     <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
                                                     <CardBody>
@@ -588,20 +585,20 @@ class Home extends React.Component {
                                     <p>PPN : Rp. {this.formatRupiah(this.state.grandTotal * 0.10)}</p>
                                     <p>Total : Rp. {this.formatRupiah((this.state.grandTotal + (this.state.grandTotal * 0.10)))}</p>
                                     <ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
-                                    <ButtonToggle onClick={(e) => { this.handleCancel(e) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{ textAlign: "center" }}><img height={300} width={300} src={cartImage} alt="Logo"></img><p>Keranjang Kosong</p></div>)}
+                                    <ButtonToggle onClick={(e) => { this.handleCancel(e) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{ textAlign: "center" }}><img height={250} width={250} src={cartImage} alt="Logo"></img><p>Cart is Empty</p></div>)}
                             </div>
                         </Col>
                     </Row>
                     <Pagination size="sm">
                         {this.state.pages.map((page, i) => {
-                                return (
-                                    <PaginationItem >
-                                        <PaginationLink value={page} onClick={(e) => { this.paginationClick(e) }}>
-                                            {page + 1}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                )
-                            })
+                            return (
+                                <PaginationItem >
+                                    <PaginationLink value={page} onClick={(e) => { this.paginationClick(e) }}>
+                                        {page + 1}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            )
+                        })
                         }
                     </Pagination>
                 </Container>

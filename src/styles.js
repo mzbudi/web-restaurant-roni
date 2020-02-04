@@ -1,3 +1,4 @@
+import bgImage from './images/batikbg.jpg';
 const style = {
     formMaker : {
       position: 'absolute',
@@ -68,6 +69,13 @@ const style = {
     buttonAddProduct : {
         marginBottom: "10px",
         marginTop: "10px",
+    },
+    buttonNavbar : {
+        textAlign: "center", 
+        textDecoration: "none"
+    },
+    backGroundStyle:{
+        backgroundImage: `url(${bgImage})`
     }
 
 }

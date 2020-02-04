@@ -8,6 +8,7 @@ import {Provider} from 'react-redux';
 import storage from './public/redux/store';
 import {PersistGate} from 'redux-persist/integration/react'
 
+
 const {store, persistor} = storage
 
 ReactDOM.render(
@@ -16,6 +17,7 @@ ReactDOM.render(
                 <App />
             </PersistGate >
         </Provider>, document.getElementById('root'));
+
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
