@@ -15,10 +15,10 @@ export const updateProducts = (product_id, formData, headers) => {
     }
 }
 
-export const deleteProducts = (product_id, config) =>{
+export const deleteProducts = (product_id, headers) =>{
     return{
         type: 'DELETE_PRODUCTS',
-        payload: axios.delete(`http://127.0.0.1:3001/products/${product_id}` , config)
+        payload: axios.delete(`http://127.0.0.1:3001/products/${product_id}` , headers)
     }
 }
 
