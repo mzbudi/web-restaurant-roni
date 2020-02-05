@@ -38,7 +38,10 @@ import cartImage from '../images/cartpict.PNG';
 import bgImage from '../images/batikbg.jpg';
 import { connect } from 'react-redux';
 import { requestProducts } from '../public/redux/action/products';
+import { requestLogout } from '../public/redux/action/auth';
 import { requestCategory } from '../public/redux/action/category';
+import { addCart } from '../public/redux/action/cart';
+import Cart from '../components/Cart';
 
 
 class Home extends React.Component {
@@ -68,8 +71,10 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        // const data = JSON.parse(localStorage.getItem('persist:root'))
-        const headers = { authorization: this.props.auth.data.data.data.token }
+        if(this.props.auth.data.length === 0){
+            this.props.history.push('/login')
+        }else{
+            const headers = { authorization: this.props.auth.data.data.data.token }
         const configCategory = {
             headers
         }
@@ -96,6 +101,8 @@ class Home extends React.Component {
                 })
             })
         this.props.dispatch(requestCategory(configCategory));
+        } 
+        
     }
 
     handleCancel = (e) => {
@@ -183,36 +190,38 @@ class Home extends React.Component {
 
     addOrderButton = (e, item) => {
         let arrExist = [];
-        if (this.state.cart.length === 0) {
-            this.setState({
-                cart: [...this.state.cart, item],
-                orders: [...this.state.orders, {
-                    product_id: item.product_id,
-                    product_price: item.product_price,
-                    quantity: 1,
-                    totalPrice: 1 * item.product_price
-                }],
-                grandTotal: this.state.grandTotal + parseInt(item.product_price)
-            })
-        } else {
-            this.state.cart.map((data, i) => {
-                if (data.product_id === item.product_id) {
-                    arrExist.push('1')
-                }
-            })
-            if (arrExist.length === 0) {
-                this.setState({
-                    cart: [...this.state.cart, item],
-                    orders: [...this.state.orders, {
-                        product_id: item.product_id,
-                        product_price: item.product_price,
-                        quantity: 1,
-                        totalPrice: 1 * item.product_price
-                    }],
-                    grandTotal: this.state.grandTotal + parseInt(item.product_price)
-                })
-            }
-        }
+        // console.log(item)
+        this.props.dispatch(addCart(item))
+        // if (this.state.cart.length === 0) {
+        //     this.setState({
+        //         cart: [...this.state.cart, item],
+        //         orders: [...this.state.orders, {
+        //             product_id: item.product_id,
+        //             product_price: item.product_price,
+        //             quantity: 1,
+        //             totalPrice: 1 * item.product_price
+        //         }],
+        //         grandTotal: this.state.grandTotal + parseInt(item.product_price)
+        //     })
+        // } else {
+        //     this.state.cart.map((data, i) => {
+        //         if (data.product_id === item.product_id) {
+        //             arrExist.push('1')
+        //         }
+        //     })
+        //     if (arrExist.length === 0) {
+        //         this.setState({
+        //             cart: [...this.state.cart, item],
+        //             orders: [...this.state.orders, {
+        //                 product_id: item.product_id,
+        //                 product_price: item.product_price,
+        //                 quantity: 1,
+        //                 totalPrice: 1 * item.product_price
+        //             }],
+        //             grandTotal: this.state.grandTotal + parseInt(item.product_price)
+        //         })
+        //     }
+        // }
     }
 
     searchByCategory = (e) => {
@@ -463,7 +472,7 @@ class Home extends React.Component {
                                 }}
                             />
                         </Nav>
-                        <NavbarText style={{ color: "white" }}>{this.props.auth.data.data.data.name}</NavbarText>
+                        <NavbarText style={{ color: "white" }}>{this.props.auth.data.length === 0 ? this.props.history.push('/login') : ''}</NavbarText>
                         <Nav>
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret style={{ color: "white" }}>
@@ -474,7 +483,29 @@ class Home extends React.Component {
                                         <DropdownItem style={style.buttonNavbar}>Home</DropdownItem>
                                     </Link>
                                     <DropdownItem divider />
-                                    {this.props.auth.data.data.data.user_role === '1' ? (
+                                    {this.props.auth.data.length === 0 ? this.props.history.push('/login') : (
+                                        this.props.auth.data.data.data.user_role === '1' ? (
+                                            <React.Fragment>
+                                                <Link to="/order">
+                                            <DropdownItem style={style.buttonNavbar}>History Order</DropdownItem>
+                                        </Link>
+                                        <DropdownItem divider />
+                                                <Link to="/products">
+                                                    <DropdownItem style={style.buttonNavbar}>Products</DropdownItem>
+                                                </Link>
+                                                <DropdownItem divider />
+                                                <Link to="/category">
+                                                    <DropdownItem style={style.buttonNavbar}> Category</DropdownItem>
+                                                </Link>
+                                                <DropdownItem divider />
+                                                <Link to="/users">
+                                                    <DropdownItem style={style.buttonNavbar}>Cashier</DropdownItem>
+                                                </Link>
+                                                <DropdownItem divider />
+                                            </React.Fragment>
+                                        ) : ''
+                                    )}
+                                    {/* {this.props.auth.data.data.data.user_role === '1' ? (
                                         <React.Fragment>
                                             <Link to="/order">
                                         <DropdownItem style={style.buttonNavbar}>History Order</DropdownItem>
@@ -493,9 +524,9 @@ class Home extends React.Component {
                                             </Link>
                                             <DropdownItem divider />
                                         </React.Fragment>
-                                    ) : ''}
+                                    ) : ''} */}
                                     <DropdownItem>
-                                        <NavLink onClick={(e) => { this.handleLogout(e) }}>Logout</NavLink>
+                                        <NavLink onClick={(e) => { this.props.dispatch(requestLogout()) }}>Logout</NavLink>
                                     </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
@@ -519,7 +550,7 @@ class Home extends React.Component {
                                                         <CardSubtitle>Rp.{this.formatRupiah(data.product_price)}</CardSubtitle>
                                                         <div style={{ display: "inline-flex" }}>
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
-                                                                this.addOrderButton(e, item)
+                                                                this.props.dispatch(addCart(item))
                                                             }}>Add</Button>
                                                             <ModalDetailProduct product_id={data.product_id} data={data} />
                                                         </div>
@@ -555,7 +586,7 @@ class Home extends React.Component {
                             </Row>
                         </Col>
                         <Col xs="4" style={{ padding: "0" }}>
-                            <div style={style.cartDiv}>
+                            {/* <div style={style.cartDiv}>
                                 <div>
                                     {cart.map((data, i) => {
                                         const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
@@ -586,7 +617,8 @@ class Home extends React.Component {
                                     <p>Total : Rp. {this.formatRupiah((this.state.grandTotal + (this.state.grandTotal * 0.10)))}</p>
                                     <ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
                                     <ButtonToggle onClick={(e) => { this.handleCancel(e) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{ textAlign: "center" }}><img height={250} width={250} src={cartImage} alt="Logo"></img><p>Cart is Empty</p></div>)}
-                            </div>
+                            </div> */}
+                            <Cart />
                         </Col>
                     </Row>
                     <Pagination size="sm">
@@ -612,6 +644,7 @@ const mapStateToProps = state => {
         auth: state.auth,
         products: state.products,
         category: state.category,
+        cart: state.cart,
     }
 }
 

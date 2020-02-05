@@ -14,3 +14,9 @@ export const requestRegister = (body) =>{
         payload : axios.post('http://127.0.0.1:3001/auth/register',qs.stringify(body))
     }
 }
+
+export const requestLogout = () =>{
+    return {
+        type: 'LOGOUT'
+    }
+}
