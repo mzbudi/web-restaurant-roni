@@ -14,7 +14,8 @@ import {
     Label,
     Input,
     Col,
-    FormText
+    FormText,
+    Alert
 } from 'reactstrap';
 import style from '../styles';
 import { withRouter, Link } from 'react-router-dom';
@@ -28,14 +29,17 @@ class ModalAddProduct extends React.Component {
         this.state = {
             isOpen: false,
             category_data:[],
-            newProduct : {
-                category_id: "5"
-            },
-            error: ''
+            newProduct : {},
+            visibleAlert : false,
+            error : "",
+            alertColor : 'danger',
         }
     }
 
     componentDidMount(){
+        if(this.props.auth.data.length === 0){
+            this.props.history.push('/login')
+        }
         const headers = { authorization: this.props.auth.data.data.data.token }
         const configCategory = {
             headers
@@ -49,6 +53,12 @@ class ModalAddProduct extends React.Component {
         })
     }
 
+    onDismissAlert = () => {
+        this.setState({
+            visibleAlert : !this.state.visibleAlert
+        })
+    }
+
     handleButton = () => {
         this.setState({
             isOpen: false
@@ -59,6 +69,7 @@ class ModalAddProduct extends React.Component {
         this.setState({
             isOpen: false
         })
+
         const formData = new FormData();
         formData.append('category_id',this.state.newProduct.category_id)
         formData.append('product_name',this.state.newProduct.product_name)
@@ -82,7 +93,20 @@ class ModalAddProduct extends React.Component {
                         date : '',
                     }
                 }
+                this.setState({
+                    error : res.value.data.data.message, 
+                    alertColor:"success" ,
+                    visibleAlert : true,
+                    isOpen: false,
+                    newProduct:{}});
                 this.props.dispatch(requestProducts(dataProducts,headers))
+            })
+            .catch((error)=>{
+                this.setState({
+                    error : "Data Tidak Boleh Kosong Atau Berbeda Format", 
+                    alertColor:"danger" ,
+                    visibleAlert : true,
+                    isOpen: false});
             })
     }
 
@@ -120,6 +144,9 @@ class ModalAddProduct extends React.Component {
         const { isOpen } = this.state
         return (
             <div>
+                <Alert color={this.state.alertColor} isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
+                {this.state.error}
+                </Alert>
                 <Button style={style.buttonAddProduct} color="dark" onClick={this.handleClick}>+ Product</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Add Product</ModalHeader>

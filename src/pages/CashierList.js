@@ -22,14 +22,9 @@ class CashierList extends React.Component {
         }
 
         this.props.dispatch(requestUsers(config))
-            // .then((res)=>{console.log(res)})
     }
-    // componentWillMount(){
-    //     this.props.dispatch(requestProducts())
-    // }
-
+  
     render() {
-        // console.log(this.props.products)
         return (
             <React.Fragment>
             <NavbarNavigation />

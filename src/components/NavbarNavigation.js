@@ -19,6 +19,7 @@ import {
     Link
 } from 'react-router-dom';
 import style from '../styles.js';
+import { requestLogout } from '../public/redux/action/auth';
 
 class NavbarNavigation extends React.Component {
     constructor(props) {
@@ -34,6 +35,14 @@ class NavbarNavigation extends React.Component {
             isOpen: !this.state.isOpen
         })
     }
+
+  
+
+    componentWillMount(){
+        if(this.props.auth.data.length === 0){
+            this.props.history.push('/login')
+        }
+    }
     render() {
         return (
             <Navbar color="dark" dark expand="md" style={{ marginBottom: "10px" }}>
@@ -42,7 +51,7 @@ class NavbarNavigation extends React.Component {
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav className="mr-auto" navbar>
                     </Nav>
-                    <NavbarText style={{color:"white"}}>{this.props.auth.data.data.data.name}</NavbarText>
+                    <NavbarText style={{color:"white"}}>{this.props.auth.data.length === 0 ? (this.props.history.push('/login')): (this.props.auth.data.data.data.name)}</NavbarText>
                     <Nav>
                         <UncontrolledDropdown nav inNavbar>
                             <DropdownToggle nav caret style={{color:"white"}}>
@@ -70,7 +79,7 @@ class NavbarNavigation extends React.Component {
                                 </Link>
                                 <DropdownItem divider />
                                 <DropdownItem>
-                                    <NavLink onClick={(e) => { this.handleLogout(e) }}>Logout</NavLink>
+                                <NavLink onClick={(e) => { this.props.dispatch(requestLogout()) }}>Logout</NavLink>
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>

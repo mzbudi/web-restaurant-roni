@@ -91,8 +91,8 @@ class Login extends React.Component {
     }
     render() {
         return (
-            <div>
-            <Alert color="danger" isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
+           <div>
+               <Alert color="danger" isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
                 {this.state.error}
             </Alert>
             <Form style={style.formMaker}>
@@ -119,10 +119,10 @@ class Login extends React.Component {
                 <div>{this.props.auth.isLoading ? 
                     (<Spinner style={style.spinnerLogin} />)
                     :
-                    (<ButtonToggle style={style.buttonLogin} onClick={(e)=>{this.handleLogin(e)}} color="secondary">Login</ButtonToggle>)
+                    (<ButtonToggle style={style.buttonLogin} onClick={(e)=>{this.handleLogin(e)}} color="secondary" block>Login</ButtonToggle>)
                 }</div>
                 <div>
-                    <ButtonToggle style={style.buttonRegister} onClick={(e)=>{this.handleRegister(e)}} color="success">Register</ButtonToggle>
+                    <ButtonToggle style={style.buttonRegister} onClick={(e)=>{this.handleRegister(e)}} color="success" block>Register</ButtonToggle>
                 </div>
             </Form>
             </div>

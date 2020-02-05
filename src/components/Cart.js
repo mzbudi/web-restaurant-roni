@@ -31,8 +31,16 @@ import { requestProducts } from '../public/redux/action/products';
 import { requestLogout } from '../public/redux/action/auth';
 import { requestCategory } from '../public/redux/action/category';
 import { addCart, removeCart , emptyCart, incrementCart, decrementCart, createOrder} from '../public/redux/action/cart';
-class Cart extends React.Component {
+import ModalCheckout from '../components/ModalCheckout'
 
+class Cart extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isOpen : false,
+            cart : []
+        }
+    }
     formatRupiah = (angka, prefix) => {
         let number_string = angka.toString().replace(/[^,\d]/g, '');
         let split = number_string.split(',');
@@ -62,7 +70,11 @@ class Cart extends React.Component {
 
         this.props.dispatch(createOrder(body,headers))
             .then(res => {
-                console.log('order berhasil hiyaaa')
+                this.setState({
+                    isOpen : true,
+                    cart : this.props.cart.cartData
+                },()=>{ this.props.dispatch(emptyCart())
+                    console.log(this.state.cart)})
             })
 
     }
@@ -102,7 +114,8 @@ class Cart extends React.Component {
                     <p>Sub Total : Rp. {this.props.cart.grandTotal}</p>
                     <p>PPN : Rp. {this.formatRupiah((this.props.cart.grandTotal*0.10))}</p>
                     <p>Total : Rp. {this.formatRupiah((this.props.cart.grandTotal + (this.props.cart.grandTotal * 0.10)))}</p>
-                    <ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
+                    <ModalCheckout />
+                    {/* <ButtonToggle  onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle> */}
                     <ButtonToggle onClick={(e) => { this.props.dispatch(emptyCart()) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{ textAlign: "center" }}>
                         <img height={250} width={250} src={cartImage} alt="Logo"></img><p>Cart is Empty</p>
                     </div>)}

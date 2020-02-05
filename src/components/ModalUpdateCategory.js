@@ -11,7 +11,7 @@ import {
     Form,
     FormGroup,
     Label,
-    Input, Col, FormText
+    Input, Col, FormText,Container, Alert
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
@@ -23,13 +23,22 @@ class ModalUpdateCategory extends React.Component {
         super(props)
         this.state = {
             isOpen: false,
-            category_name: this.props.data.category_name
+            category_name: this.props.data.category_name,
+            visibleAlert : false,
+            error : "",
+            alertColor : 'danger',
         }
     }
 
     handleClick = () => {
         this.setState({
             isOpen: true
+        })
+    }
+
+    onDismissAlert = () => {
+        this.setState({
+            visibleAlert : !this.state.visibleAlert
         })
     }
 
@@ -56,7 +65,14 @@ class ModalUpdateCategory extends React.Component {
         const headers = {
             headers : {authorization: this.props.auth.data.data.data.token}
         }
-        // const data = JSON.parse(localStorage.getItem('dataAccount'))
+
+        if(dataCategory.category_name == ''){
+            this.setState({
+                visibleAlert : true,
+                error : "Data Tidak Boleh Kosong",
+                alertColor : 'danger',
+            })
+        }else{
         axios.put(`http://127.0.0.1:3001/category/${this.props.category_id}`,dataCategory,headers)
                 .then(res => {
                     if (res.status === 200) {
@@ -71,16 +87,18 @@ class ModalUpdateCategory extends React.Component {
                         })
                     }
                 }).catch(err => {
-                    // localStorage.removeItem('dataAccount');
-                    // this.props.history.push('/login')
                     console.log(err)
                 })
+        }
     }
 
     render() {
         const { isOpen } = this.state
         return (
             <div>
+                <Alert color={this.state.alertColor} isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
+                {this.state.error}
+                </Alert>
                 <Button style={{marginBottom:"10px"}} color="dark" onClick={this.handleClick}>Update</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Update Category</ModalHeader>

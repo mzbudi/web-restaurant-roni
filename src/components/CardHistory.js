@@ -26,19 +26,19 @@ class CardHistory extends React.Component {
         return (
             <Row style={{marginBottom: "40px", marginTop: "30px" }}>
                 <Col md="4">
-                    <Card body>
+                    <Card body style={{backgroundColor:"#b3d9ff"}}>
                         <CardTitle>Today's Income</CardTitle>
-                        <CardText>{this.props.todayTotals.length > 0 ? ('Rp ' + this.formatRupiah(this.props.todayTotals.reduce((acc,cur)=>{return acc+cur}))+' Obtained'):('Not Yet Sale')}</CardText>
+                        <CardText>{this.props.todayTotals.length > 0 ? ('Rp ' + this.formatRupiah(this.props.todayTotals.reduce((acc,cur)=>{return parseInt(acc)+parseInt(cur)}))+' Obtained'):('Not Yet Sale')}</CardText>
                     </Card>
                 </Col>
                 <Col md="4">
-                    <Card body>
+                    <Card body style={{backgroundColor:"#ffffb3"}}>
                         <CardTitle>Orders Accepted</CardTitle>
                         <CardText>{this.props.totalOrders} Orders Accepted</CardText>
                     </Card>
                 </Col>
                 <Col md="4">
-                    <Card body>
+                    <Card body style={{backgroundColor:"#b3ffb3"}}>
                         <CardTitle>This Years Income</CardTitle>
                         <CardText>
                             Rp. {this.formatRupiah(this.props.totalRevenue.reduce((acc,cur)=>{return acc+cur}))}

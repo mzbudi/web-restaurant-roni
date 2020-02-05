@@ -2,10 +2,11 @@ import bgImage from './images/batikbg.jpg';
 const style = {
     formMaker : {
       position: 'absolute',
+        width: '500',
       left: '50%',
       top: '50%',
       transform: 'translate(-50%, -50%)',
-      minWidth : '320'
+      
       },
     inputLogin : {
         minWidth : '320'

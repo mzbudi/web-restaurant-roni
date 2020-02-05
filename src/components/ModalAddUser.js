@@ -28,9 +28,10 @@ class ModalAddUser extends React.Component {
             name : "",
             visibleAlert : false,
             error : "",
+            alertColor : 'danger',
             isLoading : false,
             message : '',
-            alertColor : 'danger'
+            
         }
     }
 
@@ -83,27 +84,38 @@ class ModalAddUser extends React.Component {
         this.setState({
             isLoading : true,
         })
-        if(data.username === '' || data.password === '' || data.name === ''){
+        if(((data.username == '' || data.password == '') || data.name == '')){
             this.setState({
                 visibleAlert : true,
                 error: "Data Tidak Boleh Kosong!",
-                isLoading : false,
-                alertColor:"danger"
+                alertColor:"danger",
+                isOpen: false
             })
         }else{
             this.props.dispatch(requestRegister(data))
             .then((res)=>{
-                this.setState({error : res.value.data.data.message, 
-                    alertColor:"success" ,
-                    visibleAlert : true,
-                    isOpen: false});
-                this.props.dispatch(requestUsers(headers))
+                if(res.value.data.status == 200){
+                    this.setState({
+                        error : res.value.data.data.message, 
+                        alertColor:"success" ,
+                        visibleAlert : true,
+                        isOpen: false});
+                    this.props.dispatch(requestUsers(headers))
+                }else if(res.value.data.status == 304){
+                    this.setState({
+                        error : res.value.data.data.message, 
+                        alertColor:"danger" ,
+                        visibleAlert : true,
+                        isOpen: false});
+                    this.props.dispatch(requestUsers(headers))
+                }
             })
             .catch((error)=>{
                 this.setState({
+                    error:"Username Sudah Ada",
+                    alertColor:"danger" ,
                     visibleAlert : true,
-                    error : "Tidak Ada Koneksi Internet",
-                    alertColor:"danger"
+                    isOpen: false
                 })
             })
             .finally(()=>{
@@ -111,27 +123,6 @@ class ModalAddUser extends React.Component {
                     isLoading : false,
                 })
             })
-        //     const body = qs.stringify(data)
-        //     axios.post('http://127.0.0.1:3001/auth/register',body)
-                // .then((res)=>{
-                //     if(res.status === 200){
-                //         try {
-                //             this.setState({error : res.data.data.message, visibleAlert : true});
-                //         } catch (error) {
-                //             this.setState({
-                //                 visibleAlert : true,
-                //                 error : "Username Atau Password Salah",
-                //             })
-                //         }
-                //     }
-                // })
-                // .catch((error)=>{
-                //     this.setState({
-                //         visibleAlert : true,
-                //         error : "Tidak Ada Koneksi Internet",
-                //     })
-                // })
-                
         }
 
     }

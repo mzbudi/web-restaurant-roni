@@ -26,6 +26,12 @@ class ProductList extends React.Component {
 
         this.props.dispatch(requestProducts(config))
     }
+    
+    componentWillMount(){
+        if(this.props.auth.length === 0){
+            this.props.history.push('/login')
+        }
+    }
 
     render() {
         return (

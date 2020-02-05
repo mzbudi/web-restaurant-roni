@@ -10,7 +10,10 @@ import {
     Form,
     FormGroup,
     Label,
-    Input, Col, FormText
+    Input, 
+    Col, 
+    FormText,
+    Alert
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
@@ -22,7 +25,10 @@ class ModalAddCategory extends React.Component {
         super(props)
         this.state = {
             isOpen: false,
-            category_name : ''
+            category_name : '',
+            visibleAlert : false,
+            error : "",
+            alertColor : 'danger',
         }
     }
 
@@ -44,6 +50,12 @@ class ModalAddCategory extends React.Component {
         })
     }
     
+    onDismissAlert = () => {
+        this.setState({
+            visibleAlert : !this.state.visibleAlert
+        })
+    }
+    
     handleSubmitCategory=(e)=>{
         this.setState({
             isOpen: false
@@ -54,6 +66,13 @@ class ModalAddCategory extends React.Component {
         const headers = {
             headers : {authorization: this.props.auth.data.data.data.token}
         }
+        if(dataCategory.category_name == ''){
+            this.setState({
+                visibleAlert : true,
+                error : "Data Tidak Boleh Kosong",
+                alertColor : 'danger',
+            })
+        }else{
         // const data = JSON.parse(localStorage.getItem('dataAccount'))
         axios.post('http://127.0.0.1:3001/category',dataCategory,headers)
                 .then(res => {
@@ -69,15 +88,22 @@ class ModalAddCategory extends React.Component {
                         })
                     }
                 }).catch(err => {
-                    // this.props.history.push('/login');
-                    console.log(err)
+                    this.setState({
+                        visibleAlert : true,
+                        error : "Terjadi Kesalahan",
+                        alertColor : 'danger',
+                    })
                 })
+        }
     }
 
     render() {
         const { isOpen } = this.state
         return (
             <div>
+                <Alert color={this.state.alertColor} isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
+                {this.state.error}
+                </Alert>
                 <Button style={style.buttonAddProduct} color="dark" onClick={this.handleClick}>+ Category</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Add Category</ModalHeader>

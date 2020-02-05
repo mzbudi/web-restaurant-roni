@@ -472,7 +472,7 @@ class Home extends React.Component {
                                 }}
                             />
                         </Nav>
-                        <NavbarText style={{ color: "white" }}>{this.props.auth.data.length === 0 ? this.props.history.push('/login') : ''}</NavbarText>
+                        <NavbarText style={{ color: "white" }}>{this.props.auth.data.length === 0 ? this.props.history.push('/login') : this.props.auth.data.data.data.name}</NavbarText>
                         <Nav>
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret style={{ color: "white" }}>

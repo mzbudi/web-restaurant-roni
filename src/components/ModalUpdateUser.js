@@ -11,7 +11,7 @@ import {
     Form,
     FormGroup,
     Label,
-    Input, Col, FormText
+    Input, Col, FormText, Alert
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
@@ -25,12 +25,21 @@ class ModalUpdateUser extends React.Component {
         this.state = {
             isOpen: false,
             updateOpen: false,
-            Password:'',
+            password:'',
             name: this.props.name,
             role: this.props.user_role,
             warningModal: false,
-            messageWarning: "Proses Berhasil"
+            messageWarning: "Proses Berhasil",
+            visibleAlert : false,
+            error : "",
+            alertColor : 'danger',
         }
+    }
+
+    onDismissAlert = () => {
+        this.setState({
+            visibleAlert : !this.state.visibleAlert
+        })
     }
 
     handleUpdateButton = () => {
@@ -46,40 +55,40 @@ class ModalUpdateUser extends React.Component {
             user_role: '2',
             password: this.state.password
         }
-        // console.log(this.props.product_id, formData, this.props.auth.data.data.data.token)
 
-        // this.props.dispatch(updateProducts(this.props.product_id, formData, headers))
-        //     .then( (res) => {
-        //         const dataProducts = {
-        //             params:{
-        //                 nameSearch : '',
-        //                 category_id : '',
-        //                 limit : '1000',
-        //                 page : 0,
-        //                 product_name : '',
-        //                 date : '',
-        //             }
-        //         }
-        //         this.props.dispatch(requestProducts(dataProducts,headers))
-        //     })
-        // const data = JSON.parse(localStorage.getItem('dataAccount'))
+        if(body.name === "" || body.password === ""){
+            this.setState({
+                visibleAlert : true,
+                error: "Data Tidak Boleh Kosong!",
+                alertColor:"danger",
+                isOpen: false
+            })
+        }else{
 
         axios.put(`http://127.0.0.1:3001/users/${this.props.user_id}`, body, headers)
             .then(res => {
                 if (res.status === 200) {
                     try {
-                        // this.setState({
-                        //     warningModal:true,
-                        //     messageWarning : "Proses Berhasil"
-                        // })
+                        this.setState({
+                            visibleAlert : true,
+                            error: "Proses Berhasil",
+                            alertColor:"success",
+                            isOpen: false
+                        })
                         this.props.dispatch(requestUsers(headers))
                     } catch (error) {
                         console.log(error)
                     }
                 }
             }).catch(err => {
-                console.log(err)
+                this.setState({
+                    visibleAlert : true,
+                    error: "Terjadi Kesalahan",
+                    alertColor:"danger",
+                    isOpen: false
+                })
             })
+        }
     }
 
     handleUpdateClick = () => {
@@ -116,9 +125,12 @@ class ModalUpdateUser extends React.Component {
     }
 
     render() {
-        const { updateOpen , password, name } = this.state
+        const { updateOpen , password, name} = this.state
         return (
             <React.Fragment>
+                <Alert color={this.state.alertColor} isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
+                {this.state.error}
+                </Alert>
                 <Button style={{ marginBottom: "10px" }} color="dark" onClick={(e) => { this.handleUpdateClick(e) }}>Update</Button>
                 <Modal isOpen={updateOpen} toggle={(e) => { this.handleUpdateClick(e) }} >
                     <ModalHeader toggle={(e) => { this.handleUpdateButtonClick(e) }}>Update User</ModalHeader>

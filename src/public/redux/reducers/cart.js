@@ -88,8 +88,7 @@ const cart = (state = initialState, action) => {
             }
         case 'POST_CART_FULFILLED':
             return{
-                cartData : [],
-                grandTotal: 0
+                ...state,
             }
         default : return state
     }

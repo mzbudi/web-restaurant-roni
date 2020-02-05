@@ -11,50 +11,96 @@ import {
     ModalFooter,
     Form,
     FormGroup,
+    Table,
     Label,
     Input, Col, FormText
 } from 'reactstrap';
 import style from '../styles';
+import { addCart, removeCart, emptyCart, incrementCart, decrementCart, createOrder } from '../public/redux/action/cart';
+import { connect } from 'react-redux';
 
-class ModalDetailProduct extends React.Component {
+class ModalCheckout extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isOpen: false
+            isOpen: false,
+            cart: [],
+            invoice: ''
         }
     }
 
     handleClick = () => {
+        this.props.dispatch(emptyCart())
+    }
+
+    handleCheckout = (e) => {
         this.setState({
             isOpen: true
         })
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
-
-        const body ={
-            user_id : data.user_id,
-            orders : this.state.orders
+        const body = {
+            user_id: this.props.auth.data.data.data.user_id,
+            orders: this.props.cart.cartData
         }
 
-        axios.post('http://127.0.0.1:3001/order/', body)
+        const headers = {
+            headers: { authorization: this.props.auth.data.data.data.token }
+        }
+
+        this.props.dispatch(createOrder(body, headers))
             .then(res => {
-                if (res.status === 200) {
-                    try {
-                        this.setState({
-                            cart:[],
-                            orders:[],
-                            grandTotal : 0,
-                            modalCheckoutOpen : true
-                        })
-                    } catch (error) {
-                        console.log(error)
-                    }
-                }
-            }).catch(err => {
-                console.log(err)
+                this.setState({
+                    isOpen: true,
+                    cart: this.props.cart.cartData,
+                    grandTotal: this.props.cart.grandTotal,
+                    invoice: res.value.data.data.invoice
+                })
             })
 
-        console.log(body)
     }
+
+    formatRupiah = (angka, prefix) => {
+        let number_string = angka.toString().replace(/[^,\d]/g, '');
+        let split = number_string.split(',');
+        let remains = split[0].length % 3;
+        let rupiah = split[0].substr(0, remains);
+        let thausand = split[0].substr(remains).match(/\d{3}/gi);
+
+        if (thausand) {
+            let separator = remains ? '.' : '';
+            rupiah += separator + thausand.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
+
+    //     const data = JSON.parse(localStorage.getItem('dataAccount'))
+
+    //     const body ={
+    //         user_id : data.user_id,
+    //         orders : this.state.orders
+    //     }
+
+    //     axios.post('http://127.0.0.1:3001/order/', body)
+    //         .then(res => {
+    //             if (res.status === 200) {
+    //                 try {
+    //                     this.setState({
+    //                         cart:[],
+    //                         orders:[],
+    //                         grandTotal : 0,
+    //                         modalCheckoutOpen : true
+    //                     })
+    //                 } catch (error) {
+    //                     console.log(error)
+    //                 }
+    //             }
+    //         }).catch(err => {
+    //             console.log(err)
+    //         })
+
+    //     console.log(body)
+    // }
 
     handleButton = () => {
         this.setState({
@@ -62,25 +108,55 @@ class ModalDetailProduct extends React.Component {
         })
     }
 
-    
+
     render() {
         const { isOpen } = this.state
-        const {orders} = this.props
         return (
             <div>
-                <Button color="dark" onClick={this.handleClick}>Checkout</Button>
-                <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
-                    <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
+                <Button style={style.buttonCheckout} color="dark" onClick={(e) => { this.handleCheckout(e) }}>Checkout</Button>
+                <Modal isOpen={isOpen} toggle={this.handleClick}>
+                    <ModalHeader>Detail Transaksi Invoice : {this.state.invoice} </ModalHeader>
                     <ModalBody>
-                        <Form>
-                            <FormGroup>
-                                <p>Pesanan Sudah Di Input</p>
-                            </FormGroup>
-                        </Form>
+                        <Table light>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Product Name</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {this.state.cart.map((data, i) => {
+                                    return (
+                                        <tr>
+                                            <td>{i+1}</td>
+                                            <td>{data.product_name}</td>
+                                            <td>{data.quantity}</td>
+                                            <td>{data.totalPrice}</td>
+                                        </tr>
+                                    )
+                                })}
+                            <tr>
+                                <td colspan="2"><p>Sub Total : Rp. {this.state.grandTotal}</p></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><p>PPN : Rp. {this.formatRupiah((this.state.grandTotal * 0.10))}</p></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><p>Total : Rp. {this.formatRupiah((this.state.grandTotal + (this.state.grandTotal * 0.10)))}</p></td>
+                            </tr>
+                            </tbody>
+                        </Table>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.handleButton}>Submit</Button>{' '}
-                        <Button color="secondary" onClick={this.handleButton}>Cancel</Button>
+                        <Button color="primary" onClick={() => {
+                            this.props.dispatch(emptyCart(), () => {
+                                this.setState({
+                                    isOpen: false
+                                })
+                            })
+                        }}>Submit</Button>{' '}
                     </ModalFooter>
                 </Modal>
             </div>
@@ -88,4 +164,13 @@ class ModalDetailProduct extends React.Component {
     }
 }
 
-export default ModalDetailProduct;
+const mapStateToProps = state => {
+    return {
+        auth: state.auth,
+        products: state.products,
+        category: state.category,
+        cart: state.cart,
+    }
+}
+
+export default connect(mapStateToProps)(ModalCheckout);
