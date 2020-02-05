@@ -37,6 +37,6 @@ export const decrementCart = (id) =>{
 export const createOrder = (body, headers) =>{
     return{
         type : 'POST_CART',
-        payload : axios.post('http://127.0.0.1:3001/order/', body, headers)
+        payload : axios.post(`${process.env.REACT_APP_API_HOST}/order/`, body, headers)
     }
 }

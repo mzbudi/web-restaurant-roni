@@ -192,36 +192,6 @@ class Home extends React.Component {
         let arrExist = [];
         // console.log(item)
         this.props.dispatch(addCart(item))
-        // if (this.state.cart.length === 0) {
-        //     this.setState({
-        //         cart: [...this.state.cart, item],
-        //         orders: [...this.state.orders, {
-        //             product_id: item.product_id,
-        //             product_price: item.product_price,
-        //             quantity: 1,
-        //             totalPrice: 1 * item.product_price
-        //         }],
-        //         grandTotal: this.state.grandTotal + parseInt(item.product_price)
-        //     })
-        // } else {
-        //     this.state.cart.map((data, i) => {
-        //         if (data.product_id === item.product_id) {
-        //             arrExist.push('1')
-        //         }
-        //     })
-        //     if (arrExist.length === 0) {
-        //         this.setState({
-        //             cart: [...this.state.cart, item],
-        //             orders: [...this.state.orders, {
-        //                 product_id: item.product_id,
-        //                 product_price: item.product_price,
-        //                 quantity: 1,
-        //                 totalPrice: 1 * item.product_price
-        //             }],
-        //             grandTotal: this.state.grandTotal + parseInt(item.product_price)
-        //         })
-        //     }
-        // }
     }
 
     searchByCategory = (e) => {

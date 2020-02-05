@@ -74,7 +74,7 @@ class Cart extends React.Component {
                     isOpen : true,
                     cart : this.props.cart.cartData
                 },()=>{ this.props.dispatch(emptyCart())
-                    console.log(this.state.cart)})
+                })
             })
 
     }

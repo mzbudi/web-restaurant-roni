@@ -54,25 +54,15 @@ class ModalDeleteCategory extends React.Component {
             headers : {authorization: this.props.auth.data.data.data.token}
         }
         console.log(headers);
-        // const data = JSON.parse(localStorage.getItem('dataAccount'))
         axios.delete(`http://127.0.0.1:3001/category/${this.props.category_id}`,headers)
                 .then(res => {
-                    if (res.status === 200) {
-                        try {
-                            this.props.dispatch(requestCategory(headers))
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }else if(res.status === 400){
-                        this.setState({
-                            error : res.data.data.message
-                        })
-                    }
+                    this.props.dispatch(requestCategory(headers))
                 }).catch(err => {
-                    // localStorage.removeItem('dataAccount');
-                    // this.props.history.push('/login')
-                    console.log(err)
+                    this.setState({
+                        isOpen: false
+                    })
                 })
+
     }
 
     render() {
@@ -88,17 +78,12 @@ class ModalDeleteCategory extends React.Component {
                                 <Col sm={10}>
                                 <p>Category ID : {this.props.category_id}</p>
                                 <p>Category Name : {this.props.category_name}</p>
-                                {/* <Input type="select" name="select" onChange={(e) => { this.handleCategory(e)}}>
-                                    {this.props.category.map((data)=>{
-                                        return(<option value={data.category_id}>{data.category_name}</option>)
-                                    })}
-                                </Input> */}
                                 </Col>
                             </FormGroup>
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={(e) => { this.handleDeleteCategory(e) }}>Submit</Button>{' '}
+                        <Button color="primary" onClick={this.handleDeleteCategory}>Submit</Button>{' '}
                         <Button color="secondary" onClick={this.handleButton}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
