@@ -42,6 +42,8 @@ import { requestLogout } from '../public/redux/action/auth';
 import { requestCategory } from '../public/redux/action/category';
 import { addCart } from '../public/redux/action/cart';
 import Cart from '../components/Cart';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 class Home extends React.Component {
@@ -189,7 +191,7 @@ class Home extends React.Component {
 
 
     addOrderButton = (e, item) => {
-        let arrExist = [];
+        // let arrExist = [];
         // console.log(item)
         this.props.dispatch(addCart(item))
     }
@@ -382,7 +384,6 @@ class Home extends React.Component {
         })
     }
     render() {
-        const { data, isOpen, dataProduct, dataTotal, searchData, category_data, cart, orders, pages } = this.state
         return (
             <div>
                 <Modal isOpen={this.state.modalCheckoutOpen} toggle={(e) => { this.handleButton(e) }}>
@@ -420,7 +421,7 @@ class Home extends React.Component {
                             </UncontrolledDropdown>
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret style={{ color: "white" }}>
-                                    Search by Category
+                                    Category
                                 </DropdownToggle>
                                 <DropdownMenu right>
                                     {this.props.category.isLoading ? (this.props.category.dataCategory.data.data.map((data, i) => {
@@ -465,7 +466,7 @@ class Home extends React.Component {
                                                 </Link>
                                                 <DropdownItem divider />
                                                 <Link to="/category">
-                                                    <DropdownItem style={style.buttonNavbar}> Category</DropdownItem>
+                                                    <DropdownItem style={style.buttonNavbar}>Category</DropdownItem>
                                                 </Link>
                                                 <DropdownItem divider />
                                                 <Link to="/users">
@@ -475,26 +476,6 @@ class Home extends React.Component {
                                             </React.Fragment>
                                         ) : ''
                                     )}
-                                    {/* {this.props.auth.data.data.data.user_role === '1' ? (
-                                        <React.Fragment>
-                                            <Link to="/order">
-                                        <DropdownItem style={style.buttonNavbar}>History Order</DropdownItem>
-                                    </Link>
-                                    <DropdownItem divider />
-                                            <Link to="/products">
-                                                <DropdownItem style={style.buttonNavbar}>Products</DropdownItem>
-                                            </Link>
-                                            <DropdownItem divider />
-                                            <Link to="/category">
-                                                <DropdownItem style={style.buttonNavbar}> Category</DropdownItem>
-                                            </Link>
-                                            <DropdownItem divider />
-                                            <Link to="/users">
-                                                <DropdownItem style={style.buttonNavbar}>Cashier</DropdownItem>
-                                            </Link>
-                                            <DropdownItem divider />
-                                        </React.Fragment>
-                                    ) : ''} */}
                                     <DropdownItem>
                                         <NavLink onClick={(e) => { this.props.dispatch(requestLogout()) }}>Logout</NavLink>
                                     </DropdownItem>
@@ -521,8 +502,14 @@ class Home extends React.Component {
                                                         <div style={{ display: "inline-flex" }}>
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
                                                                 this.props.dispatch(addCart(item))
-                                                            }}>Add</Button>
-                                                            <ModalDetailProduct product_id={data.product_id} data={data} />
+                                                            }}> <FontAwesomeIcon color='white' icon={faPlusCircle} /> Add</Button>
+                                                            {this.props.category.isLoading ? (this.props.category.dataCategory.data.data.map((item, index) => {
+                                                            if(data.category_id === item.category_id){
+                                                                  return(
+                                                                    <ModalDetailProduct product_id={data.product_id} category={item} data={data} />
+                                                                  )
+                                                                }
+                                                              })):''}
                                                         </div>
                                                     </CardBody>
                                                 </Card>
@@ -545,7 +532,7 @@ class Home extends React.Component {
                                                         <div style={{ display: "inline-flex" }}>
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
                                                                 this.addOrderButton(e, item)
-                                                            }}>Add</Button>
+                                                            }}> <FontAwesomeIcon color='white' icon={faPlusCircle} /> Add</Button>
                                                             <ModalDetailProduct product_id={data.product_id} data={data} />
                                                         </div>
                                                     </CardBody>
@@ -556,38 +543,6 @@ class Home extends React.Component {
                             </Row>
                         </Col>
                         <Col xs="4" style={{ padding: "0" }}>
-                            {/* <div style={style.cartDiv}>
-                                <div>
-                                    {cart.map((data, i) => {
-                                        const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
-                                        // this.handleTotal(totalPerProduct,data.product_id);
-                                        return (
-                                            <div style={{ display: "flex" }}>
-                                                <div style={style.cartItem}>
-                                                    <img alt="" src={product_image} height={80} width={80} />
-                                                </div>
-                                                <div style={style.incrementCart}>
-                                                    <div style={{ display: "flex" }}>
-                                                        <Button id={data.product_id} disabled={orders[i].quantity == 1 ? true : false} color="info" onClick={(e) => { this.decrementOrder(e, data.product_price) }}>-</Button>{' '}
-                                                        <Input type="number" defaultValue={1} value={orders[i].quantity} />
-                                                        <Button id={data.product_id} color="info" onClick={(e) => { this.incrementOrder(e, data.product_price) }}>+</Button>{' '}
-                                                    </div>
-                                                </div>
-                                                <div>Rp. {this.formatRupiah(orders[i].product_price * orders[i].quantity)}</div>
-                                                <div style={{ marginLeft: "20px" }}>
-                                                    <Button id={data.product_id} color="danger" onClick={(e) => { this.deleteFromCart(e) }}>x</Button>{' '}
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                                {this.state.orders.length > 0 ? (<div>
-                                    <p>Sub Total : Rp. {this.formatRupiah(this.state.grandTotal)}</p>
-                                    <p>PPN : Rp. {this.formatRupiah(this.state.grandTotal * 0.10)}</p>
-                                    <p>Total : Rp. {this.formatRupiah((this.state.grandTotal + (this.state.grandTotal * 0.10)))}</p>
-                                    <ButtonToggle style={style.buttonCheckout} onClick={(e) => { this.handleCheckout(e) }} color="info">Checkout</ButtonToggle>
-                                    <ButtonToggle onClick={(e) => { this.handleCancel(e) }} style={style.buttonCheckout} color="danger">Cancel</ButtonToggle></div>) : (<div style={{ textAlign: "center" }}><img height={250} width={250} src={cartImage} alt="Logo"></img><p>Cart is Empty</p></div>)}
-                            </div> */}
                             <Cart />
                         </Col>
                     </Row>
@@ -619,13 +574,3 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps)(Home);
-
-Home.propTypes = {
-    light: PropTypes.bool,
-    dark: PropTypes.bool,
-    fixed: PropTypes.string,
-    color: PropTypes.string,
-    role: PropTypes.string,
-    expand: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-    tag: PropTypes.oneOfType([PropTypes.func, PropTypes.string])
-}

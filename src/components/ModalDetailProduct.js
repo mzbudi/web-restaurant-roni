@@ -1,21 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import '../index.css'
-import plus from '../images/plus.png'
 import {
     Button,
     Modal,
     ModalHeader,
     ModalBody,
     ModalFooter,
-    Form,
-    FormGroup,
-    Label,
-    Input, Col, FormText
+    Table
 } from 'reactstrap';
-import style from '../styles';
-import axios from 'axios';
-import ModalDeleteProduct from './ModalDeleteProduct';
+import {formatRupiah} from '../public/helper/parsePrice'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+
 
 class ModalDetailProduct extends React.Component {
     constructor(props) {
@@ -33,42 +29,6 @@ class ModalDetailProduct extends React.Component {
         }
     }
 
-    handleButtonWarning=(e)=>{
-        this.setState({
-            warningModal : !this.state.warningModal
-        })
-    }
-
-    handleImage = (e) => {
-        this.setState({
-            newProduct : {...this.state.newProduct, product_image:e.target.files[0]}
-        })
-    }
-
-    handlePrice = (e) => {
-        this.setState({
-            newProduct : {...this.state.newProduct, product_price:e.target.value}
-        })
-    }
-
-    handleName = (e) => {
-        this.setState({
-            newProduct : {...this.state.newProduct, product_name:e.target.value}
-        })
-    }
-
-    handleDescription = (e) => {
-        this.setState({
-            newProduct : {...this.state.newProduct, product_description:e.target.value}
-        })
-    }
-
-    handleCategory = (e) => {
-        this.setState({
-            newProduct : {...this.state.newProduct, category_id:e.target.value}
-        })
-    }
-
     handleClick = () => {
         this.setState({
             isOpen: true
@@ -81,82 +41,41 @@ class ModalDetailProduct extends React.Component {
         })
     }
 
-    handleUpdateClick = () => {
-        this.setState({
-            updateOpen: true
-        })
-    }
-
-    handleUpdateButtonClick = () => {
-        this.setState({
-            updateOpen: false
-        })
-    }
-
-    handleUpdateButton = () => {
-        this.setState({
-            updateOpen: false
-        })
-        const formData = new FormData();
-        formData.append('category_id',this.state.newProduct.category_id)
-        formData.append('product_name',this.state.newProduct.product_name)
-        formData.append('product_description',this.state.newProduct.product_description)
-        formData.append('product_image',this.state.newProduct.product_image)
-        formData.append('product_price',this.state.newProduct.product_price)
-        const data = JSON.parse(localStorage.getItem('dataAccount'))
-
-         axios.put(`http://127.0.0.1:3001/products/${this.props.product_id}`,formData, {
-            headers: {authorization: data.token}
-        })
-                .then(res => {
-                    if (res.status === 200) {
-                        try {
-                            this.setState({
-                                warningModal:true,
-                                messageWarning : "Proses Berhasil"
-                            })
-                            this.forceUpdate()
-                        } catch (error) {
-                            console.log(error)
-                        }
-                    }
-                }).catch(err => {
-                    localStorage.removeItem('dataAccount');
-                    this.props.history.push('/login')
-                })
-    }
-
-    handleDeleteClick = () => {
-        this.setState({
-            deleteOpen: true
-        })
-    }
-
-    handleDeleteButton = () => {
-        this.setState({
-            deleteOpen: false
-        })
-    }
-
     render() {
-        const { isOpen,updateOpen } = this.state
+        const { isOpen } = this.state
+        const {data, product_id, category} = this.props;
         return (
             <div>
-                <Button color="dark" onClick={this.handleClick}>Detail</Button>
+                <Button color="dark" onClick={this.handleClick}> <FontAwesomeIcon color='white' icon={faInfoCircle} /> Detail</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
                     <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
                     <ModalBody>
-                        <img width={465} src={"http://localhost:3001/" + this.props.data.product_image.replace('assets', '')}></img>
-                        <p>Product Id : {this.props.data.product_id}</p>
-                        <p>Category Id : {this.props.data.category_id}</p>
-                        <p>Product Description: {this.props.data.product_description}</p>
-                        <p>Product Price: {this.props.data.product_price}</p>
+                    <img width={465} alt='' src={"http://localhost:3001/" + data.product_image.replace('assets', '')}></img>
+                      <Table bordered>
+                        <tbody>
+                          <tr>
+                            <td>Product Id</td>
+                            <td>{product_id}</td>
+                          </tr>
+                          <tr>
+                            <td>Category</td>
+                            <td>{category ? (category.category_name):('')}</td>
+                          </tr>
+                          <tr>
+                            <td>Product Description</td>
+                            <td>{data.product_description}</td>
+                          </tr>
+                          <tr>
+                            <td>Product Price</td>
+                            <td>{`${formatRupiah(data.product_price, 'Rp. ')}`}</td>
+                          </tr>
+                        </tbody>
+                      </Table>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary" onClick={this.handleButton}>Cancel</Button>
+                        <Button color="secondary" onClick={this.handleButton}>Close</Button>
                     </ModalFooter>
                 </Modal>
-                {/* update */}
             </div>
         )
     }

@@ -2,21 +2,24 @@ import bgImage from './images/batikbg.jpg';
 const style = {
     formMaker : {
       position: 'absolute',
-        width: '500',
+      width: '500',
       left: '50%',
       top: '50%',
       transform: 'translate(-50%, -50%)',
-      
-      },
+    },
     inputLogin : {
-        minWidth : '320'
+        minWidth : 320
+    },
+    spinnerDiv : {
+        width: 320
     },
     inputRegister : {
         minWidth : '320'
     },
     spinnerLogin : {
         width: '3rem', 
-        height: '3rem' 
+        height: '3rem',
+        left: '50%',
     },
     buttonLogin :{
         minWidth:"320px"
@@ -50,7 +53,8 @@ const style = {
         display:"inline-block", 
         width:"100%", 
         border: "1px solid rgba(0,0,0,.125)", 
-        borderRadius: ".25rem"
+        borderRadius: "8px",
+        backgroundColor: '#ffffff'
     },
     cartItem :{
         marginBottom: "10px",

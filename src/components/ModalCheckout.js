@@ -74,33 +74,6 @@ class ModalCheckout extends React.Component {
         return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
     }
 
-    //     const data = JSON.parse(localStorage.getItem('dataAccount'))
-
-    //     const body ={
-    //         user_id : data.user_id,
-    //         orders : this.state.orders
-    //     }
-
-    //     axios.post('http://127.0.0.1:3001/order/', body)
-    //         .then(res => {
-    //             if (res.status === 200) {
-    //                 try {
-    //                     this.setState({
-    //                         cart:[],
-    //                         orders:[],
-    //                         grandTotal : 0,
-    //                         modalCheckoutOpen : true
-    //                     })
-    //                 } catch (error) {
-    //                     console.log(error)
-    //                 }
-    //             }
-    //         }).catch(err => {
-    //             console.log(err)
-    //         })
-
-    //     console.log(body)
-    // }
 
     handleButton = () => {
         this.setState({

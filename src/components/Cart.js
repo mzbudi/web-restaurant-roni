@@ -1,29 +1,9 @@
 import React from 'react';
 import style from '../styles.js';
 import {
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    NavbarText,
-    Container,
-    Row,
-    Col,
     Input,
-    Card, CardImg, CardText, CardBody,
     CardTitle, CardSubtitle, Button,
     Pagination, PaginationItem, PaginationLink, ButtonToggle,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter, Form, FormGroup
 } from 'reactstrap';
 import cartImage from '../images/cartpict.PNG';
 import { connect } from 'react-redux';
