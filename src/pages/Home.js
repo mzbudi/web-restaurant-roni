@@ -1,12 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
     Collapse,
     Navbar,
     NavbarToggler,
     NavbarBrand,
     Nav,
-    NavItem,
     NavLink,
     UncontrolledDropdown,
     DropdownToggle,
@@ -17,9 +15,9 @@ import {
     Row,
     Col,
     Input,
-    Card, CardImg, CardText, CardBody,
+    Card, CardImg, CardBody,
     CardTitle, CardSubtitle, Button,
-    Pagination, PaginationItem, PaginationLink, ButtonToggle,
+    Pagination, PaginationItem, PaginationLink,
     Modal,
     ModalHeader,
     ModalBody,
@@ -30,12 +28,8 @@ import {
     Link
 } from 'react-router-dom';
 import style from '../styles.js';
-import ModalAddCategory from '../components/ModalAddCategory'
 import axios from 'axios';
-import qs from 'qs';
 import ModalDetailProduct from '../components/ModalDetailProduct';
-import cartImage from '../images/cartpict.PNG';
-import bgImage from '../images/batikbg.jpg';
 import { connect } from 'react-redux';
 import { requestProducts } from '../public/redux/action/products';
 import { requestLogout } from '../public/redux/action/auth';
@@ -44,6 +38,7 @@ import { addCart } from '../public/redux/action/cart';
 import Cart from '../components/Cart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { formatRupiah } from '../public/helper/parsePrice'
 
 
 class Home extends React.Component {
@@ -103,8 +98,7 @@ class Home extends React.Component {
                 })
             })
         this.props.dispatch(requestCategory(configCategory));
-        } 
-        
+        }
     }
 
     handleCancel = (e) => {
@@ -135,37 +129,6 @@ class Home extends React.Component {
         })
     }
 
-    handleCheckout = (e) => {
-
-        const body = {
-            user_id: this.props.auth.data.data.data.user_id,
-            orders: this.state.orders
-        }
-
-        axios.post('http://127.0.0.1:3001/order/', body, {
-            headers: { authorization: this.props.auth.data.data.data.token }
-        })
-            .then(res => {
-                if (res.status === 200) {
-                    try {
-                        this.setState({
-                            cart: [],
-                            orders: [],
-                            grandTotal: 0,
-                            modalCheckoutOpen: true,
-                            invoice: res.data.data.invoice
-                        })
-                    } catch (error) {
-                        console.log(error)
-                    }
-                }
-            }).catch(err => {
-                localStorage.removeItem('dataAccount');
-                this.props.history.push('/login')
-            })
-
-    }
-
     decrementOrder = (e, product_price) => {
         this.setState({
             orders: this.state.orders.map((order) => (order.product_id == e.target.id ? { ...order, quantity: order.quantity - 1, totalPrice: product_price * (order.quantity - 1) } : order)),
@@ -189,10 +152,7 @@ class Home extends React.Component {
         })
     }
 
-
     addOrderButton = (e, item) => {
-        // let arrExist = [];
-        // console.log(item)
         this.props.dispatch(addCart(item))
     }
 
@@ -362,28 +322,13 @@ class Home extends React.Component {
         }
     }
 
-    formatRupiah = (angka, prefix) => {
-        let number_string = angka.toString().replace(/[^,\d]/g, '');
-        let split = number_string.split(',');
-        let remains = split[0].length % 3;
-        let rupiah = split[0].substr(0, remains);
-        let thausand = split[0].substr(remains).match(/\d{3}/gi);
-
-        if (thausand) {
-            let separator = remains ? '.' : '';
-            rupiah += separator + thausand.join('.');
-        }
-
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-    }
-
     handleToggle = () => {
         this.setState({
             isOpen: !this.state.isOpen
         })
     }
     render() {
+      const {products} = this.props;
         return (
             <div>
                 <Modal isOpen={this.state.modalCheckoutOpen} toggle={(e) => { this.handleButton(e) }}>
@@ -484,6 +429,7 @@ class Home extends React.Component {
                         </Nav>
                     </Collapse>
                 </Navbar>
+                {/* Navbar Ends Here */}
                 <Container>
                     <Row>
                         <Col>
@@ -498,11 +444,14 @@ class Home extends React.Component {
                                                     <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
-                                                        <CardSubtitle>Rp.{this.formatRupiah(data.product_price)}</CardSubtitle>
+                                                        <CardSubtitle>{formatRupiah(data.product_price, 'Rp. ')}</CardSubtitle>
                                                         <div style={{ display: "inline-flex" }}>
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
                                                                 this.props.dispatch(addCart(item))
-                                                            }}> <FontAwesomeIcon color='white' icon={faPlusCircle} /> Add</Button>
+                                                            }}>
+                                                              <FontAwesomeIcon color='white' icon={faPlusCircle} />
+                                                            {' '}Add
+                                                            </Button>
                                                             {this.props.category.isLoading ? (this.props.category.dataCategory.data.data.map((item, index) => {
                                                             if(data.category_id === item.category_id){
                                                                   return(
@@ -528,12 +477,18 @@ class Home extends React.Component {
                                                     <CardImg top width={208} height={138} src={product_image} alt="Card image cap" />
                                                     <CardBody>
                                                         <CardTitle>{data.product_name}</CardTitle>
-                                                        <CardSubtitle>Rp.{this.formatRupiah(data.product_price)}</CardSubtitle>
+                                                        <CardSubtitle>{formatRupiah(data.product_price, 'Rp. ')}</CardSubtitle>
                                                         <div style={{ display: "inline-flex" }}>
                                                             <Button style={{ marginRight: "5px" }} onClick={(e) => {
                                                                 this.addOrderButton(e, item)
                                                             }}> <FontAwesomeIcon color='white' icon={faPlusCircle} /> Add</Button>
-                                                            <ModalDetailProduct product_id={data.product_id} data={data} />
+                                                            {this.props.category.isLoading ? (this.props.category.dataCategory.data.data.map((item, index) => {
+                                                            if(data.category_id === item.category_id){
+                                                                  return(
+                                                                    <ModalDetailProduct product_id={data.product_id} category={item} data={data} />
+                                                                  )
+                                                                }
+                                                              })):''}
                                                         </div>
                                                     </CardBody>
                                                 </Card>
@@ -548,13 +503,23 @@ class Home extends React.Component {
                     </Row>
                     <Pagination size="sm">
                         {this.state.pages.map((page, i) => {
+                          if(products.dataProducts.data.data.activePage === (page+1)){
                             return (
-                                <PaginationItem >
-                                    <PaginationLink value={page} onClick={(e) => { this.paginationClick(e) }}>
-                                        {page + 1}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            )
+                              <PaginationItem active>
+                                  <PaginationLink value={page} onClick={(e) => { this.paginationClick(e) }}>
+                                      {page + 1}
+                                  </PaginationLink>
+                              </PaginationItem>
+                          )
+                          }else{
+                            return (
+                              <PaginationItem >
+                                  <PaginationLink value={page} onClick={(e) => { this.paginationClick(e) }}>
+                                      {page + 1}
+                                  </PaginationLink>
+                              </PaginationItem>
+                          )
+                          }
                         })
                         }
                     </Pagination>

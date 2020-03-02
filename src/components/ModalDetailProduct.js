@@ -10,7 +10,7 @@ import {
 } from 'reactstrap';
 import {formatRupiah} from '../public/helper/parsePrice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faBan } from '@fortawesome/free-solid-svg-icons';
 
 
 class ModalDetailProduct extends React.Component {
@@ -46,9 +46,12 @@ class ModalDetailProduct extends React.Component {
         const {data, product_id, category} = this.props;
         return (
             <div>
-                <Button color="dark" onClick={this.handleClick}> <FontAwesomeIcon color='white' icon={faInfoCircle} /> Detail</Button>
+                <Button color="dark" onClick={this.handleClick}>
+                  <FontAwesomeIcon color='white' icon={faInfoCircle} />
+                  {' '}Detail
+                </Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick} className="apakek">
-                    <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
+                  <ModalHeader toggle={this.handleButton}> Detail Product</ModalHeader>
                     <ModalBody>
                     <img width={465} alt='' src={"http://localhost:3001/" + data.product_image.replace('assets', '')}></img>
                       <Table bordered>
@@ -73,7 +76,10 @@ class ModalDetailProduct extends React.Component {
                       </Table>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary" onClick={this.handleButton}>Close</Button>
+                        <Button color="secondary" onClick={this.handleButton}>
+                          <FontAwesomeIcon color='white' icon={faBan}/>
+                          {' '} Close
+                        </Button>
                     </ModalFooter>
                 </Modal>
             </div>
