@@ -46,7 +46,7 @@ class NavbarNavigation extends React.Component {
     render() {
         return (
             <Navbar color="dark" dark expand="md" style={{ marginBottom: "10px" }}>
-                <NavbarBrand href="/">Restaurant Roni</NavbarBrand>
+                <NavbarBrand href="/">Luwe</NavbarBrand>
                 <NavbarToggler onClick={this.handleToggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav className="mr-auto" navbar>

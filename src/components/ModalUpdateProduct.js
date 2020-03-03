@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import '../index.css'
-import plus from '../images/plus.png'
 import {
     Button,
     Modal,
@@ -11,13 +9,15 @@ import {
     Form,
     FormGroup,
     Label,
-    Input, Col, FormText, Alert
+    Input,
+    Col,
+    FormText,
+    Alert
 } from 'reactstrap';
-import style from '../styles';
-import axios from 'axios';
-import ModalDeleteProduct from './ModalDeleteProduct';
 import { connect } from 'react-redux'
 import { requestProducts, updateProducts } from '../public/redux/action/products'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenSquare } from '@fortawesome/free-solid-svg-icons';
 
 class ModalUpdateProduct extends React.Component {
     constructor(props) {
@@ -57,7 +57,6 @@ class ModalUpdateProduct extends React.Component {
         const headers = {
             headers: { authorization: this.props.auth.data.data.data.token }
         }
-        // console.log(this.props.product_id, formData, this.props.auth.data.data.data.token)
 
         this.props.dispatch(updateProducts(this.props.product_id, formData, headers))
             .then((res) => {
@@ -139,7 +138,10 @@ class ModalUpdateProduct extends React.Component {
                   toggle={this.onDismissAlert}>
                   {message}
                 </Alert>
-                <Button color="dark" onClick={(e) => { this.handleUpdateClick(e) }}>Update</Button>
+                <Button color="dark" onClick={(e) => { this.handleUpdateClick(e) }}>
+                  Update{' '}
+                  <FontAwesomeIcon icon={faPenSquare} />
+                </Button>
                 <Modal isOpen={updateOpen} toggle={(e) => { this.handleUpdateClick(e) }} >
                     <ModalHeader toggle={(e) => { this.handleUpdateButtonClick(e) }}>Update Product</ModalHeader>
                     <ModalBody>

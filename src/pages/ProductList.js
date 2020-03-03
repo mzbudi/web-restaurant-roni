@@ -2,12 +2,13 @@ import React from 'react';
 import { Table, Container , Button} from 'reactstrap';
 import {connect} from 'react-redux';
 import {requestProducts} from '../public/redux/action/products';
-import axios from 'axios';
-import qs from 'qs';
 import ModalUpdateProduct from '../components/ModalUpdateProduct';
 import ModalDeleteProduct from '../components/ModalDeleteProduct';
 import ModalAddProduct from '../components/ModalAddProduct';
 import NavbarNavigation from '../components/NavbarNavigation';
+import {formatRupiah} from '../public/helper/parsePrice';
+import style from '../styles'
+
 
 class ProductList extends React.Component {
 
@@ -26,7 +27,7 @@ class ProductList extends React.Component {
 
         this.props.dispatch(requestProducts(config))
     }
-    
+
     componentWillMount(){
         if(this.props.auth.length === 0){
             this.props.history.push('/login')
@@ -39,11 +40,11 @@ class ProductList extends React.Component {
             <NavbarNavigation />
             <Container>
             <ModalAddProduct />
-            <Table style={{backgroundColor: '#ffffff'}}>
+            <Table style={{backgroundColor: '#ffffff'}} bordered>
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Product Image</th>
+                        <th style={{textAlign: "center"}}>No</th>
+                        <th style={{textAlign: "center"}}>Product Image</th>
                         <th>Product Name</th>
                         <th>Product Description</th>
                         <th>Product Price</th>
@@ -55,18 +56,15 @@ class ProductList extends React.Component {
                         const product_image = "http://localhost:3001/" + data.product_image.replace('assets', '');
                         return(
                             <tr key={i}>
-                                <td>{i+1}</td>
-                                <td><img width={80} height={80} src={product_image} alt='product_image'/></td>
-                                <td>{data.product_name}</td>
-                                <td>{data.product_description}</td>
-                                <td>{data.product_price}</td>
-                                <td style={{textAlign: "center"}}>
-                                <ModalUpdateProduct product_id={data.product_id} data={data}>
-                                    Update
-                                </ModalUpdateProduct> {' '}
-                                <ModalDeleteProduct product_id={data.product_id}>
-                                    Delete
-                                </ModalDeleteProduct>
+                                <th style={style.centerCentered} scope='row'>{i+1}</th>
+                                <td style={style.centerCentered}><img width={80} height={80} src={product_image} alt='product_image'/></td>
+                                <td style={style.verticalCentered}>{data.product_name}</td>
+                                <td style={style.verticalCentered}>{data.product_description}</td>
+                                <td style={style.verticalCentered}>{formatRupiah(data.product_price, 'Rp. ')}</td>
+                                <td style={style.centerCentered}>
+                                <ModalUpdateProduct product_id={data.product_id} data={data} />
+                                {' '}
+                                <ModalDeleteProduct product_id={data.product_id} />
                                 </td>
                             </tr>
 

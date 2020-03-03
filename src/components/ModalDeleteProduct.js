@@ -16,7 +16,9 @@ import {
 import style from '../styles';
 import axios from 'axios';
 import {connect} from 'react-redux';
-import {deleteProducts, requestProducts} from '../public/redux/action/products'
+import {deleteProducts, requestProducts} from '../public/redux/action/products';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 class ModalDeleteProduct extends React.Component {
     constructor(props) {
@@ -90,7 +92,10 @@ class ModalDeleteProduct extends React.Component {
                       toggle={this.onDismissAlert}>
                       {message}
                     </Alert>
-                <Button onClick={this.handleClick}>Delete</Button>
+                <Button onClick={this.handleClick}>
+                  Delete{' '}
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
                     <ModalBody>

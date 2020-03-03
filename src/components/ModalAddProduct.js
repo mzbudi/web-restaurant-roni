@@ -22,6 +22,8 @@ import { withRouter, Link } from 'react-router-dom';
 import {connect} from 'react-redux';
 import {requestProducts, createProducts} from '../public/redux/action/products';
 import {requestCategory} from '../public/redux/action/category';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 class ModalAddProduct extends React.Component {
     constructor(props) {
@@ -144,13 +146,16 @@ class ModalAddProduct extends React.Component {
         const { isOpen, message, errorAlert, successAlert } = this.state
         return (
             <div>
-              <Alert style={{position:'fixed', zIndex: 2, bottom: "50px", left:'50px'}} 
-                      color={'success'} 
-                      isOpen={successAlert} 
+              <Alert style={{position:'fixed', zIndex: 2, bottom: "50px", left:'50px'}}
+                      color={'success'}
+                      isOpen={successAlert}
                       toggle={this.onDismissAlert}>
                       {message}
               </Alert>
-                <Button style={style.buttonAddProduct} color="dark" onClick={this.handleClick}>+ Product</Button>
+                <Button style={style.buttonAddProduct} color="dark" onClick={this.handleClick}>
+                  <FontAwesomeIcon color='white' icon={faPlus} size='sm'/>{' '}
+                  Product
+                </Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Add Product</ModalHeader>
                     <ModalBody>

@@ -81,7 +81,9 @@ const style = {
     },
     backGroundStyle:{
         backgroundImage: `url(${bgImage})`
-    }
+    },
+    centerCentered : {verticalAlign:'middle', textAlign:'center'},
+    verticalCentered: {verticalAlign:'middle'}
 
 }
 
