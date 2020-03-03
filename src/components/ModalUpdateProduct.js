@@ -34,21 +34,19 @@ class ModalUpdateProduct extends React.Component {
             },
             warningModal: false,
             messageWarning: "Proses Berhasil",
-            visibleAlert: false,
-            error: "",
-            alertColor: 'danger',
+            successAlert: false,
+            errorAlert: false,
+            message: "",
         }
     }
     onDismissAlert = () => {
         this.setState({
-            visibleAlert: !this.state.visibleAlert
+            errorAlert: false,
+            successAlert: false
         })
     }
 
     handleUpdateButton = () => {
-        this.setState({
-            updateOpen: false
-        })
         const formData = new FormData();
         formData.append('category_id', this.state.newProduct.category_id)
         formData.append('product_name', this.state.newProduct.product_name)
@@ -74,20 +72,17 @@ class ModalUpdateProduct extends React.Component {
                     }
                 }
                 this.setState({
-                    error: "Data Berhasil Diubah",
-                    alertColor: "success",
-                    visibleAlert: true,
-                    isOpen: false,
+                    successAlert: true,
+                    message : res.value.data.data.message,
+                    updateOpen: false,
                     newProduct: {}
                 });
                 this.props.dispatch(requestProducts(dataProducts, headers))
             })
             .catch((error) => {
                 this.setState({
-                    error: "Data Tidak Boleh Kosong Atau Berbeda Format",
-                    alertColor: "danger",
-                    visibleAlert: true,
-                    isOpen: false
+                    message: error.response.data.data.message,
+                    errorAlert: true,
                 });
             })
     }
@@ -135,11 +130,14 @@ class ModalUpdateProduct extends React.Component {
     }
 
     render() {
-        const { updateOpen } = this.state
+        const { updateOpen, errorAlert, successAlert, message} = this.state
         return (
             <React.Fragment>
-                <Alert color={this.state.alertColor} isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
-                    {this.state.error}
+                <Alert color='success'
+                  style={{position:'fixed', zIndex: 2, bottom: "50px", left:'50px'}}
+                  isOpen={successAlert}
+                  toggle={this.onDismissAlert}>
+                  {message}
                 </Alert>
                 <Button color="dark" onClick={(e) => { this.handleUpdateClick(e) }}>Update</Button>
                 <Modal isOpen={updateOpen} toggle={(e) => { this.handleUpdateClick(e) }} >
@@ -151,7 +149,7 @@ class ModalUpdateProduct extends React.Component {
                                 <Col sm={10}>
                                     <Input type="select" name="select" onChange={(e) => { this.handleCategory(e) }}>
                                         {this.props.category.dataCategory.data.data.map((data) => {
-                                            if (this.props.data.category_id == data.category_id) {
+                                            if (this.props.data.category_id === data.category_id) {
                                                 return (
                                                     <option selected value={data.category_id}>{data.category_name}</option>
                                                 )
@@ -201,6 +199,12 @@ class ModalUpdateProduct extends React.Component {
                         <Button color="primary" onClick={(e) => { this.handleUpdateButton(e) }}>Submit</Button>{' '}
                         <Button color="secondary" onClick={(e) => { this.handleUpdateButtonClick(e) }}>Cancel</Button>
                     </ModalFooter>
+                    <Alert style={{position:'absolute', zIndex: 2, alignSelf:'center', marginTop: 20}} 
+                      color='danger'
+                      isOpen={errorAlert} 
+                      toggle={this.onDismissAlert}>
+                      {message}
+                    </Alert>
                 </Modal>
             </React.Fragment>
         )

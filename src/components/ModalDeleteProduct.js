@@ -11,7 +11,7 @@ import {
     Form,
     FormGroup,
     Label,
-    Input, Col, FormText
+    Input, Col, FormText, Alert
 } from 'reactstrap';
 import style from '../styles';
 import axios from 'axios';
@@ -26,12 +26,10 @@ class ModalDeleteProduct extends React.Component {
             updateOpen : false,
             deleteOpen: false,
             category_data:[],
-            newProduct : {
-                category_id: "5"
-            }
+            alert: false,
+            message: ''
         }
     }
-
 
     handleClick = () => {
         this.setState({
@@ -47,52 +45,51 @@ class ModalDeleteProduct extends React.Component {
 
 
     handleDeleteClick = () => {
-        this.setState({
-            isOpen: false
-        })
-
-        const headers = {
-            headers : {authorization: this.props.auth.data.data.data.token}
-        }
-        // console.log(this.props.product_id, formData, this.props.auth.data.data.data.token)
-        
+      const headers = {
+        headers : {authorization: this.props.auth.data.data.data.token}
+    }
         this.props.dispatch(deleteProducts(this.props.product_id, headers))
             .then( (res) => {
-                const dataProducts = {
-                    params:{
-                        nameSearch : '',
-                        category_id : '',
-                        limit : '1000',
-                        page : 0,
-                        product_name : '',
-                        date : '',
-                    }
-                }
-                this.props.dispatch(requestProducts(dataProducts,headers))
+              this.setState({
+                alert: true,
+                isOpen: false,
+                message : res.value.data.data.message,
+              })
+            }).catch(err => {
+              console.log(err);
             })
-        // const data = JSON.parse(localStorage.getItem('dataAccount'))
-
-        //  axios.delete(`http://127.0.0.1:3001/products/${this.props.product_id}`, {
-        //     headers: {authorization: data.token}
-        // })
-        //         .then(res => {
-        //             if (res.status === 200) {
-        //                 try {
-        //                     this.forceUpdate()
-        //                 } catch (error) {
-        //                     console.log(error)
-        //                 }
-        //             }
-        //         }).catch(err => {
-        //             localStorage.removeItem('dataAccount');
-        //             this.props.history.push('/login')
-        //         })
     }
 
+    onDismissAlert = () => {
+      this.setState({
+          alert: !this.state.alert
+      })
+      const headers = {
+        headers : {authorization: this.props.auth.data.data.data.token}
+    }
+    const dataProducts = {
+      params:{
+          nameSearch : '',
+          category_id : '',
+          limit : '1000',
+          page : 0,
+          product_name : '',
+          date : '',
+      }
+  }
+  this.props.dispatch(requestProducts(dataProducts,headers))
+  }
+
     render() {
-        const { isOpen } = this.state
+        const { isOpen, message, alert } = this.state
         return (
             <React.Fragment>
+               <Alert style={{position:'fixed', zIndex: 2, bottom: "50px", left:'50px'}}
+                      color={'success'}
+                      isOpen={alert}
+                      toggle={this.onDismissAlert}>
+                      {message}
+                    </Alert>
                 <Button onClick={this.handleClick}>Delete</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Detail Product</ModalHeader>
@@ -100,9 +97,9 @@ class ModalDeleteProduct extends React.Component {
                         <p>Apakah Anda Yakin Menghapus ini ?</p>
                     </ModalBody>
                     <ModalFooter>
-                    <Button style={style.buttonSidebar} color="dark" onClick={(e)=>{this.handleDeleteClick(e)}}>Delete</Button>{' '}
-                    <Button style={style.buttonSidebar} onClick={(e)=>{this.handleButton(e)}}>Cancel</Button>{' '}
-                        </ModalFooter>
+                      <Button style={style.buttonSidebar} color="dark" onClick={(e)=>{this.handleDeleteClick(e)}}>Delete</Button>{' '}
+                      <Button style={style.buttonSidebar} onClick={(e)=>{this.handleButton(e)}}>Cancel</Button>{' '}
+                    </ModalFooter>
                 </Modal>
             </React.Fragment>
         )
@@ -114,7 +111,6 @@ const mapStateToProps = state => {
         auth : state.auth,
         products : state.products,
         category : state.category
-
     }
 }
 

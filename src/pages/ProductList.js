@@ -39,7 +39,7 @@ class ProductList extends React.Component {
             <NavbarNavigation />
             <Container>
             <ModalAddProduct />
-            <Table>
+            <Table style={{backgroundColor: '#ffffff'}}>
                 <thead>
                     <tr>
                         <th>No</th>

@@ -19,9 +19,9 @@ import {
 } from 'reactstrap';
 import style from '../styles';
 import { withRouter, Link } from 'react-router-dom';
-import {connect} from 'react-redux'
-import {requestProducts, createProducts} from '../public/redux/action/products'
-import {requestCategory} from '../public/redux/action/category'
+import {connect} from 'react-redux';
+import {requestProducts, createProducts} from '../public/redux/action/products';
+import {requestCategory} from '../public/redux/action/category';
 
 class ModalAddProduct extends React.Component {
     constructor(props) {
@@ -30,9 +30,9 @@ class ModalAddProduct extends React.Component {
             isOpen: false,
             category_data:[],
             newProduct : {},
-            visibleAlert : false,
-            error : "",
-            alertColor : 'danger',
+            errorAlert : false,
+            successAlert: false,
+            message : "",
         }
     }
 
@@ -55,7 +55,8 @@ class ModalAddProduct extends React.Component {
 
     onDismissAlert = () => {
         this.setState({
-            visibleAlert : !this.state.visibleAlert
+            errorAlert : false,
+            successAlert: false
         })
     }
 
@@ -66,9 +67,9 @@ class ModalAddProduct extends React.Component {
     }
 
     handleButtonAdd = (e) => {
-        this.setState({
-            isOpen: false
-        })
+        // this.setState({
+        //     isOpen: false
+        // })
 
         const formData = new FormData();
         formData.append('category_id',this.state.newProduct.category_id)
@@ -94,19 +95,18 @@ class ModalAddProduct extends React.Component {
                     }
                 }
                 this.setState({
-                    error : res.value.data.data.message, 
-                    alertColor:"success" ,
-                    visibleAlert : true,
+                    message : res.value.data.data.message,
+                    successAlert : true,
                     isOpen: false,
                     newProduct:{}});
                 this.props.dispatch(requestProducts(dataProducts,headers))
             })
             .catch((error)=>{
+              const {data} = error.response.data;
                 this.setState({
-                    error : "Data Tidak Boleh Kosong Atau Berbeda Format", 
-                    alertColor:"danger" ,
-                    visibleAlert : true,
-                    isOpen: false});
+                    message : data.message,
+                    errorAlert : true,
+                    });
             })
     }
 
@@ -141,12 +141,15 @@ class ModalAddProduct extends React.Component {
     }
 
     render() {
-        const { isOpen } = this.state
+        const { isOpen, message, errorAlert, successAlert } = this.state
         return (
             <div>
-                <Alert color={this.state.alertColor} isOpen={this.state.visibleAlert} toggle={this.onDismissAlert}>
-                {this.state.error}
-                </Alert>
+              <Alert style={{position:'fixed', zIndex: 2, bottom: "50px", left:'50px'}} 
+                      color={'success'} 
+                      isOpen={successAlert} 
+                      toggle={this.onDismissAlert}>
+                      {message}
+              </Alert>
                 <Button style={style.buttonAddProduct} color="dark" onClick={this.handleClick}>+ Product</Button>
                 <Modal isOpen={isOpen} toggle={this.handleClick}>
                     <ModalHeader toggle={this.handleButton}>Add Product</ModalHeader>
@@ -188,7 +191,6 @@ class ModalAddProduct extends React.Component {
                                     <Input type="file" name="file" onChange={(e)=>{this.handleImage(e)}} />
                                     <FormText color="muted">
                                         <p>File Harus Ber-Ekstensi Gambar dan Tidak Lebih dari 2 MB</p>
-                                        <p>{this.state.error}</p>
                                     </FormText>
                                 </Col>
                             </FormGroup>
@@ -198,6 +200,12 @@ class ModalAddProduct extends React.Component {
                         <Button color="primary" onClick={(e)=>{this.handleButtonAdd(e)}}>Submit</Button>{' '}
                         <Button color="secondary" onClick={this.handleButton}>Cancel</Button>
                     </ModalFooter>
+                    <Alert style={{position:'absolute', zIndex: 2, alignSelf:'center', marginTop: 20}} 
+                      color='danger'
+                      isOpen={errorAlert} 
+                      toggle={this.onDismissAlert}>
+                      {message}
+                    </Alert>
                 </Modal>
             </div>
         )
