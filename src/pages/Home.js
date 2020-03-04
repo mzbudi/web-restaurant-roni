@@ -15,11 +15,6 @@ import {
   Row,
   Col,
   Input,
-  Card,
-  CardImg,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
   Button,
   Pagination,
   PaginationItem,
@@ -104,72 +99,10 @@ class Home extends React.Component {
     }
   }
 
-  handleCancel = e => {
-    this.setState({
-      cart: [],
-      orders: [],
-      grandTotal: 0
-    });
-  };
-
   handleButton = e => {
     this.setState({
       modalCheckoutOpen: !this.state.modalCheckoutOpen
     });
-  };
-
-  incrementOrder = (e, product_price) => {
-    this.setState({
-      orders: this.state.orders.map(order =>
-        order.product_id === e.target.id
-          ? {
-              ...order,
-              quantity: order.quantity + 1,
-              totalPrice: product_price * (order.quantity + 1)
-            }
-          : order
-      ),
-      grandTotal: this.state.grandTotal + parseInt(product_price)
-    });
-  };
-
-  decrementOrder = (e, product_price) => {
-    this.setState({
-      orders: this.state.orders.map(order =>
-        order.product_id === e.target.id
-          ? {
-              ...order,
-              quantity: order.quantity - 1,
-              totalPrice: product_price * (order.quantity - 1)
-            }
-          : order
-      ),
-      grandTotal: this.state.grandTotal - parseInt(product_price)
-    });
-  };
-
-  deleteFromCart = e => {
-    var totalPrice = 0;
-    this.state.orders.map((order, i) => {
-      if (order.product_id === e.target.id) {
-        totalPrice = order.totalPrice;
-      }
-    });
-    let cartForDelete = this.state.cart.filter(data => {
-      return data.product_id !== e.target.id;
-    });
-    let ordersForDelete = this.state.orders.filter(data => {
-      return data.product_id !== e.target.id;
-    });
-    this.setState({
-      cart: cartForDelete,
-      orders: ordersForDelete,
-      grandTotal: this.state.grandTotal - parseInt(totalPrice)
-    });
-  };
-
-  addOrderButton = (e, item) => {
-    this.props.dispatch(addCart(item));
   };
 
   searchByCategory = e => {
@@ -413,7 +346,7 @@ class Home extends React.Component {
                 <DropdownToggle nav caret style={{ color: "white" }}>
                   Sort
                 </DropdownToggle>
-                <DropdownMenu right>
+                <DropdownMenu direction="right">
                   <DropdownItem
                     onClick={e => {
                       this.sortByName(e);
@@ -435,7 +368,7 @@ class Home extends React.Component {
                 <DropdownToggle nav caret style={{ color: "white" }}>
                   Category
                 </DropdownToggle>
-                <DropdownMenu right>
+                <DropdownMenu direction="right">
                   {this.props.category.isLoading
                     ? this.props.category.dataCategory.data.data.map(
                         (data, i) => {
