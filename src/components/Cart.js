@@ -25,13 +25,14 @@ class Cart extends React.Component {
   }
 
   handleCheckout = e => {
+    const { auth } = this.props;
     const body = {
-      user_id: this.props.auth.data.data.data.user_id,
+      user_id: auth.data.user_id,
       orders: this.props.cart.cartData
     };
 
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: auth.data.token }
     };
 
     this.props.dispatch(createOrder(body, headers)).then(res => {

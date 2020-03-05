@@ -11,7 +11,8 @@ import style from "../styles";
 
 class CategoryList extends Component {
   componentDidMount() {
-    const headers = { authorization: this.props.auth.data.data.data.token };
+    const { auth } = this.props;
+    const headers = { authorization: auth.data.token };
     const configCategory = {
       headers
     };

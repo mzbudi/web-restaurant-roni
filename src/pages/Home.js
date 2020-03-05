@@ -33,7 +33,6 @@ import { connect } from "react-redux";
 import { requestProducts } from "../public/redux/action/products";
 import { requestLogout } from "../public/redux/action/auth";
 import { requestCategory } from "../public/redux/action/category";
-import { addCart } from "../public/redux/action/cart";
 import Cart from "../components/Cart";
 
 class Home extends React.Component {
@@ -63,10 +62,12 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.auth.data.length === 0) {
-      this.props.history.push("/login");
+    const { auth, history } = this.props;
+    if (!auth.data.token) {
+      history.push("/login");
     } else {
-      const headers = { authorization: this.props.auth.data.data.data.token };
+      const headers = { authorization: auth.data.token };
+      console.log(headers);
       const configCategory = {
         headers
       };
@@ -82,9 +83,8 @@ class Home extends React.Component {
         }
       };
       this.props.dispatch(requestProducts(config)).then(res => {
-        const page = Math.ceil(
-          parseInt(this.props.products.dataProducts.data.data.totalData) / 5
-        );
+        console.log(res);
+        const page = Math.ceil(parseInt(res.value.data.data.totalData) / 5);
         const pages = [];
         for (let i = 0; i <= page; i++) {
           if (i !== page) {
@@ -106,6 +106,7 @@ class Home extends React.Component {
   };
 
   searchByCategory = e => {
+    const { auth } = this.props;
     this.setState(
       {
         nameSearch: "",
@@ -116,7 +117,7 @@ class Home extends React.Component {
         date: ""
       },
       () => {
-        const headers = { authorization: this.props.auth.data.data.data.token };
+        const headers = { authorization: auth.data.token };
         const config = {
           headers,
           params: {
@@ -147,6 +148,7 @@ class Home extends React.Component {
   };
 
   sortByName = e => {
+    const { auth } = this.props;
     this.setState(
       {
         nameSearch: "",
@@ -157,7 +159,7 @@ class Home extends React.Component {
         date: ""
       },
       () => {
-        const headers = { authorization: this.props.auth.data.data.data.token };
+        const headers = { authorization: auth.data.token };
         const config = {
           headers,
           params: {
@@ -188,6 +190,7 @@ class Home extends React.Component {
   };
 
   sortByDate = e => {
+    const { auth } = this.props;
     this.setState(
       {
         nameSearch: "",
@@ -198,7 +201,7 @@ class Home extends React.Component {
         date: "updated_at"
       },
       () => {
-        const headers = { authorization: this.props.auth.data.data.data.token };
+        const headers = { authorization: auth.data.token };
         const config = {
           headers,
           params: {
@@ -230,6 +233,7 @@ class Home extends React.Component {
 
   handleSearchProduct = e => {
     e.preventDefault();
+    const { auth } = this.props;
     this.setState(
       {
         nameSearch: e.target.value,
@@ -240,7 +244,7 @@ class Home extends React.Component {
         date: ""
       },
       () => {
-        const headers = { authorization: this.props.auth.data.data.data.token };
+        const headers = { authorization: auth.data.token };
         const config = {
           headers,
           params: {
@@ -271,7 +275,8 @@ class Home extends React.Component {
   };
 
   paginationClick = e => {
-    const headers = { authorization: this.props.auth.data.data.data.token };
+    const { auth } = this.props;
+    const headers = { authorization: auth.data.token };
     const config = {
       headers,
       params: {
@@ -287,10 +292,11 @@ class Home extends React.Component {
   };
 
   handleLogout = e => {
+    const { history } = this.props;
     e.preventDefault();
     try {
       localStorage.removeItem("dataAccount");
-      this.props.history.push("/login");
+      history.push("/login");
     } catch (error) {
       console.log(error);
     }
@@ -302,7 +308,7 @@ class Home extends React.Component {
     });
   };
   render() {
-    const { products } = this.props;
+    const { products, auth, category, cart, history } = this.props;
     return (
       <div>
         <Modal
@@ -390,6 +396,9 @@ class Home extends React.Component {
                     : ""}
                 </DropdownMenu>
               </UncontrolledDropdown>
+              <NavbarText style={{ color: "white", marginRight: 10 }}>
+                All
+              </NavbarText>
               <Input
                 type="text"
                 name="search"
@@ -401,9 +410,7 @@ class Home extends React.Component {
               />
             </Nav>
             <NavbarText style={{ color: "white" }}>
-              {this.props.auth.data.length === 0
-                ? this.props.history.push("/login")
-                : this.props.auth.data.data.data.name}
+              {auth.data.token ? auth.data.name : history.push("/login")}
             </NavbarText>
             <Nav>
               <UncontrolledDropdown nav inNavbar>
@@ -415,9 +422,9 @@ class Home extends React.Component {
                     <DropdownItem style={style.buttonNavbar}>Home</DropdownItem>
                   </Link>
                   <DropdownItem divider />
-                  {this.props.auth.data.length === 0 ? (
-                    this.props.history.push("/login")
-                  ) : this.props.auth.data.data.data.user_role === "1" ? (
+                  {!auth.data.token ? (
+                    history.push("/login")
+                  ) : auth.data.user_role === "1" ? (
                     <React.Fragment>
                       <Link to="/order">
                         <DropdownItem style={style.buttonNavbar}>

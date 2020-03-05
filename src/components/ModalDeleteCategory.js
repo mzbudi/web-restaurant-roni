@@ -46,11 +46,12 @@ class ModalDeleteCategory extends Component {
   };
 
   handleDeleteCategory = e => {
+    const { auth } = this.props;
     this.setState({
       isOpen: false
     });
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: auth.data.token }
     };
     console.log(headers);
     axios

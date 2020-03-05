@@ -42,10 +42,12 @@ class ModalAddProduct extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.auth.data.length === 0) {
+    const { auth } = this.props;
+    if (!auth.data.token) {
       this.props.history.push("/login");
     }
-    const headers = { authorization: this.props.auth.data.data.data.token };
+
+    const headers = { authorization: auth.data.token };
     const configCategory = {
       headers
     };

@@ -59,12 +59,13 @@ class ModalUpdateCategory extends Component {
   };
 
   handleUpdateCategory = e => {
+    const { auth } = this.props;
     const dataCategory = {
       category_name: this.state.category_name
     };
 
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: auth.data.token }
     };
 
     if (dataCategory.category_name === "") {

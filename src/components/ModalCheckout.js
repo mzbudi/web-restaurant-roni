@@ -6,8 +6,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Table,
-  Alert
+  Table
 } from "reactstrap";
 import style from "../styles";
 import { emptyCart, createOrder } from "../public/redux/action/cart";
@@ -45,16 +44,17 @@ class ModalCheckout extends React.Component {
   };
 
   handleCheckout = e => {
+    const { auth } = this.props;
     this.setState({
       isOpen: true
     });
     const body = {
-      user_id: this.props.auth.data.data.data.user_id,
+      user_id: auth.data.user_id,
       orders: this.props.cart.cartData
     };
 
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: auth.data.token }
     };
 
     this.props

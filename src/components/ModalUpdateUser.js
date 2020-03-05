@@ -17,6 +17,8 @@ import style from "../styles";
 import axios from "axios";
 import { connect } from "react-redux";
 import { requestUsers } from "../public/redux/action/users";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenSquare } from "@fortawesome/free-solid-svg-icons";
 
 class ModalUpdateUser extends React.Component {
   constructor(props) {
@@ -144,7 +146,7 @@ class ModalUpdateUser extends React.Component {
             this.handleUpdateClick(e);
           }}
         >
-          Update
+          <FontAwesomeIcon icon={faPenSquare} /> Update
         </Button>
         <Modal
           isOpen={updateOpen}

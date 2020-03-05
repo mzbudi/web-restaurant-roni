@@ -57,11 +57,12 @@ class ModalAddCategory extends React.Component {
   };
 
   handleSubmitCategory = e => {
+    const { auth } = this.props;
     const dataCategory = {
       category_name: this.state.category_name
     };
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: auth.data.token }
     };
 
     axios

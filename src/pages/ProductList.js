@@ -11,8 +11,9 @@ import style from "../styles";
 
 class ProductList extends React.Component {
   componentDidMount() {
+    const { auth } = this.props;
     const config = {
-      headers: { authorization: this.props.auth.data.data.data.token },
+      headers: { authorization: auth.data.token },
       params: {
         nameSearch: "",
         category_id: "",
@@ -27,7 +28,7 @@ class ProductList extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.auth.length === 0) {
+    if (!this.props.auth.data.token) {
       this.props.history.push("/login");
     }
   }

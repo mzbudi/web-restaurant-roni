@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
 import "../index.css";
-import plus from "../images/plus.png";
 import {
   Button,
   Modal,
@@ -16,6 +14,8 @@ import style from "../styles";
 import axios from "axios";
 import { connect } from "react-redux";
 import { requestUsers } from "../public/redux/action/users";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 class ModalDeleteCategory extends Component {
   constructor(props) {
@@ -76,7 +76,9 @@ class ModalDeleteCategory extends Component {
     const { isOpen } = this.state;
     return (
       <Fragment>
-        <Button onClick={this.handleClick}>Delete</Button>
+        <Button onClick={this.handleClick}>
+          <FontAwesomeIcon icon={faTrashAlt} /> Delete
+        </Button>
         <Modal isOpen={isOpen} toggle={this.handleClick}>
           <ModalHeader toggle={this.handleButton}>Delete User</ModalHeader>
           <ModalBody>
