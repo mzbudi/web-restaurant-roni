@@ -56,7 +56,7 @@ class ModalDeleteCategory extends Component {
     console.log(headers);
     axios
       .delete(
-        `http://127.0.0.1:3001/category/${this.props.category_id}`,
+        `${process.env.REACT_APP_API_HOST}/category/${this.props.category_id}`,
         headers
       )
       .then(res => {

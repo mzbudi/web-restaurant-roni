@@ -74,6 +74,7 @@ class ModalAddProduct extends React.Component {
   };
 
   handleButtonAdd = e => {
+    const { auth } = this.props;
     // this.setState({
     //     isOpen: false
     // })
@@ -89,7 +90,7 @@ class ModalAddProduct extends React.Component {
     formData.append("product_price", this.state.newProduct.product_price);
 
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: auth.data.token }
     };
 
     this.props

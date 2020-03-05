@@ -49,7 +49,7 @@ class ModalUpdateUser extends React.Component {
     });
 
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: this.props.auth.data.token }
     };
     const body = {
       name: this.state.name,
@@ -66,7 +66,11 @@ class ModalUpdateUser extends React.Component {
       });
     } else {
       axios
-        .put(`http://127.0.0.1:3001/users/${this.props.user_id}`, body, headers)
+        .put(
+          `${process.env.REACT_APP_API_HOST}/users/${this.props.user_id}`,
+          body,
+          headers
+        )
         .then(res => {
           if (res.status === 200) {
             try {

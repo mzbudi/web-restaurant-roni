@@ -44,14 +44,18 @@ class ModalDeleteCategory extends Component {
   };
 
   handleDeleteUser = e => {
+    const { auth } = this.props;
     this.setState({
       isOpen: false
     });
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: auth.data.token }
     };
     axios
-      .delete(`http://127.0.0.1:3001/users/${this.props.user_id}`, headers)
+      .delete(
+        `${process.env.REACT_APP_API_HOST}/users/${this.props.user_id}`,
+        headers
+      )
       .then(res => {
         if (res.status === 200) {
           try {

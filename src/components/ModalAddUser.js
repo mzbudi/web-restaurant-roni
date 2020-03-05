@@ -73,13 +73,14 @@ class ModalAddUser extends React.Component {
 
   handleRegister = e => {
     e.preventDefault();
+    const { auth } = this.props;
     const data = {
       username: this.state.username,
       password: this.state.password,
       name: this.state.name
     };
     const headers = {
-      headers: { authorization: this.props.auth.data.data.data.token }
+      headers: { authorization: auth.data.token }
     };
     this.setState({
       isLoading: true

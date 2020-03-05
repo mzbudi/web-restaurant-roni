@@ -76,7 +76,7 @@ class ModalUpdateCategory extends Component {
     } else {
       axios
         .put(
-          `http://127.0.0.1:3001/category/${this.props.category_id}`,
+          `${process.env.REACT_APP_API_HOST}/category/${this.props.category_id}`,
           dataCategory,
           headers
         )

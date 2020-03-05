@@ -396,9 +396,9 @@ class Home extends React.Component {
                     : ""}
                 </DropdownMenu>
               </UncontrolledDropdown>
-              <NavbarText style={{ color: "white", marginRight: 10 }}>
+              {/* <NavbarText style={{ color: "white", marginRight: 10 }}>
                 All
-              </NavbarText>
+              </NavbarText> */}
               <Input
                 type="text"
                 name="search"
@@ -477,7 +477,7 @@ class Home extends React.Component {
                   ? this.props.products.dataProducts.data.data.searchResult.map(
                       (data, i) => {
                         const product_image =
-                          "http://localhost:3001/" +
+                          `${process.env.REACT_APP_API_HOST}` +
                           data.product_image.replace("assets", "");
                         // const item = data;
                         if (i < 3) {
@@ -500,7 +500,7 @@ class Home extends React.Component {
                   ? this.props.products.dataProducts.data.data.searchResult.map(
                       (data, i) => {
                         const product_image =
-                          "http://localhost:3001/" +
+                          `${process.env.REACT_APP_API_HOST}` +
                           data.product_image.replace("assets", "");
                         if (i >= 3) {
                           return (

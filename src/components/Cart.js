@@ -56,7 +56,7 @@ class Cart extends React.Component {
             ? ""
             : this.props.cart.cartData.map((data, i) => {
                 const product_image =
-                  "http://localhost:3001/" +
+                  `${process.env.REACT_APP_API_HOST}` +
                   data.product_image.replace("assets", "");
                 return (
                   <Table responsive>

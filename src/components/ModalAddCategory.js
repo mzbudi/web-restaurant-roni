@@ -66,7 +66,7 @@ class ModalAddCategory extends React.Component {
     };
 
     axios
-      .post("http://127.0.0.1:3001/category", dataCategory, headers)
+      .post(`${process.env.REACT_APP_API_HOST}/category`, dataCategory, headers)
       .then(res => {
         if (res.status === 200) {
           try {
