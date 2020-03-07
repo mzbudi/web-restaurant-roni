@@ -1,15 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
-  Container,
   Row,
   Col,
   Alert,
   Form,
   FormGroup,
-  Label,
   Input,
-  FormText,
   Spinner,
   ButtonToggle
 } from "reactstrap";
