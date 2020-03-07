@@ -11,8 +11,8 @@
 	* User ID : admin
 	* Password : roni
 2. Cashier Level : 
-	* User ID : roni
-	* Password : roni
+	* User ID : budi
+	* Password : budi
 	
 ## .env Settings
 `REACT_APP_API_HOST=http://18.215.244.21/api`
