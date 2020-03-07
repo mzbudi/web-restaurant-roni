@@ -26,7 +26,9 @@ class Order extends React.Component {
         "Nov",
         "Des"
       ],
-      total: []
+      total: [],
+      orders: [],
+      totalRevenue: []
     };
   }
   componentDidMount() {
@@ -35,26 +37,31 @@ class Order extends React.Component {
       headers: { authorization: auth.data.token }
     };
 
-    this.props.dispatch(requestOrder(config));
+    this.props.dispatch(requestOrder(config)).then(res => {
+      this.setState({
+        orders: res.value.data.data
+      });
+    });
   }
 
   render() {
+    const { orders } = this.state;
+    const { order } = this.props;
     let newDate = new Date();
-    let date = String(newDate.getDate()).padStart(2, "0");
-    let month = String(newDate.getMonth() + 1).padStart(2, "0");
-    let year = newDate.getFullYear();
-    let today = date + "/" + month + "/" + year;
+    let today = Moment(newDate).format("DD/MM/YYYY");
     let arrToday = [];
+    let totalToday = 0;
     let totalRevenue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     let totalOrders = 0;
     let totalMonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    if (this.props.order.isLoading) {
-      this.props.order.data.data.data.map((data, i) => {
+    if (orders.length) {
+      order.data.data.data.map((data, i) => {
         totalOrders += 1;
         if (
           String(Moment(data.created_at).format("DD/MM/YYYY")) === String(today)
         ) {
           arrToday.push(data.subTotal);
+          totalToday += parseInt(data.subTotal);
         }
         totalMonth.forEach(month => {
           if (
@@ -62,7 +69,7 @@ class Order extends React.Component {
               Moment(data.created_at)
                 .format("DD/MM/YYYY")
                 .substring(3, 5)
-            ) == month
+            ) === month
           ) {
             totalRevenue[month - 1] += parseInt(data.subTotal);
           }
@@ -75,7 +82,7 @@ class Order extends React.Component {
         <Container>
           <CardHistory
             totalOrders={totalOrders}
-            todayTotals={arrToday}
+            todayTotals={totalToday}
             totalRevenue={totalRevenue}
           />
           <Chart totalRevenue={totalRevenue} />
@@ -83,7 +90,7 @@ class Order extends React.Component {
             {" "}
             Recent Orders
           </h4>
-          <Table>
+          <Table style={{ backgroundColor: "#ffffff" }} bordered>
             <thead>
               <tr>
                 <th>No</th>
@@ -96,8 +103,8 @@ class Order extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {this.props.order.isLoading
-                ? this.props.order.data.data.data.map((data, i) => {
+              {order.isLoading
+                ? order.data.data.data.map((data, i) => {
                     if (i <= 5) {
                       return (
                         <tr key={i}>
@@ -110,8 +117,6 @@ class Order extends React.Component {
                           <td style={{ textAlign: "center" }}>
                             {Moment(data.created_at).format("DD/MM/YYYY")}
                           </td>
-                          {/* <td style={{textAlign: "center"}}>
-                                </td> */}
                         </tr>
                       );
                     }

@@ -32,12 +32,12 @@ class Login extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const data = JSON.parse(localStorage.getItem("persist:root"));
-    if (data.auth.data) {
-      this.props.history.push("/");
-    }
-  }
+  // componentDidMount() {
+  //   const data = JSON.parse(localStorage.getItem("persist:root"));
+  //   if (data.auth.data) {
+  //     this.props.history.push("/");
+  //   }
+  // }
 
   handleUsername = e => {
     this.setState({

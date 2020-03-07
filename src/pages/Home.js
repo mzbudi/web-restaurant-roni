@@ -62,12 +62,11 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    const { auth, history } = this.props;
+    const { auth, history, dispatch } = this.props;
     if (!auth.data.token) {
       history.push("/login");
     } else {
       const headers = { authorization: auth.data.token };
-      console.log(headers);
       const configCategory = {
         headers
       };
@@ -82,20 +81,30 @@ class Home extends React.Component {
           date: ""
         }
       };
-      this.props.dispatch(requestProducts(config)).then(res => {
-        console.log(res);
-        const page = Math.ceil(parseInt(res.value.data.data.totalData) / 5);
-        const pages = [];
-        for (let i = 0; i <= page; i++) {
-          if (i !== page) {
-            pages.push(i);
+      this.props
+        .dispatch(requestProducts(config))
+        .then(res => {
+          const { data } = res.value.data;
+          console.log(res);
+          const page = Math.ceil(parseInt(data.totalPage));
+          const pages = [];
+          for (let i = 0; i <= page; i++) {
+            if (i !== page) {
+              pages.push(i);
+            }
           }
-        }
-        this.setState({
-          pages: pages
+          this.setState({
+            pages: pages
+          });
+        })
+        .catch(err => {
+          dispatch(requestLogout());
+          history.push("/login");
         });
+      this.props.dispatch(requestCategory(configCategory)).catch(err => {
+        dispatch(requestLogout());
+        history.push("/login");
       });
-      this.props.dispatch(requestCategory(configCategory));
     }
   }
 
@@ -130,9 +139,8 @@ class Home extends React.Component {
           }
         };
         this.props.dispatch(requestProducts(config)).then(res => {
-          const page = Math.ceil(
-            parseInt(this.props.products.dataProducts.data.data.totalData) / 5
-          );
+          const { data } = res.value.data;
+          const page = Math.ceil(parseInt(data.totalPage));
           const pages = [];
           for (let i = 0; i <= page; i++) {
             if (i !== page) {
@@ -172,9 +180,8 @@ class Home extends React.Component {
           }
         };
         this.props.dispatch(requestProducts(config)).then(res => {
-          const page = Math.ceil(
-            parseInt(this.props.products.dataProducts.data.data.totalData) / 5
-          );
+          const { data } = res.value.data;
+          const page = Math.ceil(parseInt(data.totalPage));
           const pages = [];
           for (let i = 0; i <= page; i++) {
             if (i !== page) {
@@ -214,9 +221,8 @@ class Home extends React.Component {
           }
         };
         this.props.dispatch(requestProducts(config)).then(res => {
-          const page = Math.ceil(
-            parseInt(this.props.products.dataProducts.data.data.totalData) / 5
-          );
+          const { data } = res.value.data;
+          const page = Math.ceil(parseInt(data.totalPage));
           const pages = [];
           for (let i = 0; i <= page; i++) {
             if (i !== page) {
@@ -257,9 +263,8 @@ class Home extends React.Component {
           }
         };
         this.props.dispatch(requestProducts(config)).then(res => {
-          const page = Math.ceil(
-            parseInt(this.props.products.dataProducts.data.data.totalData) / 5
-          );
+          const { data } = res.value.data;
+          const page = Math.ceil(parseInt(data.totalPage));
           const pages = [];
           for (let i = 0; i <= page; i++) {
             if (i !== page) {
