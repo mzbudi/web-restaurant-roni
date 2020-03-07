@@ -32,13 +32,6 @@ class Login extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //   const data = JSON.parse(localStorage.getItem("persist:root"));
-  //   if (data.auth.data) {
-  //     this.props.history.push("/");
-  //   }
-  // }
-
   handleUsername = e => {
     this.setState({
       username: e.target.value
@@ -86,10 +79,9 @@ class Login extends React.Component {
         .catch(err => {
           this.setState({
             visibleAlert: true,
-            error: auth.message,
+            error: err.response.data.data.message,
             isLoading: false
           });
-          console.log(err);
         });
     }
   };
